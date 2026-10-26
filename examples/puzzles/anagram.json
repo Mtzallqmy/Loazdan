@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "24302e61-2e7e-5c6a-af30-3c6d2d97934b",
+  "revision": 1,
+  "gameId": "7e9a63b2-7cd1-50de-a9d2-c9c27fe9a8b2",
+  "type": "anagram",
+  "world": "words",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: anagram",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-lexical-draft"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. ",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "tiles": [
+      "م",
+      "ق",
+      "ل"
+    ],
+    "fixedSlots": [],
+    "acceptedAnswers": [
+      "قلم"
+    ]
+  }
+}

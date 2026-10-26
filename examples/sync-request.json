@@ -1,0 +1,21 @@
+{
+  "operations": [
+    {
+      "operationId": "9a58b163-8b32-5857-b75e-ae0d939b5bec",
+      "deviceId": "39c3de93-2571-5d10-8d55-d9cbb91d040f",
+      "deviceSeq": 1,
+      "kind": "complete_session",
+      "payload": {
+        "sessionId": "affbd8f2-5b72-5fb9-82d2-6c38f1ba0c4d",
+        "puzzleId": "337f2df9-a520-5bfc-afad-3a25297e4f33",
+        "puzzleRevision": 1,
+        "rulesVersion": 1,
+        "outcome": "won",
+        "score": 100,
+        "wrongSubmissions": 0,
+        "hintIds": [],
+        "durationMs": 20000
+      }
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "04a505be-780a-51e0-8bd1-0335ee96b477",
+  "revision": 1,
+  "gameId": "6fe5b817-6bb6-5e7f-9699-7974ddbf3e84",
+  "type": "wordsearch",
+  "world": "words",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: wordsearch",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-lexical-draft"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. ",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "grid": [
+      [
+        "م",
+        "ل",
+        "ق"
+      ],
+      [
+        "س",
+        "ب",
+        "ن"
+      ],
+      [
+        "ج",
+        "د",
+        "ر"
+      ]
+    ],
+    "words": [
+      {
+        "id": "pen",
+        "label": "قلم",
+        "path": [
+          {
+            "row": 0,
+            "col": 2
+          },
+          {
+            "row": 0,
+            "col": 1
+          },
+          {
+            "row": 0,
+            "col": 0
+          }
+        ]
+      }
+    ]
+  }
+}

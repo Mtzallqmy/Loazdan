@@ -1,0 +1,32 @@
+[
+  {
+    "id": "original-math-fixture",
+    "name": "مسائل حسابية ورسوم هندسية أصلية للحزمة",
+    "author": "أُعدت لهذه الحزمة بمساعدة الذكاء الاصطناعي",
+    "sourceUrl": null,
+    "edition": "LUGHZDAN Stage01 1.0",
+    "rights": "Original project fixture; no third-party excerpt",
+    "permittedContent": [
+      "engineering tests"
+    ],
+    "verifiedAt": "2026-10-26",
+    "approvalStatus": "draft",
+    "reviewer": null,
+    "scientificallyApproved": false
+  },
+  {
+    "id": "original-lexical-draft",
+    "name": "مسودات تعريف قلم وعلم",
+    "author": "أُعدت لهذه الحزمة بمساعدة الذكاء الاصطناعي",
+    "sourceUrl": null,
+    "edition": "LUGHZDAN Stage01 1.0",
+    "rights": "Original project fixture; no third-party excerpt",
+    "permittedContent": [
+      "engineering tests"
+    ],
+    "verifiedAt": "2026-10-26",
+    "approvalStatus": "draft",
+    "reviewer": null,
+    "scientificallyApproved": false
+  }
+]

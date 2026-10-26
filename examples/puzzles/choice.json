@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "760158ef-b0cf-5ee2-981a-c6f8fb1c4195",
+  "revision": 1,
+  "gameId": "c7ad785f-052c-500f-88c1-22dbd324326d",
+  "type": "choice",
+  "world": "logic",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: choice",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-math-fixture"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. ",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "prompt": "أي عدد يساوي اثنين زائد اثنين؟",
+    "options": [
+      {
+        "id": "a",
+        "text": "٣"
+      },
+      {
+        "id": "b",
+        "text": "٤"
+      },
+      {
+        "id": "c",
+        "text": "٥"
+      }
+    ],
+    "correctId": "b"
+  }
+}

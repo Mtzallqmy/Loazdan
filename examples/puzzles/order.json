@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "0ba1e041-cfb1-54fc-953c-a141b9475d51",
+  "revision": 1,
+  "gameId": "b5435035-431a-5dbb-8bd4-60fab8c377e0",
+  "type": "order",
+  "world": "logic",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: order",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-math-fixture"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. ",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "items": [
+      {
+        "id": "a",
+        "text": "١"
+      },
+      {
+        "id": "b",
+        "text": "٣"
+      },
+      {
+        "id": "c",
+        "text": "٢"
+      }
+    ],
+    "correctOrder": [
+      "a",
+      "c",
+      "b"
+    ]
+  }
+}

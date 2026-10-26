@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "c9985e5e-f96f-5c1f-aa90-1739b1a71f9d",
+  "revision": 1,
+  "gameId": "c988dfab-704c-52de-aa5c-4d1d9e89f185",
+  "type": "crossword",
+  "world": "words",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: crossword",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-lexical-draft"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. ",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "rows": 3,
+    "cols": 3,
+    "entries": [
+      {
+        "id": "a",
+        "row": 1,
+        "col": 2,
+        "direction": "across",
+        "tokens": [
+          "ق",
+          "ل",
+          "م"
+        ],
+        "clue": "أداة نكتب بها",
+        "sourceRef": "original-lexical-draft"
+      },
+      {
+        "id": "b",
+        "row": 0,
+        "col": 1,
+        "direction": "down",
+        "tokens": [
+          "ع",
+          "ل",
+          "م"
+        ],
+        "clue": "معرفة؛ والكلمة هنا بلا تشكيل في الشبكة",
+        "sourceRef": "original-lexical-draft"
+      }
+    ]
+  }
+}

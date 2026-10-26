@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "5cef743a-f2e0-5dfb-8b70-9429cf32ec89",
+  "revision": 1,
+  "gameId": "6dfc383b-b529-5a65-845f-a2e4feb66d23",
+  "type": "text_answer",
+  "world": "logic",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: text_answer",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-math-fixture"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. ",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "prompt": "لديك قلمان وأضفت قلمًا؛ كم قلمًا لديك؟",
+    "acceptedAnswers": [
+      "ثلاثة",
+      "٣",
+      "3"
+    ]
+  }
+}

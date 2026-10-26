@@ -1,0 +1,262 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "packId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "minAppVersionCode": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "minEngineVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "locale": {
+      "const": "ar"
+    },
+    "publishedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^(data|media|rights)/[A-Za-z0-9_/-]+\\.(jsonl|webp|png|jpg|ogg|txt)$",
+            "maxLength": 160
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "puzzles",
+              "media",
+              "rights"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "chunks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 8388608
+                }
+              },
+              "required": [
+                "sha256",
+                "bytes"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 100000
+          }
+        },
+        "required": [
+          "path",
+          "kind",
+          "sha256",
+          "bytes",
+          "chunks"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 100000
+    },
+    "downloadBytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "installedBytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "packId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "packId",
+          "version"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 20
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000
+      },
+      "minItems": 1,
+      "maxItems": 200
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "sourceReferenceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "altText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "assetId",
+          "path",
+          "sourceReferenceId",
+          "altText"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 100000
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "referenceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "author": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "sourceVersion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "licenseCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "attribution": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "noticePath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "referenceId",
+          "sourceId",
+          "sourceName",
+          "author",
+          "locator",
+          "sourceVersion",
+          "licenseCode",
+          "attribution",
+          "noticePath"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 100000
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "packId",
+    "version",
+    "minAppVersionCode",
+    "minEngineVersion",
+    "locale",
+    "publishedAt",
+    "files",
+    "downloadBytes",
+    "installedBytes",
+    "dependencies",
+    "sourceRefs",
+    "assets",
+    "references"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lughzdan.invalid/manifest-candidate-v1.json",
+  "description": "Unsigned engineering candidate. MUST NOT be accepted by production installer."
+}

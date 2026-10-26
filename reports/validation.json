@@ -1,0 +1,237 @@
+{
+  "date": "2026-10-26",
+  "scope": "Local blueprint validation only",
+  "passed": 53,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "schema:puzzle",
+      "passed": true
+    },
+    {
+      "name": "schema:manifest",
+      "passed": true
+    },
+    {
+      "name": "schema:sync",
+      "passed": true
+    },
+    {
+      "name": "schema:manifest-payload",
+      "passed": true
+    },
+    {
+      "name": "openapi:3.1",
+      "passed": true
+    },
+    {
+      "name": "embedded-schema-parity:puzzle",
+      "passed": true
+    },
+    {
+      "name": "embedded-schema-parity:manifest",
+      "passed": true
+    },
+    {
+      "name": "embedded-schema-parity:sync",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:anagram",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:anagram",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:choice",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:choice",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:crossword",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:crossword",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:image_guess",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:image_guess",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:matching",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:matching",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:order",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:order",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:sequence",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:sequence",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:text_answer",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:text_answer",
+      "passed": true
+    },
+    {
+      "name": "puzzle-schema:wordsearch",
+      "passed": true
+    },
+    {
+      "name": "puzzle-semantics:wordsearch",
+      "passed": true
+    },
+    {
+      "name": "sync-example",
+      "passed": true
+    },
+    {
+      "name": "reject-preference-mismatch",
+      "passed": true
+    },
+    {
+      "name": "cas-safe-integer-range",
+      "passed": true
+    },
+    {
+      "name": "reject-empty-change",
+      "passed": true
+    },
+    {
+      "name": "session-conflict-response-schema",
+      "passed": true
+    },
+    {
+      "name": "cas-conflict-absent-row",
+      "passed": true
+    },
+    {
+      "name": "saved-word-tombstone-schema",
+      "passed": true
+    },
+    {
+      "name": "normalization:قَلَم",
+      "passed": true
+    },
+    {
+      "name": "normalization:أمل",
+      "passed": true
+    },
+    {
+      "name": "normalization:على",
+      "passed": true
+    },
+    {
+      "name": "normalization:رحمة",
+      "passed": true
+    },
+    {
+      "name": "normalization:قـلم",
+      "passed": true
+    },
+    {
+      "name": "normalization:أمل",
+      "passed": true
+    },
+    {
+      "name": "reject-crossword-conflict",
+      "passed": true
+    },
+    {
+      "name": "reject-crossword-bounds",
+      "passed": true
+    },
+    {
+      "name": "reject-unknown-type",
+      "passed": true
+    },
+    {
+      "name": "reject-published-fixture",
+      "passed": true
+    },
+    {
+      "name": "manifest-candidate-schema",
+      "passed": true
+    },
+    {
+      "name": "manifest-content-integrity",
+      "passed": true
+    },
+    {
+      "name": "reject-unsigned-production-manifest",
+      "passed": true
+    },
+    {
+      "name": "reject-tampered-file",
+      "passed": true
+    },
+    {
+      "name": "reject-unresolved-asset",
+      "passed": true
+    },
+    {
+      "name": "reject-size-mismatch",
+      "passed": true
+    },
+    {
+      "name": "postgresql-parse-only",
+      "passed": true
+    },
+    {
+      "name": "all-tables-rls-default-deny",
+      "passed": true
+    },
+    {
+      "name": "required-deliverables",
+      "passed": true
+    },
+    {
+      "name": "fixture-provenance-links",
+      "passed": true
+    }
+  ],
+  "sqlTables": 42,
+  "sqlStatements": 179,
+  "apiOperations": 42,
+  "toolVersions": {
+    "jsonschema": "4.26.0",
+    "openapi-spec-validator": "0.9.0",
+    "pglast": "8.7"
+  },
+  "notRun": [
+    "Android build/UI",
+    "Kotlin compile",
+    "PostgreSQL migrations/RLS runtime",
+    "HTTP backend",
+    "Ed25519 implementation",
+    "download crash integration",
+    "performance benchmark"
+  ]
+}

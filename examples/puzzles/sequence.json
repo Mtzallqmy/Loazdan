@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "puzzleId": "337f2df9-a520-5bfc-afad-3a25297e4f33",
+  "revision": 1,
+  "gameId": "e1894ab4-8216-5cd4-8c6f-8c60bb8e9c9f",
+  "type": "sequence",
+  "world": "logic",
+  "difficulty": 1,
+  "rulesVersion": 1,
+  "normalization": "arabic_basic_v1",
+  "title": "عينة هندسية: sequence",
+  "status": "draft",
+  "fixtureOnly": true,
+  "sourceRefs": [
+    "original-math-fixture"
+  ],
+  "explanation": "مثال مؤلف لهذه الحزمة لاختبار العقد؛ يحتاج اعتمادًا تحريريًا قبل إدخاله إلى التطبيق. القيمة التالية عشرة وفق قاعدة إضافة اثنين المعلنة.",
+  "hints": [
+    {
+      "id": "h1",
+      "kind": "step",
+      "text": "راجع العلاقة الموضحة في نص اللغز.",
+      "penalty": 20
+    }
+  ],
+  "payload": {
+    "terms": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "answer": 10,
+    "rule": "القاعدة المعلنة: أضف اثنين في كل خطوة."
+  }
+}

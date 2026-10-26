@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "packId": "5637c78f-fe7e-528c-9763-9450426f7f18",
+  "version": 1,
+  "minAppVersionCode": 1,
+  "minEngineVersion": 1,
+  "locale": "ar",
+  "publishedAt": "2026-10-26T00:00:00Z",
+  "files": [
+    {
+      "path": "data/puzzles.jsonl",
+      "kind": "puzzles",
+      "sha256": "b13f3828f87628008bf513dea142ce65cb49cfa6a7d1e9cf3acc9c5c0ad295c4",
+      "bytes": 918,
+      "chunks": [
+        {
+          "sha256": "b13f3828f87628008bf513dea142ce65cb49cfa6a7d1e9cf3acc9c5c0ad295c4",
+          "bytes": 918
+        }
+      ]
+    },
+    {
+      "path": "media/circles.png",
+      "kind": "media",
+      "sha256": "c5c59adc2f352130cda70797d87b15baeb00d94a2a5bb7668f20e8d90c5f0e95",
+      "bytes": 776,
+      "chunks": [
+        {
+          "sha256": "c5c59adc2f352130cda70797d87b15baeb00d94a2a5bb7668f20e8d90c5f0e95",
+          "bytes": 776
+        }
+      ]
+    },
+    {
+      "path": "rights/original.txt",
+      "kind": "rights",
+      "sha256": "4f91111f4fb16180dded102807951a768f8b64e18de7b3850d70c431db0f55fd",
+      "bytes": 190,
+      "chunks": [
+        {
+          "sha256": "4f91111f4fb16180dded102807951a768f8b64e18de7b3850d70c431db0f55fd",
+          "bytes": 190
+        }
+      ]
+    }
+  ],
+  "downloadBytes": 1884,
+  "installedBytes": 1884,
+  "dependencies": [],
+  "sourceRefs": [
+    "e73cec20-a66c-5f1e-b3ea-094f343e8672"
+  ],
+  "assets": [
+    {
+      "assetId": "166b17c4-16f1-5516-96d3-a49bd400b1b4",
+      "path": "media/circles.png",
+      "sourceReferenceId": "e73cec20-a66c-5f1e-b3ea-094f343e8672",
+      "altText": "ثلاث دوائر هندسية متساوية"
+    }
+  ],
+  "references": [
+    {
+      "referenceId": "e73cec20-a66c-5f1e-b3ea-094f343e8672",
+      "sourceId": "e433bdce-447c-570f-b570-86019eba5a95",
+      "sourceName": "Original geometric fixture",
+      "author": "LUGHZDAN Stage01 draft",
+      "locator": "three-circles",
+      "sourceVersion": "1",
+      "licenseCode": "PROJECT-ORIGINAL-FIXTURE",
+      "attribution": "Original geometric fixture; engineering use only pending editorial approval.",
+      "noticePath": "rights/original.txt"
+    }
+  ]
+}
