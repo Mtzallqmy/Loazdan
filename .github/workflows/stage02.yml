@@ -45,6 +45,8 @@ jobs:
           cache-dependency-path: services/api/package-lock.json
       - run: npm ci
         working-directory: services/api
+      - run: npm audit --audit-level=high
+        working-directory: services/api
       - run: npm run typecheck && npm run build && npm test
         working-directory: services/api
   contracts:
