@@ -11,3 +11,5 @@ node_modules/
 **/build/
 local.properties
 *.hprof
+
+.kotlin/

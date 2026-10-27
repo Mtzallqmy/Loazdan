@@ -4,6 +4,7 @@ import jsonschema
 root=pathlib.Path(__file__).resolve().parents[1]
 assets=root/'apps/android/app/src/debug/assets'
 manifest=json.loads((assets/'bundled-manifest.json').read_text())
+jsonschema.Draft202012Validator(json.loads((root/'packages/content-schema/bundled-manifest.schema.json').read_text())).validate(manifest)
 data=(assets/manifest['path']).read_bytes()
 assert len(data)==manifest['bytes']
 assert hashlib.sha256(data).hexdigest()==manifest['sha256']
