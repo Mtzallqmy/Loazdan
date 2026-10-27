@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 interface CatalogApi { @GET("api/v1/games") suspend fun games():CatalogPage }
 sealed interface NetworkResult<out T> { data class Success<T>(val value:T):NetworkResult<T>; data object Unavailable:NetworkResult<Nothing> }
 class CatalogClient(private val api:CatalogApi) {
- suspend fun games():NetworkResult<List<CatalogGameDto>> = try { NetworkResult.Success(api.games().items) } catch(e:kotlinx.coroutines.CancellationException) { throw e } catch(_:java.io.IOException) { NetworkResult.Unavailable } catch(_:retrofit2.HttpException) { NetworkResult.Unavailable }
+ suspend fun games():NetworkResult<List<CatalogGameDto>> = try { NetworkResult.Success(api.games().items) } catch(e:kotlinx.coroutines.CancellationException) { throw e } catch(_:java.io.IOException) { NetworkResult.Unavailable } catch(_:retrofit2.HttpException) { NetworkResult.Unavailable } catch(_:kotlinx.serialization.SerializationException) { NetworkResult.Unavailable }
  companion object {
   fun create(baseUrl:String):CatalogClient {
    require(baseUrl.startsWith("https://"))
