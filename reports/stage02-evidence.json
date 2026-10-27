@@ -1,0 +1,21 @@
+{
+  "codeCommit": "33471cb8fa98e020811f6ecacf1854200149569a",
+  "androidRun": 40582600981,
+  "androidJob": 122466438251,
+  "androidTests": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "backendTests": {
+    "tests": 15,
+    "failures": 0
+  },
+  "offlineDeviceRun": 40582536961,
+  "offlineDeviceJob": 122465435154,
+  "instrumentationPhasesPassed": 2,
+  "emulatorApi": 28,
+  "releaseApproved": false,
+  "remainingGate": "Enable Dependency graph and required checks before merge"
+}
