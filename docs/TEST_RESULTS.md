@@ -47,3 +47,9 @@ Dependency Review in PR#1 remains blocked by repository configuration. GitHub re
 Enable Dependency graph in [repository security settings](https://github.com/Mtzallqmy/Loazdan/settings/security_analysis), then rerun the PR check. The available connector has no repository-administration permission for this setting. Required status checks must also be configured before merging. The workflow keeps this check blocking; it was not disabled or made continue-on-error. npm audit does not replace Android dependency review.
 
 No physical API26 phone, performance benchmark, TalkBack/font200% matrix, external signed-pack download/crash test or specialist penetration test is claimed. The four debug questions remain explicitly unreviewed fixtures and are excluded from release assets. No production API hosting or production APK release occurred.
+
+## Follow-up network correction — 2026-10-28
+
+Verified code commit `6f7f2390d9e53b8095587466d50ea548691c0202`, [run40584841584](https://github.com/Mtzallqmy/Loazdan/actions/runs/40584841584): Android build/Lint and32 tests passed with zero failures/errors/skips (job122473619703); backend15 tests and npm audit passed; contracts passed; the API28 offline emulator passed both phases (job122473619713).
+
+Malformed catalog JSON is now converted to NetworkResult.Unavailable instead of escaping to callers. Four tests cover malformed JSON, offline IOException, cancellation propagation and valid response mapping. The CI command now includes `:core:network:testDebugUnitTest`. Dependency Review remains blocked only by the repository Dependency graph setting described above.

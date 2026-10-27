@@ -8,7 +8,7 @@ Android: JDK17 وAndroid SDK36، ثم:
 
 ```bash
 cd apps/android
-./gradlew :app:assembleDebug :core:game-engine:test :data:testDebugUnitTest :app:testDebugUnitTest :core:datastore:testDebugUnitTest :app:lintDebug
+./gradlew :app:assembleDebug :core:game-engine:test :data:testDebugUnitTest :app:testDebugUnitTest :core:datastore:testDebugUnitTest :core:network:testDebugUnitTest :app:lintDebug
 ```
 
 نسخة debug تتضمن أربعة ألغاز مفردات مؤلفة للاختبار ومعلّمة غير معتمدة علميًا. release لا يحتوي مسودات؛ يحتاج حزمة لغوية معتمدة قبل الإطلاق. لا تحتاج اللعبة الأساسية اتصالًا أو حسابًا.
