@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
  @Query("SELECT * FROM installed_packs") fun observePacks():Flow<List<InstalledContentPackEntity>>
  @Query("SELECT * FROM installed_packs WHERE packId=:id") suspend fun pack(id:String):InstalledContentPackEntity?
  @Query("SELECT * FROM sessions ORDER BY updatedAt DESC,id DESC") fun observeSessions():Flow<List<GameSessionEntity>>
+ @Query("SELECT * FROM sessions") suspend fun storedSessions():List<GameSessionEntity>
  @Query("SELECT * FROM sessions WHERE id=:id") suspend fun session(id:String):GameSessionEntity?
  @Upsert suspend fun save(session:GameSessionEntity)
  @Query("SELECT * FROM progress WHERE puzzleId=:id") suspend fun progress(id:String):PlayerProgressEntity?

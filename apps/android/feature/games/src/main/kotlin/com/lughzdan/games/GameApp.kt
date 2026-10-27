@@ -18,6 +18,7 @@ import com.lughzdan.engine.*
  val ready by vm.ready.collectAsStateWithLifecycle();val error by vm.error.collectAsStateWithLifecycle()
  val settings by vm.settings.collectAsStateWithLifecycle();val puzzles by vm.puzzles.collectAsStateWithLifecycle()
  val sessions by vm.sessions.collectAsStateWithLifecycle();val progress by vm.progress.collectAsStateWithLifecycle()
+ val unavailableSessions by vm.unavailableSessions.collectAsStateWithLifecycle()
  val packs by vm.packs.collectAsStateWithLifecycle();val busy by vm.busy.collectAsStateWithLifecycle()
  val tone=remember { runCatching { ToneGenerator(AudioManager.STREAM_MUSIC,35) }.getOrNull() }
  DisposableEffect(Unit) { onDispose { tone?.release() } }
@@ -48,11 +49,14 @@ import com.lughzdan.engine.*
      } }
      composable("session/{id}") { entry->
       val id=entry.arguments?.getString("id");val record=sessions.find { it.session.id==id }
-      if(record==null)Text("جاري استعادة الجولة المحلية…") else Page {
+      if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
        Text("مسودة اختبار · الصعوبة ${p.difficulty}",color=MaterialTheme.colorScheme.secondary)
        Text(p.payload.prompt,style=MaterialTheme.typography.headlineSmall)
-       if(!terminal) {
+       if(s.status==SessionStatus.PAUSED) {
+        Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
+        Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
+       } else if(!terminal) {
         Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
         p.payload.options.forEach { option->OutlinedButton(onClick={vm.select(s.id,option.id)},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==option.id) "✓ " else "")+option.text)} }
         Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=s.selectedId!=null&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
@@ -73,6 +77,7 @@ import com.lughzdan.engine.*
      composable("history") { Page {
       Text("سجل الجولات",style=MaterialTheme.typography.headlineMedium)
       if(sessions.isEmpty())Text("ابدأ لغزًا لتظهر جولتك هنا.")
+      unavailableSessions.forEach { Text(it.reason,color=MaterialTheme.colorScheme.error) }
       sessions.forEach { record->TextButton(onClick={nav.navigate("session/${record.session.id}")}){Text("${record.puzzle.payload.prompt} · ${record.session.score} نقطة")} }
      } }
      composable("library") { Page {

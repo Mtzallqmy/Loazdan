@@ -16,7 +16,7 @@ import java.text.Normalizer
 @Serializable enum class SessionStatus { ACTIVE, PAUSED, WON, LOST }
 @Serializable data class GameSession(
     val id: String, val puzzleId: String, val revision: Int, val packVersion: Int = 1,
-    val stateVersion: Int = 1, val status: SessionStatus = SessionStatus.ACTIVE,
+    val packId: String = "", val stateVersion: Int = 1, val status: SessionStatus = SessionStatus.ACTIVE,
     val wrongSubmissions: Int = 0, val score: Int = 0, val selectedId: String? = null,
     val usedHintIds: Set<String> = emptySet(), val processedActions: Set<String> = emptySet(),
     val submittedIds: List<String> = emptyList(),
@@ -44,11 +44,13 @@ class ChoicePlugin : GamePlugin {
     override fun validatePuzzle(puzzle: PuzzleDefinition) = ValidationResult(buildList {
         if (puzzle.type != type || puzzle.schemaVersion != 1 || puzzle.rulesVersion != 1) add("unsupported_version")
         if (puzzle.revision < 1 || puzzle.difficulty !in 1..5) add("invalid_revision_or_difficulty")
-        if (puzzle.payload.options.size != 4 || puzzle.payload.options.map { it.id }.distinct().size != 4) add("four_unique_options_required")
+        if (puzzle.payload.options.size !in 2..6 || puzzle.payload.options.map { it.id }.distinct().size != puzzle.payload.options.size) add("two_to_six_unique_options_required")
         if (puzzle.payload.options.none { it.id == puzzle.payload.correctId }) add("missing_correct_option")
         if (puzzle.payload.options.any { it.id.isBlank() || it.text.isBlank() } || puzzle.payload.prompt.isBlank()) add("blank_content")
         if (puzzle.sourceRefs.isEmpty() || puzzle.explanation.isBlank()) add("missing_provenance")
-        if (puzzle.hints.any { it.penalty < 0 } || puzzle.hints.map { it.id }.distinct().size != puzzle.hints.size) add("invalid_hints")
+        if (puzzle.hints.size > 10 || puzzle.hints.any { it.id.isBlank() || it.penalty !in 0..100 } || puzzle.hints.map { it.id }.distinct().size != puzzle.hints.size) add("invalid_hints")
+        if (puzzle.normalization !in setOf("exact_v1", "arabic_basic_v1")) add("unsupported_normalization")
+        if (puzzle.fixtureOnly && puzzle.status in setOf("approved", "published")) add("unapproved_fixture")
     })
     override fun createSession(puzzle: PuzzleDefinition, sessionId: String): GameSession {
         require(validatePuzzle(puzzle).valid)
@@ -66,7 +68,7 @@ class ChoicePlugin : GamePlugin {
                 val selected = session.selectedId ?: return session
                 if (selected == puzzle.payload.correctId) session.copy(status = SessionStatus.WON,
                     score = ScoringEngine.score(puzzle, session.wrongSubmissions, session.usedHintIds), submittedIds = session.submittedIds + selected)
-                else session.copy(wrongSubmissions = session.wrongSubmissions + 1, selectedId = null,
+                else session.copy(wrongSubmissions = session.wrongSubmissions + 1, score = 0, selectedId = null,
                     status = if (session.wrongSubmissions == 2) SessionStatus.LOST else SessionStatus.ACTIVE,
                     submittedIds = session.submittedIds + selected)
             }
@@ -83,7 +85,12 @@ class GameRegistry(plugins: List<GamePlugin> = listOf(ChoicePlugin())) {
 object SessionCodec {
     val json = Json { encodeDefaults = true }
     fun encode(session: GameSession) = json.encodeToString(session)
-    fun decode(value: String): GameSession = json.decodeFromString<GameSession>(value).also { require(it.stateVersion == 1) }
+    fun decode(value: String): GameSession = json.decodeFromString<GameSession>(value).also {
+        require(it.stateVersion == 1) { "Unsupported session state version" }
+        require(it.revision > 0 && it.packVersion > 0 && it.wrongSubmissions in 0..3 && it.score >= 0)
+        require(it.status == SessionStatus.WON || it.score == 0)
+        require((it.status == SessionStatus.LOST) == (it.wrongSubmissions == 3))
+    }
     fun restore(value: String) = decode(value).let { if (it.status == SessionStatus.ACTIVE) it.copy(status = SessionStatus.PAUSED) else it }
 }
 data class NormalizationPolicy(val removeMarks: Boolean = false, val foldAlif: Boolean = false, val foldYa: Boolean = false)
