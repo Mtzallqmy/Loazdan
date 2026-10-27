@@ -70,4 +70,21 @@ class OfflineRepositoryTest {
   try { repository.act(id,PlayerAction.Select("select","a"));fail("Accepted replaced pack") } catch(_:IllegalArgumentException) { }
   assertEquals(7,SessionCodec.decode(db.games().session(id)!!.state).packVersion)
  }
+ @Test fun invalidSavedAnswerIsPreservedWithoutRendering()=runBlocking {
+  val repository=LocalGameRepository(context,db,true);val id=repository.start("p")
+  val row=db.games().session(id)!!
+  val invalid=SessionCodec.encode(SessionCodec.decode(row.state).copy(status=SessionStatus.WON,score=100,submittedIds=listOf("unknown")))
+  db.games().save(row.copy(state=invalid));repository.initialize()
+  assertTrue(repository.sessions.first().isEmpty())
+  assertEquals(id,repository.unavailableSessions.first().single().id)
+  assertEquals(invalid,db.games().session(id)!!.state)
+ }
+ @Test fun foreignPackRowCannotRenderSession()=runBlocking {
+  val repository=LocalGameRepository(context,db,true);val id=repository.start("p")
+  db.games().removeContent("fixture")
+  db.games().insertPuzzles(listOf(LocalPuzzleEntity("p",1,"foreign",SessionCodec.json.encodeToString(p),0)))
+  assertTrue(repository.sessions.first().isEmpty())
+  assertEquals(id,repository.unavailableSessions.first().single().id)
+ }
+
 }

@@ -19,11 +19,12 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  private val initializationMutex=Mutex()
  private var initialized=false
  override val puzzles=dao.observePuzzles().map { rows->rows.map { json.decodeFromString<PuzzleDefinition>(it.definition) } }
- private val loadedSessions=combine(dao.observeSessions(),puzzles,dao.observePacks()) { rows,items,installed ->
+ private val loadedSessions=combine(dao.observeSessions(),dao.observePuzzles(),dao.observePacks()) { rows,items,installed ->
   val available=mutableListOf<PlayRecord>();val unavailable=mutableListOf<UnavailableSession>()
   rows.forEach { row ->
    val state=runCatching { decodeStored(row) }.getOrNull()
-   val puzzle=items.find { it.puzzleId==row.puzzleId && it.revision==row.revision }
+   val puzzleRow=items.find { it.puzzleId==row.puzzleId && it.revision==row.revision }
+   val puzzle=if(state!=null && puzzleRow!=null) runCatching { validateRecord(state,puzzleRow) }.getOrNull() else null
    val pack=state?.let { saved->installed.find { it.packId==saved.packId && it.version==saved.packVersion } }
    if(state!=null && puzzle!=null && pack!=null) available.add(PlayRecord(state,puzzle))
    else unavailable.add(UnavailableSession(row.id,if(state==null) "حالة هذه الجولة غير مدعومة؛ بياناتها محفوظة دون تعديل." else "محتوى الجولة المثبّت غير متاح؛ بيانات التقدم محفوظة."))
@@ -34,6 +35,16 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  override val unavailableSessions=loadedSessions.map { it.second }
  private fun decodeStored(row:GameSessionEntity)=SessionCodec.decode(row.state).also {
   require(it.id==row.id && it.puzzleId==row.puzzleId && it.revision==row.revision)
+ }
+ private fun validateRecord(state:GameSession,row:LocalPuzzleEntity):PuzzleDefinition {
+  require(row.packId==state.packId && row.puzzleId==state.puzzleId && row.revision==state.revision)
+  val p=json.decodeFromString<PuzzleDefinition>(row.definition)
+  require(p.puzzleId==row.puzzleId && p.revision==row.revision && registry.plugin(p.type).validatePuzzle(p).valid)
+  val options=p.payload.options.map { it.id }.toSet()
+  require(state.selectedId==null || state.selectedId in options)
+  require(state.submittedIds.all { it in options })
+  require(state.usedHintIds.all { id->p.hints.any { it.id==id } })
+  return p
  }
  override val progress=dao.observeProgress().map { rows->Progress(rows.sumOf { it.bestScore },rows.count { it.completed }) }
  override val packs=dao.observePacks().map { rows->rows.map { InstalledPack(it.packId,it.version,it.bytes,it.fixtureOnly) } }
@@ -59,7 +70,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   // Recover once per repository lifetime; collecting a Flow must never pause live play.
   db.withTransaction {
    dao.storedSessions().forEach { row ->
-    val state=runCatching { decodeStored(row) }.getOrNull()
+    val state=runCatching { decodeStored(row).also { saved->validateRecord(saved,dao.puzzle(row.puzzleId,row.revision) ?: error("Missing pinned puzzle")) } }.getOrNull()
     if(state?.status==SessionStatus.ACTIVE) dao.save(row.copy(state=SessionCodec.encode(state.copy(status=SessionStatus.PAUSED))))
    }
   }
@@ -78,6 +89,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   val pRow=dao.puzzle(row.puzzleId,row.revision) ?: error("Pinned content missing")
   val p=json.decodeFromString<PuzzleDefinition>(pRow.definition)
   val old=decodeStored(row)
+  validateRecord(old,pRow)
   require(pRow.packId==old.packId && dao.pack(old.packId)?.version==old.packVersion) { "Pinned pack version missing" }
   val next=registry.plugin(p.type).evaluate(p,old,action)
   if(next==old) return@withTransaction old
