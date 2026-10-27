@@ -15,6 +15,7 @@ class OfflineDeviceTest {
   compose.onNodeWithText("ابدأ تحدي المفردات").performClick()
   compose.onNodeWithText("لغز 1 · الصعوبة 1").performClick()
   waitFor("بعيد");compose.onNodeWithText("بعيد").performClick()
+  compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("تحقق من الإجابة").performScrollTo().performClick()
   waitFor("إجابة صحيحة! +100 نقطة")
  }
@@ -24,6 +25,7 @@ class OfflineDeviceTest {
   waitFor("إجابة صحيحة! +100 نقطة")
   compose.onNodeWithText("اللغز التالي").performScrollTo().performClick()
   waitFor("مكتبة");compose.onNodeWithText("مكتبة").performClick()
+  compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("تحقق من الإجابة").performScrollTo().performClick()
   waitFor("إجابة صحيحة! +100 نقطة")
  }
