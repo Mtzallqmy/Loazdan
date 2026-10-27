@@ -3834,6 +3834,1801 @@
           }
         ]
       }
+    },
+    "/health": {
+      "get": {
+        "summary": "Stage02 /health",
+        "security": [],
+        "parameters": [],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "const": "ok"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/categories": {
+      "get": {
+        "summary": "Stage02 /api/v1/categories",
+        "security": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "parentId": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^[0-9a-f-]{36}$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "slug": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "sortOrder": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "parentId",
+                          "slug",
+                          "title",
+                          "sortOrder"
+                        ]
+                      },
+                      "maxItems": 100
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor",
+                    "hasMore"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/games": {
+      "get": {
+        "summary": "Stage02 /api/v1/games",
+        "security": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "crossword",
+                              "wordsearch",
+                              "anagram",
+                              "image_guess",
+                              "choice",
+                              "matching",
+                              "order",
+                              "text_answer",
+                              "sequence"
+                            ]
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "slug": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "enabled": {
+                            "const": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "categoryId",
+                          "slug",
+                          "title",
+                          "enabled"
+                        ]
+                      },
+                      "maxItems": 100
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor",
+                    "hasMore"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/puzzles": {
+      "get": {
+        "summary": "Stage02 /api/v1/puzzles",
+        "security": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f-]{36}$"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f-]{36}$"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "crossword",
+                "wordsearch",
+                "anagram",
+                "image_guess",
+                "choice",
+                "matching",
+                "order",
+                "text_answer",
+                "sequence"
+              ]
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "puzzleId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "revision": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "gameId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "crossword",
+                              "wordsearch",
+                              "anagram",
+                              "image_guess",
+                              "choice",
+                              "matching",
+                              "order",
+                              "text_answer",
+                              "sequence"
+                            ]
+                          },
+                          "difficulty": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 5
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "rulesVersion": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "normalization": {
+                            "type": "string",
+                            "enum": [
+                              "exact_v1",
+                              "arabic_basic_v1"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "puzzleId",
+                          "revision",
+                          "gameId",
+                          "categoryId",
+                          "type",
+                          "difficulty",
+                          "title",
+                          "rulesVersion",
+                          "normalization"
+                        ]
+                      },
+                      "maxItems": 100
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor",
+                    "hasMore"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/puzzles/{id}": {
+      "get": {
+        "summary": "Stage02 /api/v1/puzzles/{id}",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f-]{36}$"
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "schemaVersion": {
+                      "const": 1
+                    },
+                    "puzzleId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    "gameId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "crossword",
+                        "wordsearch",
+                        "anagram",
+                        "image_guess",
+                        "choice",
+                        "matching",
+                        "order",
+                        "text_answer",
+                        "sequence"
+                      ]
+                    },
+                    "world": {
+                      "type": "string",
+                      "enum": [
+                        "words",
+                        "imagination",
+                        "poetry",
+                        "rhetoric",
+                        "quran",
+                        "logic"
+                      ]
+                    },
+                    "difficulty": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 5
+                    },
+                    "rulesVersion": {
+                      "const": 1
+                    },
+                    "normalization": {
+                      "type": "string",
+                      "enum": [
+                        "exact_v1",
+                        "arabic_basic_v1"
+                      ]
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "validation",
+                        "linguistic_review",
+                        "scholarly_review",
+                        "approved",
+                        "published"
+                      ]
+                    },
+                    "fixtureOnly": {
+                      "type": "boolean"
+                    },
+                    "sourceRefs": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      },
+                      "minItems": 1,
+                      "maxItems": 200
+                    },
+                    "explanation": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "hints": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "letter",
+                              "relation",
+                              "step",
+                              "eliminate"
+                            ]
+                          },
+                          "text": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "penalty": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "text",
+                          "penalty"
+                        ]
+                      },
+                      "minItems": 0,
+                      "maxItems": 10
+                    },
+                    "payload": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "schemaVersion",
+                    "puzzleId",
+                    "revision",
+                    "gameId",
+                    "type",
+                    "world",
+                    "difficulty",
+                    "rulesVersion",
+                    "normalization",
+                    "title",
+                    "status",
+                    "fixtureOnly",
+                    "sourceRefs",
+                    "explanation",
+                    "hints",
+                    "payload"
+                  ],
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "$id": "lughzdan-public-practice-puzzle-v1",
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "crossword"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "rows": {
+                                "type": "integer",
+                                "minimum": 3,
+                                "maximum": 15
+                              },
+                              "cols": {
+                                "type": "integer",
+                                "minimum": 3,
+                                "maximum": 15
+                              },
+                              "entries": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "row": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 2147483647
+                                    },
+                                    "col": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 2147483647
+                                    },
+                                    "direction": {
+                                      "type": "string",
+                                      "enum": [
+                                        "across",
+                                        "down"
+                                      ]
+                                    },
+                                    "tokens": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 8
+                                      },
+                                      "minItems": 2,
+                                      "maxItems": 15
+                                    },
+                                    "clue": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "sourceRef": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "row",
+                                    "col",
+                                    "direction",
+                                    "tokens",
+                                    "clue",
+                                    "sourceRef"
+                                  ]
+                                },
+                                "minItems": 2,
+                                "maxItems": 60
+                              }
+                            },
+                            "required": [
+                              "rows",
+                              "cols",
+                              "entries"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "wordsearch"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "grid": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 8
+                                  },
+                                  "minItems": 3,
+                                  "maxItems": 15
+                                },
+                                "minItems": 3,
+                                "maxItems": 15
+                              },
+                              "words": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "label": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "path": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                          "row": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 2147483647
+                                          },
+                                          "col": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 2147483647
+                                          }
+                                        },
+                                        "required": [
+                                          "row",
+                                          "col"
+                                        ]
+                                      },
+                                      "minItems": 2,
+                                      "maxItems": 15
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "label",
+                                    "path"
+                                  ]
+                                },
+                                "minItems": 1,
+                                "maxItems": 30
+                              }
+                            },
+                            "required": [
+                              "grid",
+                              "words"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "anagram"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "tiles": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                },
+                                "minItems": 2,
+                                "maxItems": 30
+                              },
+                              "fixedSlots": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "index": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 2147483647
+                                    },
+                                    "token": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "index",
+                                    "token"
+                                  ]
+                                },
+                                "minItems": 0,
+                                "maxItems": 29
+                              },
+                              "acceptedAnswers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                },
+                                "minItems": 1,
+                                "maxItems": 10
+                              }
+                            },
+                            "required": [
+                              "tiles",
+                              "fixedSlots",
+                              "acceptedAnswers"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "image_guess"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "mode": {
+                                "type": "string",
+                                "enum": [
+                                  "four",
+                                  "reveal",
+                                  "shadow",
+                                  "symbols"
+                                ]
+                              },
+                              "assets": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "assetId": {
+                                      "type": "string",
+                                      "format": "uuid"
+                                    },
+                                    "alt": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "assetId",
+                                    "alt"
+                                  ]
+                                },
+                                "minItems": 1,
+                                "maxItems": 4
+                              },
+                              "acceptedAnswers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                },
+                                "minItems": 1,
+                                "maxItems": 10
+                              },
+                              "revealSteps": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 10
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "assets",
+                              "acceptedAnswers",
+                              "revealSteps"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "choice"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "prompt": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 2000
+                              },
+                              "options": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "text": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "text"
+                                  ]
+                                },
+                                "minItems": 2,
+                                "maxItems": 6
+                              },
+                              "correctId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 2000
+                              }
+                            },
+                            "required": [
+                              "prompt",
+                              "options",
+                              "correctId"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "matching"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "left": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "text": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "text"
+                                  ]
+                                },
+                                "minItems": 2,
+                                "maxItems": 12
+                              },
+                              "right": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "text": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "text"
+                                  ]
+                                },
+                                "minItems": 2,
+                                "maxItems": 12
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "leftId": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "rightId": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "leftId",
+                                    "rightId"
+                                  ]
+                                },
+                                "minItems": 2,
+                                "maxItems": 12
+                              }
+                            },
+                            "required": [
+                              "left",
+                              "right",
+                              "pairs"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "order"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    },
+                                    "text": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "text"
+                                  ]
+                                },
+                                "minItems": 2,
+                                "maxItems": 20
+                              },
+                              "correctOrder": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                },
+                                "minItems": 2,
+                                "maxItems": 20
+                              }
+                            },
+                            "required": [
+                              "items",
+                              "correctOrder"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "text_answer"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "prompt": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 2000
+                              },
+                              "acceptedAnswers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                },
+                                "minItems": 1,
+                                "maxItems": 20
+                              }
+                            },
+                            "required": [
+                              "prompt",
+                              "acceptedAnswers"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "sequence"
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "terms": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer",
+                                  "minimum": -1000000,
+                                  "maximum": 1000000
+                                },
+                                "minItems": 3,
+                                "maxItems": 20
+                              },
+                              "answer": {
+                                "type": "integer",
+                                "minimum": -1000000,
+                                "maximum": 1000000
+                              },
+                              "rule": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 2000
+                              }
+                            },
+                            "required": [
+                              "terms",
+                              "answer",
+                              "rule"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "image_guess"
+                          },
+                          "payload": {
+                            "properties": {
+                              "mode": {
+                                "const": "four"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "payload": {
+                            "properties": {
+                              "assets": {
+                                "minItems": 4,
+                                "maxItems": 4
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "approved",
+                              "published"
+                            ]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "fixtureOnly": {
+                            "const": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/content-packs": {
+      "get": {
+        "summary": "Stage02 /api/v1/content-packs",
+        "security": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f-]{36}$"
+            }
+          },
+          {
+            "name": "appVersionCode",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "slug": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "isCore": {
+                            "type": "boolean"
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "minAppVersionCode": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "downloadBytes": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 9007199254740991
+                          },
+                          "installedBytes": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 9007199254740991
+                          },
+                          "manifestSha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "title",
+                          "categoryId",
+                          "isCore",
+                          "version",
+                          "minAppVersionCode",
+                          "downloadBytes",
+                          "installedBytes",
+                          "manifestSha256",
+                          "publishedAt"
+                        ]
+                      },
+                      "maxItems": 100
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor",
+                    "hasMore"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/content-packs/{id}": {
+      "get": {
+        "summary": "Stage02 /api/v1/content-packs/{id}",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f-]{36}$"
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^[0-9a-f-]{36}$"
+                    },
+                    "slug": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "categoryId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^[0-9a-f-]{36}$"
+                    },
+                    "isCore": {
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    "minAppVersionCode": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    "downloadBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "installedBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "manifestSha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "publishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "title",
+                    "categoryId",
+                    "isCore",
+                    "version",
+                    "minAppVersionCode",
+                    "downloadBytes",
+                    "installedBytes",
+                    "manifestSha256",
+                    "publishedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/api/v1/content-packs/{id}/versions": {
+      "get": {
+        "summary": "Stage02 /api/v1/content-packs/{id}/versions",
+        "security": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-f-]{36}$"
+            }
+          }
+        ],
+        "x-rate-limit": "120/min/IP",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "slug": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^[0-9a-f-]{36}$"
+                          },
+                          "isCore": {
+                            "type": "boolean"
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "minAppVersionCode": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "downloadBytes": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 9007199254740991
+                          },
+                          "installedBytes": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 9007199254740991
+                          },
+                          "manifestSha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "title",
+                          "categoryId",
+                          "isCore",
+                          "version",
+                          "minAppVersionCode",
+                          "downloadBytes",
+                          "installedBytes",
+                          "manifestSha256",
+                          "publishedAt"
+                        ]
+                      },
+                      "maxItems": 100
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor",
+                    "hasMore"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimit"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6133,7 +7928,7 @@
         }
       },
       "RateLimit": {
-        "description": "Rate limited",
+        "description": "Rate limited: 120 requests per minute per socket IP for Stage02 public catalog. Retry-After is seconds; response code is RATE_LIMITED.",
         "headers": {
           "Retry-After": {
             "schema": {

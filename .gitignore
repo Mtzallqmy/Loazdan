@@ -6,3 +6,10 @@ __pycache__/
 node_modules/
 *.jks
 *.keystore
+
+.gradle/
+**/build/
+local.properties
+*.hprof
+
+.kotlin/
