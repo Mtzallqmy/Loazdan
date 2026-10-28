@@ -6041,6 +6041,20 @@
                       },
                       "minItems": 1,
                       "maxItems": 10
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": [
+                        "anagram",
+                        "missing_letter",
+                        "word_from_letters",
+                        "word_from_word"
+                      ]
+                    },
+                    "prompt": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6272,6 +6286,22 @@
                       },
                       "minItems": 2,
                       "maxItems": 12
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": [
+                        "synonym",
+                        "antonym",
+                        "singular_plural",
+                        "word_meaning",
+                        "word_category",
+                        "analogy"
+                      ]
+                    },
+                    "prompt": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6331,6 +6361,20 @@
                       },
                       "minItems": 2,
                       "maxItems": 20
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": [
+                        "sentence",
+                        "story",
+                        "procedure",
+                        "chronology"
+                      ]
+                    },
+                    "prompt": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
                     }
                   },
                   "required": [

@@ -9,10 +9,13 @@ internal fun tokens(s:String):List<String> {
  s.codePoints().toArray().forEach {cp->val t=String(Character.toChars(cp));if(Character.getType(cp) in listOf(6,7,8) && out.isNotEmpty()) out[out.lastIndex]+=t else out.add(t)}
  return out
 }
-internal fun validToken(s:String)=runCatching {s.isNotBlank() && tokens(ArabicText.comparison(s)).size==1 && s.codePoints().noneMatch {Character.isISOControl(it)}}.getOrDefault(false)
+internal fun validToken(s:String)=runCatching {
+ val cp=s.codePointAt(0); val arabic=cp in 0x0621..0x063A || cp in 0x0641..0x064A || cp in 0x066E..0x066F || cp in 0x0671..0x06D3 || cp in 0x06FA..0x06FC
+ arabic && s.isNotBlank() && tokens(ArabicText.comparison(s)).size==1 && Character.getType(s.codePointAt(0)) !in listOf(6,7,8) && s.codePoints().noneMatch {Character.isISOControl(it)||Character.isWhitespace(it)}}.getOrDefault(false)
 internal fun reservedTiles(b:ChoicePayload):Set<Int> {
  val used=mutableSetOf<Int>();for(f in b.fixedSlots){val i=b.tiles.indices.firstOrNull {it !in used && b.tiles[it]==f.token} ?: return setOf(-1);used.add(i)};return used
 }
+internal fun multipleAnswers(p:PuzzleDefinition)=p.payload.variant in setOf("multi_word","words_multiple","multiple","word_from_word")
 internal fun builtAnswer(p:PuzzleDefinition,s:GameSession):String {
  val selected=s.selectedTileIndices.map {p.payload.tiles[it]}.iterator();val fixed=p.payload.fixedSlots.associate {it.index to it.token}
  return (0 until s.selectedTileIndices.size+fixed.size).joinToString(""){fixed[it] ?: if(selected.hasNext()) selected.next() else ""}
@@ -71,8 +74,8 @@ class WordsearchPlugin:BoardPlugin("wordsearch") {
  override fun errors(p:PuzzleDefinition):List<String> = buildList {
   val b=p.payload;val width=b.grid.firstOrNull()?.size ?: 0
   if(b.grid.size !in 3..15||width !in 3..15||b.grid.any {it.size!=width||it.any {t->!validToken(t)}}) add("invalid_grid")
-  if(b.words.size !in 1..30||b.words.map {it.id}.distinct().size!=b.words.size) add("invalid_words")
-  for(w in b.words){if(w.id.isBlank()||!straight(w.path)||w.path.any {it.row !in b.grid.indices||it.col !in 0 until width}) add("invalid_word_path") else {
+  if(b.words.size !in 1..30||b.words.map {it.id}.distinct().size!=b.words.size||b.words.map {it.path.toSet()}.distinct().size!=b.words.size) add("invalid_words")
+  for(w in b.words){if(w.id.isBlank()||!straight(w.path)||w.path.any {it.row !in b.grid.indices||it.col !in b.grid[it.row].indices}) add("invalid_word_path") else {
    val target=w.path.map {normalized(p,b.grid[it.row][it.col])}
    if(target.joinToString("")!=normalized(p,w.label)) add("word_label_mismatch")
    val declared=b.words.filter {normalized(p,it.label)==normalized(p,w.label)}.map {it.path.toSet()}.toSet()
@@ -90,20 +93,28 @@ class AnagramPlugin:BoardPlugin("anagram") {
   val b=p.payload
   if(b.tiles.size !in 2..30||b.tiles.any {!validToken(it)}||b.acceptedAnswers.size !in 1..10||b.acceptedAnswers.any {it.isBlank()}) add("invalid_tiles_or_answers")
   if(b.fixedSlots.map {it.index}.distinct().size!=b.fixedSlots.size||b.fixedSlots.any {it.index !in b.tiles.indices||!validToken(it.token)}||-1 in reservedTiles(b)) add("invalid_fixed_slots")
-  for(answer in b.acceptedAnswers){val ts=tokens(normalized(p,answer));val inventory=b.tiles.map {normalized(p,it)}.toMutableList();if(ts.any {!inventory.remove(it)}||b.fixedSlots.any {it.index !in ts.indices||normalized(p,it.token)!=ts.getOrNull(it.index)}) add("unbuildable_answer")}
+  if(b.acceptedAnswers.map {normalized(p,it)}.distinct().size!=b.acceptedAnswers.size) add("duplicate_normalized_answer")
+  for(answer in b.acceptedAnswers){val ts=tokens(normalized(p,answer));val inventory=b.tiles.map {normalized(p,it)}.toMutableList();if(b.fixedSlots.size>=ts.size||ts.any {!inventory.remove(it)}||b.fixedSlots.any {it.index !in ts.indices||normalized(p,it.token)!=ts.getOrNull(it.index)}) add("unbuildable_answer")}
  }
  override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession=when(a){
   is PlayerAction.AddTile->if(a.tileIndex !in p.payload.tiles.indices||a.tileIndex in s.selectedTileIndices||a.tileIndex in reservedTiles(p.payload)) s else s.copy(selectedTileIndices=s.selectedTileIndices+a.tileIndex)
   is PlayerAction.RemoveTile->if(a.slotIndex !in s.selectedTileIndices.indices) s else s.copy(selectedTileIndices=s.selectedTileIndices.filterIndexed {i,_->i!=a.slotIndex})
   is PlayerAction.Undo->if(s.selectedTileIndices.isEmpty()) s else s.copy(selectedTileIndices=s.selectedTileIndices.dropLast(1))
   is PlayerAction.Shuffle->s.copy(tileOrder=p.payload.tiles.indices.shuffled(Random(a.seed)))
-  is PlayerAction.Submit->if(s.selectedTileIndices.isEmpty()) s else {val value=builtAnswer(p,s);verdict(p,s.copy(answerHistory=s.answerHistory+value),p.payload.acceptedAnswers.any {normalized(p,it)==normalized(p,value)})}
+  is PlayerAction.Submit->if(s.selectedTileIndices.isEmpty()) s else {
+   val value=builtAnswer(p,s);val target=normalized(p,value);val correct=p.payload.acceptedAnswers.any {normalized(p,it)==target}
+   if(!multipleAnswers(p)) verdict(p,s.copy(answerHistory=s.answerHistory+value),correct)
+   else if(!correct) verdict(p,s.copy(answerHistory=s.answerHistory+value),false)
+   else if(s.answerHistory.any {normalized(p,it)==target}) s
+   else {val next=s.copy(answerHistory=s.answerHistory+value,selectedTileIndices=emptyList());if(p.payload.acceptedAnswers.all {answer->next.answerHistory.any {normalized(p,it)==normalized(p,answer)}}) verdict(p,next,true) else next}
+  }
   else->s
  }
 }
 class MatchingPlugin:BoardPlugin("matching") {
  override fun errors(p:PuzzleDefinition):List<String> = buildList {val b=p.payload
   if(b.left.size !in 2..12||b.right.size!=b.left.size||b.pairs.size!=b.left.size||b.left.map {it.id}.toSet().size!=b.left.size||b.right.map {it.id}.toSet().size!=b.right.size||(b.left+b.right).any {it.id.isBlank()||it.text.isBlank()}) add("invalid_matching_items")
+  if(b.left.map {normalized(p,it.text)}.distinct().size!=b.left.size||b.right.map {normalized(p,it.text)}.distinct().size!=b.right.size) add("duplicate_normalized_option")
   if(b.pairs.map {it.leftId}.toSet()!=b.left.map {it.id}.toSet()||b.pairs.map {it.rightId}.toSet()!=b.right.map {it.id}.toSet()) add("invalid_pairs")
  }
  override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession=when(a){

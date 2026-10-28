@@ -44,7 +44,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  Grid(p.payload.rows,p.payload.cols){r,c->val pos=Cell(r,c)
   if(pos !in open)Surface(Modifier.size(48.dp).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={active=pos;if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy,modifier=Modifier.size(48.dp).semantics {contentDescription="خلية $r $c"},contentPadding=PaddingValues(0.dp)){Text((if(pos==active)"•" else "")+(s.cells["$r,$c"]?:""))}
  }
- "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(6).forEach {line->Row(Modifier.horizontalScroll(rememberScrollState())) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);active=cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)]},enabled=!busy,modifier=Modifier.size(48.dp),contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
+ "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(6).forEach {line->Row(Modifier.horizontalScroll(rememberScrollState())) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);active=cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)]},enabled=!busy,modifier=Modifier.size(48.dp).semantics {contentDescription="مفتاح $token"},contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
  TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,""))},enabled=!busy){Text("مسح الخلية")}
 }
 @Composable private fun Search(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {

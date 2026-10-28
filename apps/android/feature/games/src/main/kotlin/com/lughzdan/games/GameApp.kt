@@ -46,6 +46,7 @@ import com.lughzdan.engine.*
       gameNames.filterKeys { type->puzzles.any {it.type==type} }.forEach { (type,label)->TextButton(onClick={filter=type}){Text(label)} }
       puzzles.forEachIndexed {index,p->if(p.type in GameRegistry().types&&(filter==null||filter==p.type)) {
        Text(gameNames[p.type] ?: p.title)
+       if(p.fixtureOnly)Text("محتوى اختبار غير معتمد علميًا",color=MaterialTheme.colorScheme.error)
        OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")}
       }}
 
@@ -55,7 +56,8 @@ import com.lughzdan.engine.*
       if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
        Text("مسودة اختبار · الصعوبة ${p.difficulty}",color=MaterialTheme.colorScheme.secondary)
-       Text(p.payload.prompt,style=MaterialTheme.typography.headlineSmall)
+       Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
+       Text(p.payload.prompt.ifBlank {p.title},style=MaterialTheme.typography.headlineSmall)
        if(s.status==SessionStatus.PAUSED) {
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
@@ -71,6 +73,7 @@ import com.lughzdan.engine.*
         p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}
         Text(p.explanation)
         Text("المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق.",style=MaterialTheme.typography.bodySmall)
+        if(p.type!="choice")Text("إجاباتك: "+s.answerHistory.joinToString("، "))
         Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
         Button(onClick={val next=puzzles[(puzzles.indexOfFirst { it.puzzleId==p.puzzleId }+1)%puzzles.size];play(next.puzzleId)},enabled=!busy){Text("اللغز التالي")}
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}

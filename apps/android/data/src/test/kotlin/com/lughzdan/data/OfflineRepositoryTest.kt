@@ -98,25 +98,38 @@ class OfflineRepositoryTest {
   old.execSQL("CREATE TABLE IF NOT EXISTS `achievements` (`id` TEXT NOT NULL, `awardedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))")
   old.execSQL("CREATE TABLE IF NOT EXISTS `sync_operations` (`operationId` TEXT NOT NULL, `sessionId` TEXT NOT NULL, `kind` TEXT NOT NULL, `payload` TEXT NOT NULL, PRIMARY KEY(`operationId`))")
   old.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_sync_operations_sessionId` ON `sync_operations` (`sessionId`)")
-  val legacy=SessionCodec.encode(GameSession("legacy","p",1,7,"fixture",selectedId="b"))
-  old.execSQL("INSERT INTO installed_packs VALUES ('fixture',7,'fixture-digest',1,1)")
-  old.execSQL("INSERT INTO puzzles VALUES (?,?,?,?,?)",arrayOf("p",1,"fixture",SessionCodec.json.encodeToString(p),0))
+  // Literal Stage02 records deliberately omit every additive Stage03 payload/state field.
+  val legacy="""{"id":"legacy","puzzleId":"p","revision":1,"packVersion":1,"packId":"fixture","stateVersion":1,"status":"WON","wrongSubmissions":0,"score":100,"selectedId":"a","usedHintIds":[],"processedActions":["select","submit"],"submittedIds":["a"]}"""
+  val legacyDefinition="""{"schemaVersion":1,"puzzleId":"p","revision":1,"gameId":"g","type":"choice","world":"words","difficulty":1,"rulesVersion":1,"normalization":"arabic_basic_v1","title":"t","status":"draft","fixtureOnly":true,"sourceRefs":["fixture"],"explanation":"explain","hints":[],"payload":{"prompt":"q","options":[{"id":"a","text":"a"},{"id":"b","text":"b"},{"id":"c","text":"c"},{"id":"d","text":"d"}],"correctId":"a"}}"""
+  old.execSQL("INSERT INTO installed_packs VALUES ('fixture',1,'fixture-digest',1,1)")
+  old.execSQL("INSERT INTO puzzles VALUES (?,?,?,?,?)",arrayOf("p",1,"fixture",legacyDefinition,0))
   old.execSQL("INSERT INTO sessions VALUES (?,?,?,?,?)",arrayOf("legacy","p",1,legacy,12))
-  old.execSQL("INSERT INTO progress VALUES ('p',80,1,2)")
+  old.execSQL("INSERT INTO progress VALUES ('p',100,1,2)")
   old.execSQL("INSERT INTO achievements VALUES ('first_win',123)")
   old.execSQL("INSERT INTO sync_operations VALUES ('receipt','completed-old','complete_session','preserved')")
   old.version=1;old.close();open()
   assertEquals(legacy,db.games().session("legacy")!!.state)
   assertEquals(1,db.games().operationCount())
-  assertEquals(7,db.games().pinnedPack("fixture",7)!!.version)
-  assertEquals(80,db.games().progress("p")!!.xp)
+  assertEquals(1,db.games().pinnedPack("fixture",1)!!.version)
+  assertEquals(100,db.games().progress("p")!!.xp)
   assertEquals(2,db.games().progress("p")!!.attempts)
   assertEquals("choice",db.games().progress("p")!!.gameType)
-  val repository=LocalGameRepository(context,db,true)
-  assertEquals("b",repository.sessions.first().single().session.selectedId)
+  val added=p.copy(puzzleId="new-puzzle")
+  val bytes=(SessionCodec.json.encodeToString(p)+"\n"+SessionCodec.json.encodeToString(added)+"\n").toByteArray()
+  val digest=java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+  val manifest=BundledManifest(1,"fixture",2,true,"data/test.jsonl",bytes.size.toLong(),digest)
+  val repository=LocalGameRepository(context,db,true,manifest to bytes)
+  repository.initialize()
+  assertEquals(legacy,db.games().session("legacy")!!.state)
+  assertEquals(legacyDefinition,db.games().puzzle("p",1)!!.definition)
+  assertEquals("a",repository.sessions.first().single().session.selectedId)
+  assertEquals(1,repository.sessions.first().single().session.packVersion)
+  assertEquals(2,db.games().pack("fixture")!!.version)
+  assertNotNull(db.games().puzzle("new-puzzle",1))
+  assertEquals(100,repository.progress.first().totalXp)
   assertEquals(listOf("first_win"),repository.progress.first().achievements)
-  db.games().install(InstalledContentPackEntity("fixture",8,"new",2,true))
-  assertEquals(7,repository.sessions.first().single().session.packVersion)
+  assertEquals(1,db.games().operationCount())
+
  }
  @Test fun boardSessionsRoundTripAndRewardsRemainPerGame()=runBlocking {
   val order=p.copy(puzzleId="order-p",type="order",payload=ChoicePayload(items=listOf(Option("a","A"),Option("b","B")),correctOrder=listOf("b","a")))
@@ -137,6 +150,27 @@ class OfflineRepositoryTest {
   assertEquals(100,progress.perGame.single {it.gameType=="order"}.xp)
   assertTrue("first_win_order" in progress.achievements)
   assertEquals(1,db.games().operationCount())
+ }
+
+ @Test fun releasePolicyRejectsFixtureWithoutChangingInstalledContent()=runBlocking {
+  val bytes=(SessionCodec.json.encodeToString(p)+"\n").toByteArray()
+  val digest=java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+  // Even a falsely non-fixture manifest cannot admit fixture puzzle records.
+  val manifest=BundledManifest(1,"fixture",8,false,"data/test.jsonl",bytes.size.toLong(),digest)
+  try { LocalGameRepository(context,db,false,manifest to bytes).initialize();fail("Fixture imported in release") }
+  catch(_:IllegalArgumentException) { }
+  assertEquals(7,db.games().pack("fixture")!!.version)
+  assertEquals(1,db.games().puzzles().size)
+ }
+ @Test fun conflictingUpgradeLeavesOldPackAndPuzzleIntact()=runBlocking {
+  val original=db.games().puzzle("p",1)!!.definition
+  val bytes=(SessionCodec.json.encodeToString(p.copy(title="changed revision"))+"\n").toByteArray()
+  val digest=java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+  val manifest=BundledManifest(1,"fixture",8,true,"data/test.jsonl",bytes.size.toLong(),digest)
+  try { LocalGameRepository(context,db,true,manifest to bytes).initialize();fail("Changed immutable revision accepted") }
+  catch(_:IllegalArgumentException) { }
+  assertEquals(7,db.games().pack("fixture")!!.version)
+  assertEquals(original,db.games().puzzle("p",1)!!.definition)
  }
 
 }

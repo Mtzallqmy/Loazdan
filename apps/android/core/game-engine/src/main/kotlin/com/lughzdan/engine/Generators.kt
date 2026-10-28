@@ -35,6 +35,7 @@ object WordSearchGenerator {
    if(found==null) return GenerationResult.Failure("no_placement")
    placed.add(SearchWord(w.id,w.tokens.joinToString(""),found));found.zip(w.tokens).forEach {(c,t)->board[c]=t}
   }
+  if(placed.map {it.path.toSet()}.distinct().size!=placed.size) return GenerationResult.Failure("duplicate_path")
   val grid=List(rows){r->List(cols){c->board[Cell(r,c)] ?: filler[rng.nextInt(filler.size)]}}
   for(w in words){val declared=placed.filter {it.label==w.tokens.joinToString("")}.map {it.path.toSet()}.toSet();if(occurrences(grid,w.tokens)!=declared) return GenerationResult.Failure("duplicate_occurrence")}
   return GenerationResult.Success(ChoicePayload(grid=grid,words=placed))

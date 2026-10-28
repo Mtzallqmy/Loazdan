@@ -20,6 +20,6 @@ fun validateGameSession(p:PuzzleDefinition,s:GameSession)=ValidationResult(build
   "wordsearch"->s.foundWordIds==p.payload.words.map {it.id}.toSet()
   "matching"->s.matchedPairs.toSet()==p.payload.pairs.toSet()
   "order"->s.orderedIds==p.payload.correctOrder
-  "anagram"->s.selectedTileIndices.all {it in p.payload.tiles.indices}&&s.answerHistory.lastOrNull()==builtAnswer(p,s)&&p.payload.acceptedAnswers.any {normalized(p,it)==normalized(p,builtAnswer(p,s))}
+  "anagram"->if(multipleAnswers(p)) p.payload.acceptedAnswers.all {a->s.answerHistory.any {normalized(p,a)==normalized(p,it)}} else s.selectedTileIndices.all {it in p.payload.tiles.indices}&&s.answerHistory.lastOrNull()==builtAnswer(p,s)&&p.payload.acceptedAnswers.any {normalized(p,it)==normalized(p,builtAnswer(p,s))}
   else->false};if(!solved) add("unsolved_terminal_record")}
 })

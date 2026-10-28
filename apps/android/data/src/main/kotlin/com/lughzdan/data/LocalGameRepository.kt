@@ -12,7 +12,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 import java.util.UUID
 
-class LocalGameRepository(private val context:Context,private val db:LughzdanDatabase,private val allowFixtures:Boolean):ProgressRepository {
+class LocalGameRepository(private val context:Context,private val db:LughzdanDatabase,private val allowFixtures:Boolean,private val bundledContent:Pair<BundledManifest,ByteArray>?=null):ProgressRepository {
  private val dao=db.games()
  private val json=Json { encodeDefaults=true }
  private val registry=GameRegistry()
@@ -51,9 +51,9 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  override suspend fun initialize()=withContext(Dispatchers.IO) { initializationMutex.withLock {
   if(initialized) return@withLock
   // Release has no draft asset; empty content is explicit, never silently replaced by fixtures.
-  if (context.assets.list("").orEmpty().contains("bundled-manifest.json")) {
-  val manifest=json.decodeFromString<BundledManifest>(context.assets.open("bundled-manifest.json").bufferedReader().use { it.readText() })
-  val bytes=context.assets.open(manifest.path).use { it.readBytes() }
+  if (bundledContent!=null || context.assets.list("").orEmpty().contains("bundled-manifest.json")) {
+  val manifest=bundledContent?.first ?: json.decodeFromString<BundledManifest>(context.assets.open("bundled-manifest.json").bufferedReader().use { it.readText() })
+  val bytes=bundledContent?.second ?: context.assets.open(manifest.path).use { it.readBytes() }
   BundledPackVerifier.verify(manifest,bytes,allowFixtures)
   val items=bytes.toString(Charsets.UTF_8).lineSequence().filter { it.isNotBlank() }.map { line->
    json.decodeFromString<PuzzleDefinition>(line).also { require(registry.plugin(it.type).validatePuzzle(it).valid); require(!it.fixtureOnly || allowFixtures) }
@@ -67,7 +67,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
      val latest=dao.latestPuzzle(p.puzzleId)
      require(latest==null || (latest.packId==manifest.packId && json.decodeFromString<PuzzleDefinition>(latest.definition).type==p.type)) { "Puzzle identity cannot change pack or game type" }
      val prior=dao.puzzle(p.puzzleId,p.revision)
-     require(prior==null || (prior.packId==manifest.packId && prior.definition==encoded)) { "Revision is immutable" }
+     require(prior==null || (prior.packId==manifest.packId && json.decodeFromString<PuzzleDefinition>(prior.definition)==p)) { "Revision is immutable" }
      if(prior==null) LocalPuzzleEntity(p.puzzleId,p.revision,manifest.packId,encoded,index) else null
     }
     dao.insertPuzzles(additions)
