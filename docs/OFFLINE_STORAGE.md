@@ -1,3 +1,5 @@
+> Historical Stage02 snapshot. Current Stage03 behavior: GAME_ENGINE_V2.md, GAME_PROGRESS_SYSTEM.md and STAGE_03_REPORT.md supersede conflicting version/registry/pack-upgrade statements below.
+
 # التخزين المحلي المنفذ
 
 Room `lughzdan.db` v1 في تخزين التطبيق الخاص. installed_packs وpuzzles منفصلان منطقيًا عن sessions/progress/achievements/sync_operations. لا FK متسلسل من الإنجازات إلى الحزمة. `removeContent` يحذف الألغاز فقط؛ لا واجهة حذف للأساسي. كل submit يقرأ حالة الجلسة داخل `withTransaction` ثم يكتب الحالة والنتيجة وreceipt في المعاملة نفسها. UNIQUE(sessionId) يمنع تكرار اعتماد الجولة. bestScore=max ولا يتراكم عند retry. first_win فريد.

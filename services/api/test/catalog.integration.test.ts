@@ -16,7 +16,7 @@ before(async () => {
   const owner = db.owner;
   // Synthetic test records exist only in a throwaway loopback PostgreSQL cluster.
   await owner.query(`INSERT INTO content.categories(id,slug,title) VALUES($1,'logic','منطق'),($2,'science','علوم')`, [id(1), id(2)]);
-  await owner.query(`INSERT INTO content.game_types(id,engine_version,schema_version,title) VALUES('choice',1,1,'اختيار')`);
+  await owner.query(`INSERT INTO content.game_types(id,engine_version,schema_version,title) VALUES('choice',1,1,'اختيار') ON CONFLICT DO NOTHING`);
   await owner.query(`INSERT INTO content.games(id,game_type_id,category_id,slug,title,enabled) VALUES($1,'choice',$2,'choice','اختيار',true),($3,'choice',$2,'hidden','مخفي',false)`, [id(3), id(1), id(4)]);
   for (const n of [10,11,12,13,14,15]) {
     await owner.query('INSERT INTO content.puzzles(id,game_id) VALUES($1,$2)', [id(n), n === 15 ? id(4) : id(3)]);
@@ -109,4 +109,13 @@ test('development seeds remain unapproved drafts and can be applied twice', asyn
   const seed = await readFile(new URL('../../../database/seeds/001_development.sql',import.meta.url),'utf8'); await db.owner.query(seed); await db.owner.query(seed);
   const result = await db.owner.query(`SELECT count(*)::integer AS count FROM content.puzzle_versions WHERE definition->'fixtureOnly'='true'::jsonb AND status='draft'`); assert.equal(result.rows[0]?.count,9);
   assert.equal((await app.inject('/api/v1/puzzles')).json().items.length,2);
+});
+
+test('Stage03 additive drafts are idempotent and excluded from public catalog', async () => {
+  const seed = await readFile(new URL('../../../database/seeds/002_stage03_development.sql',import.meta.url),'utf8');
+  await db.owner.query(seed); await db.owner.query(seed);
+  const result = await db.owner.query(`SELECT count(*)::integer AS count FROM content.puzzle_versions WHERE definition->'sourceRefs' ? 'original-stage03-engineering-draft' AND status='draft' AND definition->'fixtureOnly'='true'::jsonb`);
+  assert.equal(result.rows[0]?.count,18);
+  assert.equal((await app.inject('/api/v1/puzzles')).json().items.length,2);
+  for (const type of ['crossword','wordsearch','anagram','matching','order']) assert.equal((await app.inject('/api/v1/puzzles?type='+type)).statusCode,200);
 });

@@ -25,10 +25,10 @@ class GameplayUiTest {
   val vm=GameViewModel(LocalGameRepository(context,db,true),SettingsStore(context))
   compose.setContent { GameApp(vm) }
   compose.waitUntil(20_000) { compose.onAllNodesWithText("ابدأ تحدي المفردات").fetchSemanticsNodes().isNotEmpty() }
-  compose.onNodeWithText("ابدأ تحدي المفردات").performClick()
-  compose.onNodeWithText("لغز 1 · الصعوبة 1").performClick()
+  compose.onNodeWithText("ابدأ تحدي المفردات").performScrollTo().performClick()
+  compose.onNodeWithText("لغز 1 · الصعوبة 1").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("بعيد").fetchSemanticsNodes().isNotEmpty() }
-  compose.onNodeWithText("بعيد").performClick()
+  compose.onNodeWithText("بعيد").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("تحقق من الإجابة").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("إجابة صحيحة! +100 نقطة").fetchSemanticsNodes().isNotEmpty() }

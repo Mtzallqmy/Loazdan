@@ -32,8 +32,11 @@ import com.lughzdan.engine.*
     else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f)) {
      composable("home") { Page {
       Text("مدينة الكلمات",style=MaterialTheme.typography.headlineMedium)
-      Text("مستواك ${1+progress.completed/5} · ${progress.totalScore} نقطة · ${progress.completed} ألغاز مكتملة")
+      Text("مستواك ${ProgressionRules.playerLevel(progress.totalXp)} · ${progress.totalScore} نقطة · ${progress.completed} ألغاز مكتملة")
       Text("العب بالمحتوى المثبّت دون اتصال")
+      Text("الخبرة: ${progress.totalXp} XP · الصعوبة المفتوحة: ${ProgressionRules.unlockedDifficulty(progress.totalXp)}")
+      progress.perGame.forEach { item->Text("${gameNames[item.gameType] ?: item.gameType}: ${item.completed} مكتمل · ${item.totalScore} نقطة · ${item.attempts} جولة") }
+      if(progress.achievements.isNotEmpty())Text("الإنجازات: "+progress.achievements.joinToString("، "){if(it=="first_win")"أول فوز" else "أول فوز: "+(gameNames[it.removePrefix("first_win_")] ?: it)})
       sessions.firstOrNull()?.let { record->Button(onClick={nav.navigate("session/${record.session.id}")}){Text("متابعة آخر نشاط")} }
       Button(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
       TextButton(onClick={nav.navigate("history")}){Text("مراجعة الإجابات السابقة")}
@@ -41,34 +44,45 @@ import com.lughzdan.engine.*
      composable("catalog") { Page {
       Text("الألعاب المتاحة",style=MaterialTheme.typography.headlineMedium)
       if(puzzles.isEmpty())Text("لا توجد حزمة معتمدة مثبتة. نسخة الإنتاج لا تتضمن مسودات الاختبار.")
-      if("choice" in GameRegistry().types && puzzles.isNotEmpty()) {
-       Text("تحدي المفردات العربية — أربعة اختيارات")
-       Text("محتوى اختبار غير معتمد علميًا",color=MaterialTheme.colorScheme.error)
-       puzzles.forEachIndexed { index,p->OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")} }
-      }
+      var filter by remember { mutableStateOf<String?>(null) }
+      TextButton(onClick={filter=null}){Text("كل الألعاب")}
+      gameNames.filterKeys { type->puzzles.any {it.type==type} }.forEach { (type,label)->TextButton(onClick={filter=type}){Text(label)} }
+      puzzles.forEachIndexed {index,p->if(p.type in GameRegistry().types&&(filter==null||filter==p.type)) {
+       Text(gameNames[p.type] ?: p.title)
+       if(p.difficulty>ProgressionRules.unlockedDifficulty(progress.totalXp))Text("يفتح عند ${(p.difficulty-1)*300} XP")
+       if(p.fixtureOnly)Text("محتوى اختبار غير معتمد علميًا",color=MaterialTheme.colorScheme.error)
+       OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy&&p.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp),modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")}
+      }}
+
      } }
      composable("session/{id}") { entry->
       val id=entry.arguments?.getString("id");val record=sessions.find { it.session.id==id }
       if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
-       Text("مسودة اختبار · الصعوبة ${p.difficulty}",color=MaterialTheme.colorScheme.secondary)
-       Text(p.payload.prompt,style=MaterialTheme.typography.headlineSmall)
+       Text("مسودة اختبار · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
+       val metrics=DifficultyController.metrics(p)
+       Text("حجم التحدي: ${metrics.size} · تقاطعات: ${metrics.intersections}",style=MaterialTheme.typography.bodySmall)
+       Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
+       Text(p.payload.prompt.ifBlank {p.title},style=MaterialTheme.typography.headlineSmall)
        if(s.status==SessionStatus.PAUSED) {
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
        } else if(!terminal) {
         Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
-        p.payload.options.forEach { option->OutlinedButton(onClick={vm.select(s.id,option.id)},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==option.id) "✓ " else "")+option.text)} }
-        Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=s.selectedId!=null&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+        GameBoard(p,s,busy){vm.action(s.id,it)}
+        Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+
         if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
-        p.hints.firstOrNull()?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy&&hint.id !in s.usedHintIds){Text("تلميح (−${hint.penalty} نقطة)")};if(hint.id in s.usedHintIds)Text(hint.text) }
+        HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
+        TextButton(onClick={vm.action(s.id,PlayerAction.Pause(java.util.UUID.randomUUID().toString()))},enabled=!busy){Text("إيقاف مؤقت وحفظ")}
        } else {
         Text(if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات",style=MaterialTheme.typography.titleLarge)
-        Text("الإجابة: ${p.payload.options.first { it.id==p.payload.correctId }.text}")
+        p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}
         Text(p.explanation)
         Text("المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق.",style=MaterialTheme.typography.bodySmall)
-        Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.first { it.id==key }.text })
-        Button(onClick={val next=puzzles[(puzzles.indexOfFirst { it.puzzleId==p.puzzleId }+1)%puzzles.size];play(next.puzzleId)},enabled=!busy){Text("اللغز التالي")}
+        if(p.type!="choice")Text("إجاباتك: "+s.answerHistory.joinToString("، "))
+        Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
+        Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}
        }

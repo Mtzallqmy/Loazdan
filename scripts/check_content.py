@@ -1,20 +1,60 @@
-"""Validate debug fixtures against the original contract and the actual bundled bytes."""
-import hashlib,json,pathlib
+"""Validate debug schemas, authored drafts, stable original bytes and solutions."""
+import collections,hashlib,json,pathlib,subprocess
 import jsonschema
-root=pathlib.Path(__file__).resolve().parents[1]
-assets=root/'apps/android/app/src/debug/assets'
-manifest=json.loads((assets/'bundled-manifest.json').read_text())
-jsonschema.Draft202012Validator(json.loads((root/'packages/content-schema/bundled-manifest.schema.json').read_text())).validate(manifest)
-data=(assets/manifest['path']).read_bytes()
-assert len(data)==manifest['bytes']
-assert hashlib.sha256(data).hexdigest()==manifest['sha256']
-validator=jsonschema.Draft202012Validator(json.loads((root/'contracts/puzzle.schema.json').read_text()))
-count=0
-for line in data.splitlines():
- p=json.loads(line);validator.validate(p)
- assert p['fixtureOnly'] and p['status']=='draft'
- assert len(p['payload']['options'])==4
- assert p['payload']['correctId'] in [o['id'] for o in p['payload']['options']]
- count+=1
-assert not (root/'apps/android/app/src/release/assets/data/vocabulary.jsonl').exists()
-print(f'{count} debug-only puzzles and SHA-256 manifest validated')
+root=pathlib.Path(__file__).resolve().parents[1];assets=root/'apps/android/app/src/debug/assets'
+m=json.loads((assets/'bundled-manifest.json').read_text());data=(assets/m['path']).read_bytes()
+jsonschema.Draft202012Validator(json.loads((root/'packages/content-schema/bundled-manifest.schema.json').read_text())).validate(m)
+assert len(data)==m['bytes'] and hashlib.sha256(data).hexdigest()==m['sha256']
+s=json.loads((root/'contracts/puzzle.schema.json').read_text());assert s==json.loads((root/'packages/contracts/puzzle.schema.json').read_text())
+validator=jsonschema.Draft202012Validator(s,format_checker=jsonschema.FormatChecker());ps=[json.loads(x) for x in data.splitlines()];counts=collections.Counter()
+assert len({p['puzzleId'] for p in ps})==len(ps)
+for p in ps:
+ validator.validate(p);assert p['fixtureOnly'] and p['status']=='draft';t=p['type'];v=p['payload'];counts[t]+=1
+ if t=='choice':assert len(v['options'])==4 and v['correctId'] in [x['id'] for x in v['options']]
+ elif t=='crossword':
+  cells={};intersections=0
+  for e in v['entries']:
+   for i,token in enumerate(e['tokens']):
+    row=e['row']+(i if e['direction']=='down' else 0);col=e['col']-(i if e['direction']=='across' else 0)
+    assert 0<=row<v['rows'] and 0<=col<v['cols']
+    if (row,col) in cells:assert cells[row,col]==token;intersections+=1
+    cells[row,col]=token
+  assert intersections>0
+ elif t=='wordsearch':
+  assert len({len(row) for row in v['grid']})==1
+  for w in v['words']:
+   path=w['path'];assert len({(c['row'],c['col']) for c in path})==len(path)
+   assert ''.join(v['grid'][c['row']][c['col']] for c in path)==w['label']
+   steps=[(b['row']-a['row'],b['col']-a['col']) for a,b in zip(path,path[1:])];assert len(set(steps))==1 and max(abs(x) for x in steps[0])==1
+ elif t=='anagram':
+  fixed={x['index']:x['token'] for x in v['fixedSlots']};assert len(fixed)==len(v['fixedSlots'])
+  for answer in v['acceptedAnswers']:
+   assert all(i<len(answer) and answer[i]==token for i,token in fixed.items())
+   assert not (collections.Counter(answer)-collections.Counter(v['tiles']))
+ elif t=='matching' and 'options' in v:
+  assert len(v['options'])==4 and len({o['id'] for o in v['options']})==4 and v['correctId'] in [o['id'] for o in v['options']]
+ elif t=='matching':
+  left={o['id'] for o in v['left']};right={o['id'] for o in v['right']};assert len(left)==len(v['left'])==len(v['pairs'])==len(right)
+  assert {p['leftId'] for p in v['pairs']}==left and {p['rightId'] for p in v['pairs']}==right
+ elif t=='order':assert sorted(v['correctOrder'])==sorted(o['id'] for o in v['items'])
+for t in ['choice','crossword','wordsearch','anagram','matching','order']:assert counts[t]>=2
+for t,n in [('matching',6),('anagram',4),('order',4)]:assert len({p['payload'].get('variant') for p in ps if p['type']==t})==n
+# Literary ordering support is exercised with synthetic labels, never unverified quotations.
+order_sample=next(p for p in ps if p['type']=='order')
+import copy
+for variant in ['sentence','story','procedure','chronology','proverb','poetry','completion']:
+ sample=copy.deepcopy(order_sample);sample['payload']['variant']=variant
+ validator.validate(sample)
+ malformed=copy.deepcopy(sample);malformed['payload']['variant']='unregistered_mode'
+ assert not validator.is_valid(malformed)
+# Semantic union must reject mixed interactions and choice-only variants on pairs.
+semantic_sample=next(p for p in ps if p['type']=='matching' and 'options' in p['payload'])
+mixed=copy.deepcopy(semantic_sample);mixed['payload'].update(left=[],right=[],pairs=[])
+assert not validator.is_valid(mixed)
+pair_sample=next(p for p in ps if p['type']=='matching' and 'pairs' in p['payload'])
+for variant in ['intruder','context','difference']:
+ malformed=copy.deepcopy(pair_sample);malformed['payload']['variant']=variant
+ assert not validator.is_valid(malformed)
+old=subprocess.check_output(['git','show','HEAD:apps/android/app/src/debug/assets/data/vocabulary.jsonl'],cwd=root);assert data.splitlines()[:4]==old.splitlines()[:4]
+release=root/'apps/android/app/src/release/assets';assert not list(release.rglob('*.jsonl'))
+print(f'{len(ps)} debug-only solvable puzzles, variants, stable original definitions and SHA-256 validated')

@@ -401,6 +401,20 @@
                 },
                 "minItems": 1,
                 "maxItems": 10
+              },
+              "variant": {
+                "type": "string",
+                "enum": [
+                  "anagram",
+                  "missing_letter",
+                  "word_from_letters",
+                  "word_from_word"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
               }
             },
             "required": [
@@ -632,12 +646,121 @@
                 },
                 "minItems": 2,
                 "maxItems": 12
+              },
+              "variant": {
+                "type": "string",
+                "enum": [
+                  "synonym",
+                  "antonym",
+                  "word_meaning",
+                  "intruder",
+                  "context",
+                  "difference"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text"
+                  ]
+                },
+                "minItems": 2,
+                "maxItems": 6
+              },
+              "correctId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
               }
             },
-            "required": [
-              "left",
-              "right",
-              "pairs"
+            "oneOf": [
+              {
+                "required": [
+                  "left",
+                  "right",
+                  "pairs"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "options"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "correctId"
+                      ]
+                    }
+                  ]
+                },
+                "properties": {
+                  "variant": {
+                    "enum": [
+                      "synonym",
+                      "antonym",
+                      "word_meaning"
+                    ]
+                  }
+                }
+              },
+              {
+                "required": [
+                  "prompt",
+                  "options",
+                  "correctId",
+                  "variant"
+                ],
+                "properties": {
+                  "variant": {
+                    "enum": [
+                      "intruder",
+                      "context",
+                      "difference"
+                    ]
+                  }
+                },
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "left"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "right"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "pairs"
+                      ]
+                    }
+                  ]
+                }
+              }
             ]
           }
         }
@@ -691,6 +814,23 @@
                 },
                 "minItems": 2,
                 "maxItems": 20
+              },
+              "variant": {
+                "type": "string",
+                "enum": [
+                  "sentence",
+                  "story",
+                  "procedure",
+                  "chronology",
+                  "proverb",
+                  "poetry",
+                  "completion"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
               }
             },
             "required": [

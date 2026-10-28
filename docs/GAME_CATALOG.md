@@ -59,3 +59,5 @@ Practice: ثلاث إجابات خاطئة عند ضغط «تحقق» → Lost �
 الوصول: للسحب أزرار «حرّك قبل/بعد»، وللشبكة تحديد خلية بالقارئ، ولألغاز الصور بديل وصفي لا يكشف الجواب قدر الإمكان؛ إذا كان الوصف يكشف الحل يقدم لغز بديل مكافئ بلا احتساب تنافسي. لا خسارة بسبب توقف التطبيق أو مكالمة. مستند GAME_ENGINE_SPEC هو مرجع النقاط والمحاولات.
 
 التوسعات: visual_board يحتاج regions/hitboxes/constraints؛ matching_media يحتاج assetIds مع نفس matching semantics؛ cipher يحتاج alphabetMapping صريح وقابل للانعكاس؛ memory يحتاج shuffledPairs + revealedIds + matchedIds؛ prosody يحتاج originalVerse/segmentation/feet + مراجعة متخصص؛ context_groups يحتاج source-bound contexts + acceptedGroups؛ quest يحتاج DAG stages دون cycles وresume لكل stage. لا تُحتسب هذه الأنواع ضمن تسليم v1 أو اكتمال المرحلة الثانية.
+
+قرار المرحلة3: الحقلان الاختياريان prompt/variant لهما قارئ v1 موسّع ضمن التطبيق0.3.0؛ قرار ADR010 يتقدم على المنع العام السابق للإضافات الاختيارية. أي حزمة خارجية تستخدمهما تتطلب minAppVersionCode2/minEngineVersion2، وأي mode غير معروف مرفوض.

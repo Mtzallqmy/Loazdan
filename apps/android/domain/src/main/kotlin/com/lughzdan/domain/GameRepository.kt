@@ -4,7 +4,8 @@ import kotlinx.coroutines.flow.Flow
 
 data class PlayRecord(val session:GameSession,val puzzle:PuzzleDefinition)
 data class UnavailableSession(val id:String,val reason:String)
-data class Progress(val totalScore:Int,val completed:Int)
+data class GameProgress(val gameType:String,val totalScore:Int,val completed:Int,val attempts:Int,val xp:Int)
+data class Progress(val totalScore:Int,val completed:Int,val totalXp:Int=totalScore,val perGame:List<GameProgress> = emptyList(),val achievements:List<String> = emptyList())
 data class InstalledPack(val id:String,val version:Int,val bytes:Long,val fixtureOnly:Boolean)
 interface ProgressRepository {
  val puzzles:Flow<List<PuzzleDefinition>>

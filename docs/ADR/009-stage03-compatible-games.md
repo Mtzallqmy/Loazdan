@@ -1,0 +1,3 @@
+# ADR009 — Compatible multi-game implementation
+Accepted2026-10-28. User authorizes Stage03 while repository-admin Dependency graph gate remains outstanding. No merge or release bypass.
+Six plugins: choice/crossword/wordsearch/anagram/matching/order. Existing payload field names and v1 choice sessions remain supported with additive fields. Room1→2 preserves old progress/receipts and pinned pack versions. New bundle2 is additive and retains old puzzle revisions. Points/XP use best scores, not repeated completion sums. New content is original authored debug draft material and must not be claimed human-reviewed or production-approved. No Stage04 downloader or Stage05 imagegame is implemented.
