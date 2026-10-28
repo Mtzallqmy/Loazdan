@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SixGameDeviceTest {
  @get:Rule val compose=createAndroidComposeRule<MainActivity>()
- private fun click(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};compose.onAllNodesWithText(text).filter(isEnabled()).onFirst().performScrollTo().performClick();compose.waitForIdle()}
+ private fun click(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","الألعاب","المكتبة","الإعدادات"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
  private fun cell(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithContentDescription(text).performScrollTo().performClick();compose.waitForIdle()}
  private fun fixtures(): List<JSONObject> {
   val assets = compose.activity.assets

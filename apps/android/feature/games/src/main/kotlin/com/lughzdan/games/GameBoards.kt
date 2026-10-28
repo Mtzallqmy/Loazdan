@@ -57,6 +57,9 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
    }}
  }
  "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(6).forEach {line->Row(Modifier.horizontalScroll(rememberScrollState())) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);selectCell(cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)])},enabled=!busy,modifier=Modifier.size(48.dp).semantics {contentDescription="مفتاح $token"},contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
+ var cellDraft by rememberSaveable(p.puzzleId){mutableStateOf("")}
+ OutlinedTextField(value=cellDraft,onValueChange={cellDraft=it},label={Text("حرف الخلية")},singleLine=true,enabled=!busy,modifier=Modifier.fillMaxWidth())
+ TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,cellDraft));cellDraft=""},enabled=!busy&&ArabicCellInput.isValid(cellDraft)){Text("إدخال الحرف")}
  TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,""))},enabled=!busy){Text("مسح الخلية")}
 }
 @Composable private fun Search(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
@@ -90,8 +93,16 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
    }
   }
  }
- Text("الإجابات المكتشفة: ${s.answerHistory.size} / ${p.payload.acceptedAnswers.size}")
- s.answerHistory.forEach {Text("✓ $it")}
+ fun compare(answer:String)=ArabicText.comparison(answer,NormalizationPolicy(removeMarks=p.normalization=="arabic_basic_v1"))
+ val accepted=p.payload.acceptedAnswers.map(::compare).toSet()
+ val discoveries=s.answerHistory.filter {compare(it) in accepted}.distinctBy(::compare)
+ val wrongAttempts=s.answerHistory.filter {compare(it) !in accepted}
+ Text("الإجابات المكتشفة: ${discoveries.size} / ${accepted.size}")
+ discoveries.forEach {Text("✓ $it")}
+ if(wrongAttempts.isNotEmpty()) {
+  Text("المحاولات السابقة غير الصحيحة: ${wrongAttempts.size}")
+  wrongAttempts.forEach {Text("× $it")}
+ }
  val reserved=mutableSetOf<Int>();p.payload.fixedSlots.forEach {f->p.payload.tiles.indices.firstOrNull {it !in reserved&&p.payload.tiles[it]==f.token}?.let {reserved+=it}}
  s.tileOrder.ifEmpty {p.payload.tiles.indices.toList()}.chunked(5).forEach {row->Row(Modifier.horizontalScroll(rememberScrollState())) {row.forEach {index->OutlinedButton(onClick={send(PlayerAction.AddTile(aid(),index))},enabled=!busy&&index !in s.selectedTileIndices&&index !in reserved,modifier=Modifier.sizeIn(minWidth=48.dp,minHeight=48.dp).semantics {contentDescription="حرف $index ${p.payload.tiles[index]}"}){Text(p.payload.tiles[index])}}}}
  Row {TextButton(onClick={send(PlayerAction.Undo(aid()))},enabled=!busy){Text("تراجع")};TextButton(onClick={send(PlayerAction.Shuffle(aid(),s.processedActions.size+1))},enabled=!busy){Text("خلط الحروف")}}

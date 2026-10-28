@@ -5,6 +5,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -25,8 +26,8 @@ import org.robolectric.annotation.Config
 @Config(sdk=[28],application=android.app.Application::class)
 class BoardAccessibilityTest {
  @get:Rule val compose=createComposeRule()
- private fun puzzle(type:String,payload:ChoicePayload)=PuzzleDefinition(1,"board",1,type,type,"test",1,1,"arabic_basic_v1","test","published",true,emptyList(),"",emptyList(),payload)
- private val crossword=puzzle("crossword",ChoicePayload(rows=2,cols=2,entries=listOf(
+ private fun puzzle(type:String,payload:ChoicePayload)=PuzzleDefinition(1,"board",1,type,type,"test",1,1,"arabic_basic_v1","test","draft",true,listOf("synthetic-test"),"Synthetic test explanation",emptyList(),payload)
+ private val crossword=puzzle("crossword",ChoicePayload(rows=3,cols=3,entries=listOf(
   CrosswordEntry("a",0,1,"across",listOf("ب","ا"),"الأول","source"),
   CrosswordEntry("b",0,0,"down",listOf("ا","ب"),"الثاني","source"))))
  @Test fun crossingSelectionAndDirectionSurviveRecreation() {
@@ -60,4 +61,30 @@ class BoardAccessibilityTest {
   compose.onNodeWithContentDescription("بحث 0 0").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"حرف في كلمة مكتشفة"))
   compose.onNodeWithText("الكلمات المكتشفة: 1 / 1").assertExists()
  }
+ @Test fun markedExactTokenCanBeEnteredAndSubmittedThroughEngine() {
+  val p=crossword.copy(normalization="exact_v1",sourceRefs=listOf("source"),payload=crossword.payload.copy(rows=3,cols=3,entries=listOf(
+   CrosswordEntry("a",0,1,"across",listOf("قَ","ا"),"الأول","source"),
+   CrosswordEntry("b",0,0,"down",listOf("ا","پ"),"الثاني","source"))))
+  val engine=CrosswordPlugin()
+  val state=mutableStateOf(engine.createSession(p,"s").copy(cells=mapOf("0,0" to "ا","1,0" to "پ")))
+  compose.setContent {MaterialTheme {Column(Modifier.verticalScroll(rememberScrollState())) {
+   GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}
+   Button(onClick={state.value=engine.evaluate(p,state.value,PlayerAction.Submit("submit"))}){Text("اختبار الإرسال")}
+  }}}
+  compose.onNodeWithText("حرف الخلية").performScrollTo().performTextInput("قَ")
+  compose.onNodeWithText("إدخال الحرف").performScrollTo().performClick()
+  compose.onNodeWithText("اختبار الإرسال").performScrollTo().performClick()
+  compose.runOnIdle {org.junit.Assert.assertEquals(SessionStatus.WON,state.value.status)}
+ }
+ @Test fun builderCountsOnlyDistinctAcceptedAnswersAsDiscoveries() {
+  val p=puzzle("anagram",ChoicePayload(tiles=listOf("ب","ا"),acceptedAnswers=listOf("با")))
+  compose.setContent {MaterialTheme {Column {
+   GameBoard(p,GameSession("s","board",1,answerHistory=listOf("اب","با","بَا")),false){}
+  }}}
+  compose.onNodeWithText("الإجابات المكتشفة: 1 / 1").assertExists()
+  compose.onNodeWithText("المحاولات السابقة غير الصحيحة: 1").assertExists()
+  compose.onNodeWithText("× اب").assertExists()
+  compose.onNodeWithText("✓ اب").assertDoesNotExist()
+ }
+
 }

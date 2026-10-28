@@ -74,6 +74,7 @@ import com.lughzdan.engine.*
 
         if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
         p.hints.firstOrNull()?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy&&hint.id !in s.usedHintIds){Text("تلميح (−${hint.penalty} نقطة)")};if(hint.id in s.usedHintIds)Text(s.revealedHints[hint.id] ?: hint.text) }
+        TextButton(onClick={vm.action(s.id,PlayerAction.Pause(java.util.UUID.randomUUID().toString()))},enabled=!busy){Text("إيقاف مؤقت وحفظ")}
        } else {
         Text(if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات",style=MaterialTheme.typography.titleLarge)
         p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}

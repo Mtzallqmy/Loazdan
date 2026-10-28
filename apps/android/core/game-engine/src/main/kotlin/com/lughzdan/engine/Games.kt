@@ -12,6 +12,10 @@ internal fun tokens(s:String):List<String> {
 internal fun validToken(s:String)=s.length in 1..8 && runCatching {
  val cp=s.codePointAt(0); val arabic=cp in 0x0621..0x063A || cp in 0x0641..0x064A || cp in 0x066E..0x066F || cp in 0x0671..0x06D3 || cp in 0x06FA..0x06FC
  arabic && s.isNotBlank() && tokens(ArabicText.comparison(s)).size==1 && Character.getType(s.codePointAt(0)) !in listOf(6,7,8) && s.codePoints().noneMatch {Character.isISOControl(it)||Character.isWhitespace(it)}}.getOrDefault(false)
+/** Input adapters share the exact token policy used by puzzle and action validation. */
+object ArabicCellInput {
+ fun isValid(token:String):Boolean=validToken(token)
+}
 internal fun reservedTiles(b:ChoicePayload):Set<Int> {
  val used=mutableSetOf<Int>();for(f in b.fixedSlots){val i=b.tiles.indices.firstOrNull {it !in used && b.tiles[it]==f.token} ?: return setOf(-1);used.add(i)};return used
 }
