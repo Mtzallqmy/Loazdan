@@ -31,6 +31,8 @@ for p in ps:
   for answer in v['acceptedAnswers']:
    assert all(i<len(answer) and answer[i]==token for i,token in fixed.items())
    assert not (collections.Counter(answer)-collections.Counter(v['tiles']))
+ elif t=='matching' and 'options' in v:
+  assert len(v['options'])==4 and len({o['id'] for o in v['options']})==4 and v['correctId'] in [o['id'] for o in v['options']]
  elif t=='matching':
   left={o['id'] for o in v['left']};right={o['id'] for o in v['right']};assert len(left)==len(v['left'])==len(v['pairs'])==len(right)
   assert {p['leftId'] for p in v['pairs']}==left and {p['rightId'] for p in v['pairs']}==right

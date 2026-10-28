@@ -1,3 +1,5 @@
+> Historical Stage02 snapshot. Current Stage03 behavior: GAME_ENGINE_V2.md, GAME_PROGRESS_SYSTEM.md and STAGE_03_REPORT.md supersede conflicting version/registry/pack-upgrade statements below.
+
 # المحرك المنفذ
 
 `core/game-engine/.../Engine.kt`: ChoicePlugin فقط في GameRegistry. validatePuzzle يتحقق type/schema/rules/revision/difficulty ومعرفات الاختيارات وصحة correctId والمصدر/التفسير والتلميحات. JSON decoder strict يرفض حقولًا مجهولة. نوع choice عام2..6 اختيارات، ومحتوى المفردات الحالي4.

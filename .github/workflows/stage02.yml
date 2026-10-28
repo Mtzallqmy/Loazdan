@@ -90,3 +90,9 @@ jobs:
           arch: x86_64
           disable-animations: true
           script: scripts/device_acceptance.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stage03-device-evidence
+          path: apps/android/artifacts/stage03/

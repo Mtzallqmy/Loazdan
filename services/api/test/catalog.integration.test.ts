@@ -16,7 +16,7 @@ before(async () => {
   const owner = db.owner;
   // Synthetic test records exist only in a throwaway loopback PostgreSQL cluster.
   await owner.query(`INSERT INTO content.categories(id,slug,title) VALUES($1,'logic','منطق'),($2,'science','علوم')`, [id(1), id(2)]);
-  await owner.query(`INSERT INTO content.game_types(id,engine_version,schema_version,title) VALUES('choice',1,1,'اختيار')`);
+  await owner.query(`INSERT INTO content.game_types(id,engine_version,schema_version,title) VALUES('choice',1,1,'اختيار') ON CONFLICT DO NOTHING`);
   await owner.query(`INSERT INTO content.games(id,game_type_id,category_id,slug,title,enabled) VALUES($1,'choice',$2,'choice','اختيار',true),($3,'choice',$2,'hidden','مخفي',false)`, [id(3), id(1), id(4)]);
   for (const n of [10,11,12,13,14,15]) {
     await owner.query('INSERT INTO content.puzzles(id,game_id) VALUES($1,$2)', [id(n), n === 15 ? id(4) : id(3)]);

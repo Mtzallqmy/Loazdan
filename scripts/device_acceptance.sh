@@ -17,6 +17,7 @@ adb shell svc wifi disable
 adb shell svc data disable
 run_phase phaseTwoRestoreOffline
 
+adb shell dumpsys gfxinfo com.lughzdan.app reset
 run_phase phaseThreeCrosswordPartial SixGameDeviceTest
 adb shell am force-stop com.lughzdan.app
 run_phase phaseFourRestoreCrosswordAndBuilder SixGameDeviceTest
@@ -28,7 +29,14 @@ for attempt in {1..90}; do
 done
 [[ "$(adb shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]
 adb shell input keyevent 82
+adb shell svc wifi disable
+adb shell svc data disable
 run_phase phaseFiveVerifyBuilderResult SixGameDeviceTest
 adb shell svc wifi enable
 adb shell svc data enable
 run_phase phaseSixOtherBoards SixGameDeviceTest
+
+mkdir -p artifacts/stage03
+adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/gfxinfo.txt
+adb shell dumpsys meminfo com.lughzdan.app > artifacts/stage03/meminfo.txt
+adb pull /sdcard/Android/data/com.lughzdan.app/files/ artifacts/stage03/device-files

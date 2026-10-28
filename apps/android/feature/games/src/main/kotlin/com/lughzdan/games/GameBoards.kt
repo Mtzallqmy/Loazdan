@@ -28,7 +28,7 @@ val gameNames=mapOf("choice" to "تحدي المفردات العربية — أ
  "crossword" -> Crossword(p,s,busy,send)
  "wordsearch" -> Search(p,s,busy,send)
  "anagram" -> Builder(p,s,busy,send)
- "matching" -> Matching(p,s,busy,send)
+ "matching" -> if(p.payload.options.isNotEmpty()) { p.payload.options.forEach {o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} } } else Matching(p,s,busy,send)
  "order" -> Ordering(p,s,busy,send)
  }
 }

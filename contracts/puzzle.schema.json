@@ -652,22 +652,106 @@
                 "enum": [
                   "synonym",
                   "antonym",
-                  "singular_plural",
                   "word_meaning",
-                  "word_category",
-                  "analogy"
+                  "intruder",
+                  "context",
+                  "difference"
                 ]
               },
               "prompt": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 2000
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text"
+                  ]
+                },
+                "minItems": 2,
+                "maxItems": 6
+              },
+              "correctId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
               }
             },
-            "required": [
-              "left",
-              "right",
-              "pairs"
+            "oneOf": [
+              {
+                "required": [
+                  "left",
+                  "right",
+                  "pairs"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "options"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "correctId"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "prompt",
+                  "options",
+                  "correctId",
+                  "variant"
+                ],
+                "properties": {
+                  "variant": {
+                    "enum": [
+                      "intruder",
+                      "context",
+                      "difference"
+                    ]
+                  }
+                },
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "left"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "right"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "pairs"
+                      ]
+                    }
+                  ]
+                }
+              }
             ]
           }
         }

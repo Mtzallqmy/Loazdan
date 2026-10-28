@@ -1,5 +1,5 @@
-# Semantic matching
+# Semantic games
 
-`matching` uses stable left/right IDs and explicit `pairs`, never label positions as an answer key. Optional `prompt` supplies instructions; `variant` identifies synonym, antonym, singular_plural, word_meaning, word_category or analogy. Six debug levels contain two pairs each with shuffled right-side order. Omitting the additive fields retains Stage01 compatibility.
+`matching` supports six semantic modes. Synonym, antonym and word_meaning use stable left/right IDs and explicit pairs. Intruder, context and difference use four typed options and correctId. The optional prompt supplies the instruction. The additive payload schema selects exactly one shape; the old left/right/pairs shape remains valid without a variant. Pair answers never depend on display positions.
 
-All examples are original authored engineering drafts, unreviewed and unapproved. Pedagogical simplifications, particularly synonym and analogy relations, require human Arabic editorial review. Rights clearance and the existing approval/publication gate remain pending. No approved source, human reviewer or scholarly review is represented.
+Six debug levels demonstrate the modes, including an original context sentence about a mountain spring and an explicit listening/hearing distinction. No quotations or external publication text are used. All examples are original authored engineering drafts, unreviewed and unapproved. Linguistic review and rights clearance remain pending. No human reviewer or scholarly approval is represented, and these fixtures cannot ship in release.

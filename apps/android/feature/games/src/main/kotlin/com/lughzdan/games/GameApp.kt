@@ -55,7 +55,9 @@ import com.lughzdan.engine.*
       val id=entry.arguments?.getString("id");val record=sessions.find { it.session.id==id }
       if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
-       Text("مسودة اختبار · الصعوبة ${p.difficulty}",color=MaterialTheme.colorScheme.secondary)
+       Text("مسودة اختبار · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
+       val metrics=DifficultyController.metrics(p)
+       Text("حجم التحدي: ${metrics.size} · تقاطعات: ${metrics.intersections}",style=MaterialTheme.typography.bodySmall)
        Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
        Text(p.payload.prompt.ifBlank {p.title},style=MaterialTheme.typography.headlineSmall)
        if(s.status==SessionStatus.PAUSED) {
@@ -67,7 +69,7 @@ import com.lughzdan.engine.*
         Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
 
         if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
-        p.hints.firstOrNull()?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy&&hint.id !in s.usedHintIds){Text("تلميح (−${hint.penalty} نقطة)")};if(hint.id in s.usedHintIds)Text(hint.text) }
+        p.hints.firstOrNull()?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy&&hint.id !in s.usedHintIds){Text("تلميح (−${hint.penalty} نقطة)")};if(hint.id in s.usedHintIds)Text(s.revealedHints[hint.id] ?: hint.text) }
        } else {
         Text(if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات",style=MaterialTheme.typography.titleLarge)
         p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}

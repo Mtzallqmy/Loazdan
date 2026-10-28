@@ -36,6 +36,7 @@ import java.text.Normalizer
     val foundWordIds: Set<String> = emptySet(), val tileOrder: List<Int> = emptyList(),
     val selectedTileIndices: List<Int> = emptyList(), val matchedPairs: List<MatchPair> = emptyList(),
     val orderedIds: List<String> = emptyList(), val answerHistory: List<String> = emptyList(),
+    val revealedHints: Map<String, String> = emptyMap(),
 )
 sealed interface PlayerAction {
     val id: String

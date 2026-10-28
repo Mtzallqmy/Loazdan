@@ -9,7 +9,7 @@ internal fun tokens(s:String):List<String> {
  s.codePoints().toArray().forEach {cp->val t=String(Character.toChars(cp));if(Character.getType(cp) in listOf(6,7,8) && out.isNotEmpty()) out[out.lastIndex]+=t else out.add(t)}
  return out
 }
-internal fun validToken(s:String)=runCatching {
+internal fun validToken(s:String)=s.length in 1..8 && runCatching {
  val cp=s.codePointAt(0); val arabic=cp in 0x0621..0x063A || cp in 0x0641..0x064A || cp in 0x066E..0x066F || cp in 0x0671..0x06D3 || cp in 0x06FA..0x06FC
  arabic && s.isNotBlank() && tokens(ArabicText.comparison(s)).size==1 && Character.getType(s.codePointAt(0)) !in listOf(6,7,8) && s.codePoints().noneMatch {Character.isISOControl(it)||Character.isWhitespace(it)}}.getOrDefault(false)
 internal fun reservedTiles(b:ChoicePayload):Set<Int> {
@@ -25,7 +25,10 @@ abstract class BoardPlugin(final override val type:String):GamePlugin {
  protected abstract fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession
  override fun validatePuzzle(puzzle:PuzzleDefinition)=ValidationResult(buildList {
   addAll(ChoicePlugin().validatePuzzle(puzzle.copy(type="choice",payload=ChoicePayload("q",listOf(Option("a","a"),Option("b","b")),"a"))).errors)
-  if(puzzle.type!=type) add("wrong_type");addAll(errors(puzzle))
+  if(puzzle.type!=type) add("wrong_type")
+  val allowed=when(type){"anagram"->setOf("","anagram","missing_letter","word_from_letters","word_from_word","multi_word","words_multiple","multiple","arrange","missing","extra");"matching"->setOf("","synonym","antonym","word_meaning","intruder","context","difference");"order"->setOf("","sentence","story","procedure","chronology");else->setOf("")}
+  if(puzzle.payload.variant !in allowed) add("unsupported_variant")
+  addAll(errors(puzzle))
  })
  override fun createSession(puzzle:PuzzleDefinition,sessionId:String):GameSession {
   require(validatePuzzle(puzzle).valid);return GameSession(sessionId,puzzle.puzzleId,puzzle.revision,stateVersion=2,tileOrder=puzzle.payload.tiles.indices.toList(),orderedIds=puzzle.payload.items.map {it.id})
@@ -34,8 +37,20 @@ abstract class BoardPlugin(final override val type:String):GamePlugin {
  override fun evaluate(puzzle:PuzzleDefinition,session:GameSession,action:PlayerAction):GameSession {
   require(session.puzzleId==puzzle.puzzleId && session.revision==puzzle.revision && session.stateVersion==2)
   if(session.status in setOf(SessionStatus.WON,SessionStatus.LOST) || action.id in session.processedActions || action.id.isBlank() || (session.status==SessionStatus.PAUSED && action !is PlayerAction.Resume)) return session
-  val n=when(action){is PlayerAction.Resume->session.copy(status=SessionStatus.ACTIVE);is PlayerAction.UseHint->if(puzzle.hints.any {it.id==action.hintId}) session.copy(usedHintIds=session.usedHintIds+action.hintId) else session;else->reduce(puzzle,session,action)}
-  return if(n==session) session else n.copy(processedActions=n.processedActions+action.id)
+  val n=when(action){is PlayerAction.Resume->session.copy(status=SessionStatus.ACTIVE);is PlayerAction.UseHint->{val h=puzzle.hints.firstOrNull {it.id==action.hintId};if(h==null) session else if(h.id in session.usedHintIds) session else session.copy(usedHintIds=session.usedHintIds+h.id,revealedHints=session.revealedHints+(h.id to HintProvider.reveal(puzzle,session,h)))};else->reduce(puzzle,session,action)}
+  val acknowledged=when(action){
+   is PlayerAction.Resume->true
+   is PlayerAction.UseHint->puzzle.hints.any {it.id==action.hintId}
+   is PlayerAction.Reorder->type=="order"&&action.itemIds.size==puzzle.payload.items.size&&action.itemIds.toSet()==puzzle.payload.items.map {it.id}.toSet()
+   is PlayerAction.Shuffle->type=="anagram"
+   is PlayerAction.InputCell->type=="crossword"&&Cell(action.row,action.col) in puzzle.payload.entries.flatMap {entryCells(it)}&&(action.token.isEmpty()||validToken(action.token))
+   is PlayerAction.SelectPath->type=="wordsearch"&&straight(action.path)&&action.path.all {it.row in puzzle.payload.grid.indices&&it.col in puzzle.payload.grid[it.row].indices}
+   is PlayerAction.Select->type=="matching"&&puzzle.payload.options.any {it.id==action.optionId}
+   is PlayerAction.Match->type=="matching"&&puzzle.payload.left.any {it.id==action.leftId}&&puzzle.payload.right.any {it.id==action.rightId}
+   is PlayerAction.Submit->when(type){"anagram"->session.selectedTileIndices.isNotEmpty();"wordsearch"->session.selectedPath.isNotEmpty();"matching"->if(puzzle.payload.options.isNotEmpty()) session.selectedId!=null else session.matchedPairs.size==puzzle.payload.pairs.size;"order"->true;"crossword"->puzzle.payload.entries.flatMap {entryCells(it)}.all {session.cells[key(it)]?.isNotEmpty()==true};else->false}
+   else->false
+  }
+  return if(n==session&&!acknowledged) session else n.copy(processedActions=n.processedActions+action.id)
  }
 }
 internal fun crosswordErrors(b:ChoicePayload,compare:(String)->String={it}):List<String> = buildList {
@@ -112,15 +127,30 @@ class AnagramPlugin:BoardPlugin("anagram") {
  }
 }
 class MatchingPlugin:BoardPlugin("matching") {
- override fun errors(p:PuzzleDefinition):List<String> = buildList {val b=p.payload
+ override fun errors(p:PuzzleDefinition):List<String> {
+  val b=p.payload
+  if(b.options.isNotEmpty()) return ChoicePlugin().validatePuzzle(p.copy(type="choice")).errors + buildList {
+   if(b.variant !in setOf("intruder","context","difference")||b.options.size!=4) add("invalid_semantic_choice_variant")
+   if(b.options.map {normalized(p,it.text)}.distinct().size!=b.options.size) add("duplicate_normalized_option")
+  }
+  return buildList {
   if(b.left.size !in 2..12||b.right.size!=b.left.size||b.pairs.size!=b.left.size||b.left.map {it.id}.toSet().size!=b.left.size||b.right.map {it.id}.toSet().size!=b.right.size||(b.left+b.right).any {it.id.isBlank()||it.text.isBlank()}) add("invalid_matching_items")
   if(b.left.map {normalized(p,it.text)}.distinct().size!=b.left.size||b.right.map {normalized(p,it.text)}.distinct().size!=b.right.size) add("duplicate_normalized_option")
   if(b.pairs.map {it.leftId}.toSet()!=b.left.map {it.id}.toSet()||b.pairs.map {it.rightId}.toSet()!=b.right.map {it.id}.toSet()) add("invalid_pairs")
+  if(b.variant !in setOf("","synonym","antonym","word_meaning")) add("invalid_semantic_pair_variant")
  }
- override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession=when(a){
+ }
+ override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession {
+  if(p.payload.options.isNotEmpty()) return when(a) {
+   is PlayerAction.Select->if(p.payload.options.any {it.id==a.optionId}) s.copy(selectedId=a.optionId) else s
+   is PlayerAction.Submit->if(s.selectedId==null) s else verdict(p,s.copy(submittedIds=s.submittedIds+s.selectedId),s.selectedId==p.payload.correctId).let {if(it.status==SessionStatus.ACTIVE) it.copy(selectedId=null) else it}
+   else->s
+  }
+  return when(a){
   is PlayerAction.Match->if(p.payload.left.none {it.id==a.leftId}||p.payload.right.none {it.id==a.rightId}) s else s.copy(matchedPairs=s.matchedPairs.filter {it.leftId!=a.leftId&&it.rightId!=a.rightId}+MatchPair(a.leftId,a.rightId))
   is PlayerAction.Submit->if(s.matchedPairs.size!=p.payload.pairs.size) s else verdict(p,s,s.matchedPairs.toSet()==p.payload.pairs.toSet())
   else->s
+ }
  }
 }
 class OrderPlugin:BoardPlugin("order") {
