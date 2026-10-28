@@ -87,4 +87,25 @@ class BoardAccessibilityTest {
   compose.onNodeWithText("✓ اب").assertDoesNotExist()
  }
 
+ @Test fun baseKeyboardInputAppearsInMergedCellSemanticsAfterAutoAdvance() {
+  val p=crossword.copy(sourceRefs=listOf("source"))
+  val engine=CrosswordPlugin()
+  val state=mutableStateOf(engine.createSession(p,"keyboard"))
+  compose.setContent {MaterialTheme {Column(Modifier.verticalScroll(rememberScrollState())) {
+   GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}
+  }}}
+  val entry=p.payload.entries.first()
+  val description="خلية ${entry.row} ${entry.col}"
+  val token=entry.tokens.first()
+  compose.onNodeWithContentDescription(description).performScrollTo().performClick()
+  compose.onNodeWithContentDescription("مفتاح $token").performScrollTo().performClick()
+  compose.waitForIdle()
+  // Check the committed engine state independently from accessibility text merging.
+  compose.runOnIdle {org.junit.Assert.assertEquals(token,state.value.cells["${entry.row},${entry.col}"])}
+  // Same merged semantics query used by the device persistence assertion.
+  compose.onNodeWithContentDescription(description).assert(hasText(token,substring=true))
+  compose.onAllNodesWithContentDescription(description).filter(hasText(token,substring=true)).assertCountEquals(1)
+  compose.onNodeWithContentDescription("خلية 0 0").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"الخلية المحددة"))
+ }
+
 }

@@ -4,6 +4,16 @@ cd "$(dirname "$0")/../apps/android"
 ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+prepare_emulator_shell() {
+  # API26 AOSP does not grant CHANGE_WIFI_STATE to the shell UID.
+  # Root only the disposable emulator; never request app/device privileges.
+  if [[ "$(adb shell getprop ro.build.version.sdk | tr -d '\r')" == "26" ]]; then
+    [[ "$(adb shell getprop ro.kernel.qemu | tr -d '\r')" == "1" ]]
+    adb root
+    adb wait-for-device
+  fi
+}
+prepare_emulator_shell
 adb shell pm clear com.lughzdan.app
 collect_evidence() {
   local result=$?
@@ -38,6 +48,7 @@ for attempt in {1..90}; do
   sleep 1
 done
 [[ "$(adb shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]
+prepare_emulator_shell
 adb shell input keyevent 82
 adb shell svc wifi disable
 adb shell svc data disable
