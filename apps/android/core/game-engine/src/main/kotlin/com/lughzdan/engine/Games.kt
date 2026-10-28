@@ -41,9 +41,9 @@ abstract class BoardPlugin(final override val type:String):GamePlugin {
  override fun evaluate(puzzle:PuzzleDefinition,session:GameSession,action:PlayerAction):GameSession {
   require(session.puzzleId==puzzle.puzzleId && session.revision==puzzle.revision && session.stateVersion==2)
   if(session.status in setOf(SessionStatus.WON,SessionStatus.LOST) || action.id in session.processedActions || action.id.isBlank() || (session.status==SessionStatus.PAUSED && action !is PlayerAction.Resume)) return session
-  val n=when(action){is PlayerAction.Resume->session.copy(status=SessionStatus.ACTIVE);is PlayerAction.UseHint->{val h=puzzle.hints.firstOrNull {it.id==action.hintId};if(h==null) session else if(h.id in session.usedHintIds) session else session.copy(usedHintIds=session.usedHintIds+h.id,revealedHints=session.revealedHints+(h.id to HintProvider.reveal(puzzle,session,h)))};else->reduce(puzzle,session,action)}
+  val n=when(action){is PlayerAction.Pause->session.copy(status=SessionStatus.PAUSED);is PlayerAction.Resume->session.copy(status=SessionStatus.ACTIVE);is PlayerAction.UseHint->{val h=puzzle.hints.firstOrNull {it.id==action.hintId};if(h==null) session else if(h.id in session.usedHintIds) session else session.copy(usedHintIds=session.usedHintIds+h.id,revealedHints=session.revealedHints+(h.id to HintProvider.reveal(puzzle,session,h)))};else->reduce(puzzle,session,action)}
   val acknowledged=when(action){
-   is PlayerAction.Resume->true
+   is PlayerAction.Resume,is PlayerAction.Pause->true
    is PlayerAction.UseHint->puzzle.hints.any {it.id==action.hintId}
    is PlayerAction.Reorder->type=="order"&&action.itemIds.size==puzzle.payload.items.size&&action.itemIds.toSet()==puzzle.payload.items.map {it.id}.toSet()
    is PlayerAction.Shuffle->type=="anagram"

@@ -19,6 +19,10 @@ class GamesTest {
    assertEquals(session,engine.evaluate(puzzle,session,PlayerAction.Submit("win")))
   }
  }
+ @Test fun explicitPausePreservesStateAndBlocksMovesUntilResume(){
+  val examples=listOf(p("order",order),p("choice",ChoicePayload("q",listOf(Option("a","a"),Option("b","b")),"a")))
+  for(puzzle in examples){val plugin=GameRegistry().plugin(puzzle.type);val initial=plugin.createSession(puzzle,"s");val paused=plugin.evaluate(puzzle,initial,PlayerAction.Pause("pause"));assertEquals(SessionStatus.PAUSED,paused.status);assertTrue(plugin.validateSession(puzzle,paused).valid);assertEquals(paused,plugin.evaluate(puzzle,paused,PlayerAction.Submit("blocked")));val resumed=plugin.evaluate(puzzle,SessionCodec.decode(SessionCodec.encode(paused)),PlayerAction.Resume("resume"));assertEquals(SessionStatus.ACTIVE,resumed.status);assertEquals(resumed,plugin.evaluate(puzzle,resumed,PlayerAction.Pause("pause")))}
+ }
  @Test fun legacyPayloadAndStateRemainReadable(){val b=SessionCodec.json.decodeFromString<ChoicePayload>("""{"prompt":"q","options":[],"correctId":"a"}""");assertEquals("a",b.correctId);val s=GameSession("s","p",2,packVersion=4,packId="pack",selectedId="a");assertEquals(s,SessionCodec.decode(SessionCodec.encode(s)))}
  @Test fun noChangeReorderIsAcknowledgedBeforeReplay(){val p=p("order",order);val e=OrderPlugin();var s=e.createSession(p,"s");val a=PlayerAction.Reorder("same",listOf("a","b"));s=e.evaluate(p,s,a);s=e.evaluate(p,s,PlayerAction.Reorder("changed",listOf("b","a")));assertEquals(s,e.evaluate(p,s,a))}
  @Test fun orderRejectsDuplicateItemsAndChargesHintOnce(){val p=p("order",order);val e=OrderPlugin();var s=e.createSession(p,"s");assertEquals(s,e.evaluate(p,s,PlayerAction.Reorder("bad",listOf("a","a"))));repeat(2){s=e.evaluate(p,s,PlayerAction.UseHint("h$it","h"))};s=e.evaluate(p,s,PlayerAction.Reorder("r",listOf("b","a")));s=e.evaluate(p,s,PlayerAction.Submit("win"));assertEquals(90,s.score);assertTrue(e.validateSession(p,s).valid);assertEquals(s,e.evaluate(p,s,PlayerAction.UseHint("x","h")))}

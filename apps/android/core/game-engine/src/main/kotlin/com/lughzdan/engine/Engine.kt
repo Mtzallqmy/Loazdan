@@ -43,6 +43,7 @@ sealed interface PlayerAction {
     data class Select(override val id: String, val optionId: String) : PlayerAction
     data class Submit(override val id: String) : PlayerAction
     data class UseHint(override val id: String, val hintId: String) : PlayerAction
+    data class Pause(override val id: String) : PlayerAction
     data class Resume(override val id: String) : PlayerAction
     data class InputCell(override val id: String, val row: Int, val col: Int, val token: String) : PlayerAction
     data class SelectPath(override val id: String, val path: List<Cell>) : PlayerAction
@@ -88,6 +89,7 @@ class ChoicePlugin : GamePlugin {
         if (session.status == SessionStatus.PAUSED && action !is PlayerAction.Resume) return session
         val next = when (action) {
             is PlayerAction.Resume -> session.copy(status = SessionStatus.ACTIVE)
+            is PlayerAction.Pause -> session.copy(status = SessionStatus.PAUSED)
             is PlayerAction.Select -> if (puzzle.payload.options.any { it.id == action.optionId }) session.copy(selectedId = action.optionId) else session
             is PlayerAction.UseHint -> if (puzzle.hints.any { it.id == action.hintId }) session.copy(usedHintIds = session.usedHintIds + action.hintId) else session
             is PlayerAction.Submit -> {
