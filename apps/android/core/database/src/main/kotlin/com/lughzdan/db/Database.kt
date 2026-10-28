@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
  @Upsert suspend fun save(session:GameSessionEntity)
  @Query("SELECT * FROM progress WHERE puzzleId=:id") suspend fun progress(id:String):PlayerProgressEntity?
  @Query("SELECT * FROM progress") fun observeProgress():Flow<List<PlayerProgressEntity>>
+ @Query("SELECT COALESCE(SUM(xp),0) FROM progress") suspend fun totalXp():Int
  @Upsert suspend fun saveProgress(progress:PlayerProgressEntity)
  @Insert(onConflict=OnConflictStrategy.IGNORE) suspend fun award(achievement:AchievementEntity):Long
  @Insert(onConflict=OnConflictStrategy.IGNORE) suspend fun enqueue(operation:SyncOperationEntity):Long

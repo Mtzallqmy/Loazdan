@@ -219,7 +219,7 @@
   ],
   "sqlTables": 42,
   "sqlStatements": 179,
-  "apiOperations": 42,
+  "apiOperations": 50,
   "toolVersions": {
     "jsonschema": "4.26.0",
     "openapi-spec-validator": "0.9.0",

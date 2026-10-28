@@ -16,7 +16,22 @@ class SixGameDeviceTest {
  @get:Rule val compose=createAndroidComposeRule<MainActivity>()
  private fun click(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};compose.onAllNodesWithText(text).filter(isEnabled()).onFirst().performScrollTo().performClick();compose.waitForIdle()}
  private fun cell(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithContentDescription(text).performScrollTo().performClick();compose.waitForIdle()}
- private fun fixtures():List<JSONObject> {val assets=compose.activity.assets;fun read(path:String):List<JSONObject> = assets.list(path).orEmpty().flatMap {name->val full=if(path.isEmpty())name else "$path/$name";if(name.endsWith(".jsonl"))assets.open(full).bufferedReader().readLines().filter {it.isNotBlank()}.map(::JSONObject) else if(!name.contains('.'))read(full) else emptyList()};return read("")}
+ private fun fixtures(): List<JSONObject> {
+  val assets = compose.activity.assets
+  fun read(path: String): List<JSONObject> {
+   return assets.list(path).orEmpty().flatMap { name ->
+    val full = if (path.isEmpty()) name else "$path/$name"
+    when {
+     name.endsWith(".jsonl") -> assets.open(full).bufferedReader().useLines { lines ->
+      lines.filter { it.isNotBlank() }.map { JSONObject(it) }.toList()
+     }
+     !name.contains('.') -> read(full)
+     else -> emptyList()
+    }
+   }
+  }
+  return read("")
+ }
  private fun fixture(type:String)=fixtures().first {it.getString("type")==type}
  private fun open(type:String) {val all=fixtures();val p=fixture(type);click("ابدأ تحدي المفردات");click("لغز ${all.indexOfFirst {it.getString("puzzleId")==p.getString("puzzleId")}+1} · الصعوبة ${p.getInt("difficulty")}")}
  private fun screenshot(name:String){val bitmap=InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot();File(compose.activity.getExternalFilesDir(null),"$name.png").outputStream().use {bitmap.compress(Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle()}

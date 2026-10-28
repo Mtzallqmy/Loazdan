@@ -89,6 +89,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  override suspend fun start(puzzleId:String):String = db.withTransaction {
   val row=dao.latestPuzzle(puzzleId) ?: error("Content missing")
   val p=json.decodeFromString<PuzzleDefinition>(row.definition)
+  require(p.difficulty<=ProgressionRules.unlockedDifficulty(dao.totalXp())) { "Difficulty is locked" }
   val pack=dao.pack(row.packId) ?: error("Pack missing")
   val session=registry.plugin(p.type).createSession(p,UUID.randomUUID().toString()).copy(packId=pack.packId,packVersion=pack.version)
   dao.save(GameSessionEntity(session.id,p.puzzleId,p.revision,SessionCodec.encode(session),System.currentTimeMillis()))

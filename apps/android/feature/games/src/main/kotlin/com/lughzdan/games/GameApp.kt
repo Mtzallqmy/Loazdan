@@ -81,7 +81,7 @@ import com.lughzdan.engine.*
         Text("المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق.",style=MaterialTheme.typography.bodySmall)
         if(p.type!="choice")Text("إجاباتك: "+s.answerHistory.joinToString("، "))
         Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
-        Button(onClick={val next=puzzles[(puzzles.indexOfFirst { it.puzzleId==p.puzzleId }+1)%puzzles.size];play(next.puzzleId)},enabled=!busy){Text("اللغز التالي")}
+        Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}
        }

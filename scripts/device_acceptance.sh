@@ -39,4 +39,6 @@ run_phase phaseSixOtherBoards SixGameDeviceTest
 mkdir -p artifacts/stage03
 adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/gfxinfo.txt
 adb shell dumpsys meminfo com.lughzdan.app > artifacts/stage03/meminfo.txt
+cat artifacts/stage03/gfxinfo.txt
+cat artifacts/stage03/meminfo.txt
 adb pull /sdcard/Android/data/com.lughzdan.app/files/ artifacts/stage03/device-files

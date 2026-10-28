@@ -38,6 +38,15 @@ class OfflineRepositoryTest {
   db.games().removeContent("fixture")
   assertEquals(100,repository.progress.first().totalScore)
  }
+ @Test fun lockedDifficultyCannotBeStartedThroughRepository()=runBlocking {
+  val locked=p.copy(puzzleId="locked",difficulty=2)
+  db.games().insertPuzzles(listOf(LocalPuzzleEntity("locked",1,"fixture",SessionCodec.json.encodeToString(locked),1)))
+  val repository=LocalGameRepository(context,db,true)
+  try { repository.start("locked");fail("Locked level was started") } catch(_:IllegalArgumentException) { }
+  assertTrue(db.games().storedSessions().isEmpty())
+  db.games().saveProgress(PlayerProgressEntity("earned",300,true,1,"choice",300))
+  assertNotNull(repository.start("locked"))
+ }
  @Test fun midRoundSelectionRestores()=runBlocking {
   val repository=LocalGameRepository(context,db,true);val id=repository.start("p")
   repository.act(id,PlayerAction.Select("select","b"));db.close();open()
