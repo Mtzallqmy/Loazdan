@@ -15,7 +15,16 @@ import org.junit.runner.RunWith
 class SixGameDeviceTest {
  @get:Rule val compose=createAndroidComposeRule<MainActivity>()
  private fun click(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","الألعاب","المكتبة","الإعدادات"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
- private fun cell(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithContentDescription(text).performScrollTo().performClick();compose.waitForIdle()}
+ private fun cell(text:String) {
+  val matcher=hasContentDescription(text)
+  compose.waitUntil(30_000){compose.onAllNodes(matcher).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()}
+  // Select the vertical page explicitly: a nested horizontal grid/keyboard is
+  // the closest scroll ancestor, and performScrollTo alone cannot scroll it vertically.
+  val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
+  compose.onNode(vertical).performScrollToNode(matcher)
+  compose.onNode(matcher).performScrollTo().assertIsDisplayed().performClick()
+  compose.waitForIdle()
+ }
  private fun fixtures(): List<JSONObject> {
   val assets = compose.activity.assets
   fun read(path: String): List<JSONObject> {
@@ -49,6 +58,8 @@ class SixGameDeviceTest {
   val token=entry.getJSONArray("tokens").getString(0)
   val desc="خلية ${entry.getInt("row")} ${entry.getInt("col")}"
   try {
+   val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
+   compose.onNode(vertical).performScrollToNode(hasContentDescription(desc))
    compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(desc).filter(hasText(token,substring=true)).fetchSemanticsNodes().isNotEmpty()}
    compose.onNodeWithContentDescription(desc).performScrollTo().assertIsDisplayed()
   } catch(error:Throwable) {

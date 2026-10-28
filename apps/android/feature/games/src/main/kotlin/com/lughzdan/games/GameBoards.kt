@@ -47,7 +47,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  fun number(item:CrosswordEntry)=starts.indexOf(Cell(item.row,item.col))+1
  Text("الكلمة النشطة: ${e.clue} · ${if(e.direction=="down")"عمودي" else "أفقي"}")
  p.payload.entries.forEach { item->TextButton(onClick={entryId=item.id;selectCell(Cell(item.row,item.col))},modifier=Modifier.heightIn(min=48.dp)){Text((if(item.id==entryId)"✓ " else "")+"${number(item)}. ${item.clue} · ${if(item.direction=="down")"عمودي" else "أفقي"}")} }
- TextButton(onClick={p.payload.entries.firstOrNull {it.id!=entryId&&active in path(it)}?.let {entryId=it.id}}){Text("تغيير الاتجاه عند التقاطع")}
+ TextButton(onClick={p.payload.entries.firstOrNull {it.id!=entryId&&active in path(it)}?.let {entryId=it.id}},enabled=!busy&&p.payload.entries.any {it.id!=entryId&&active in path(it)}){Text("تغيير الاتجاه عند التقاطع")}
  val open=p.payload.entries.flatMap(::path).toSet()
  Grid(p.payload.rows,p.payload.cols){r,c->val pos=Cell(r,c)
   if(pos !in open)Surface(Modifier.width(56.dp).height(80.dp).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={selectCell(pos);if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy,colors=ButtonDefaults.outlinedButtonColors(containerColor=when {pos==active->MaterialTheme.colorScheme.primaryContainer;pos in path(e)->MaterialTheme.colorScheme.secondaryContainer;else->MaterialTheme.colorScheme.surface}),modifier=Modifier.width(56.dp).height(80.dp).semantics {contentDescription="خلية $r $c";stateDescription=when {pos==active->"الخلية المحددة";pos in path(e)->"ضمن الكلمة النشطة";else->"خلية"}},contentPadding=PaddingValues(0.dp)){Column(horizontalAlignment=Alignment.CenterHorizontally) {
@@ -60,7 +60,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  var cellDraft by rememberSaveable(p.puzzleId){mutableStateOf("")}
  OutlinedTextField(value=cellDraft,onValueChange={cellDraft=it},label={Text("حرف الخلية")},singleLine=true,enabled=!busy,modifier=Modifier.fillMaxWidth())
  TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,cellDraft));cellDraft=""},enabled=!busy&&ArabicCellInput.isValid(cellDraft)){Text("إدخال الحرف")}
- TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,""))},enabled=!busy){Text("مسح الخلية")}
+ TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,""))},enabled=!busy&&!s.cells["${active.row},${active.col}"].isNullOrEmpty()){Text("مسح الخلية")}
 }
 @Composable private fun Search(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  var startRow by rememberSaveable(p.puzzleId){mutableStateOf<Int?>(null)}
@@ -105,7 +105,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  }
  val reserved=mutableSetOf<Int>();p.payload.fixedSlots.forEach {f->p.payload.tiles.indices.firstOrNull {it !in reserved&&p.payload.tiles[it]==f.token}?.let {reserved+=it}}
  s.tileOrder.ifEmpty {p.payload.tiles.indices.toList()}.chunked(5).forEach {row->Row(Modifier.horizontalScroll(rememberScrollState())) {row.forEach {index->OutlinedButton(onClick={send(PlayerAction.AddTile(aid(),index))},enabled=!busy&&index !in s.selectedTileIndices&&index !in reserved,modifier=Modifier.sizeIn(minWidth=48.dp,minHeight=48.dp).semantics {contentDescription="حرف $index ${p.payload.tiles[index]}"}){Text(p.payload.tiles[index])}}}}
- Row {TextButton(onClick={send(PlayerAction.Undo(aid()))},enabled=!busy){Text("تراجع")};TextButton(onClick={send(PlayerAction.Shuffle(aid(),s.processedActions.size+1))},enabled=!busy){Text("خلط الحروف")}}
+ Row {TextButton(onClick={send(PlayerAction.Undo(aid()))},enabled=!busy&&s.selectedTileIndices.isNotEmpty()){Text("تراجع")};TextButton(onClick={send(PlayerAction.Shuffle(aid(),s.processedActions.size+1))},enabled=!busy){Text("خلط الحروف")}}
 }
 @Composable private fun Matching(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  var selected by rememberSaveable(p.puzzleId){mutableStateOf<String?>(null)}

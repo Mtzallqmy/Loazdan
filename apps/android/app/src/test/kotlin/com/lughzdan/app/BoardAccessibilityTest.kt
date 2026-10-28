@@ -92,16 +92,21 @@ class BoardAccessibilityTest {
   val engine=CrosswordPlugin()
   val state=mutableStateOf(engine.createSession(p,"keyboard"))
   compose.setContent {MaterialTheme {Column(Modifier.verticalScroll(rememberScrollState())) {
+   Spacer(Modifier.height(600.dp))
    GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}
   }}}
   val entry=p.payload.entries.first()
   val description="خلية ${entry.row} ${entry.col}"
   val token=entry.tokens.first()
-  compose.onNodeWithContentDescription(description).performScrollTo().performClick()
-  compose.onNodeWithContentDescription("مفتاح $token").performScrollTo().performClick()
+  val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
+  compose.onNode(vertical).performScrollToNode(hasContentDescription(description))
+  compose.onNodeWithContentDescription(description).performScrollTo().assertIsDisplayed().performClick()
+  compose.onNode(vertical).performScrollToNode(hasContentDescription("مفتاح $token"))
+  compose.onNodeWithContentDescription("مفتاح $token").performScrollTo().assertIsDisplayed().performClick()
   compose.waitForIdle()
   // Check the committed engine state independently from accessibility text merging.
   compose.runOnIdle {org.junit.Assert.assertEquals(token,state.value.cells["${entry.row},${entry.col}"])}
+  compose.onNode(vertical).performScrollToNode(hasContentDescription(description))
   // Same merged semantics query used by the device persistence assertion.
   compose.onNodeWithContentDescription(description).assert(hasText(token,substring=true))
   compose.onAllNodesWithContentDescription(description).filter(hasText(token,substring=true)).assertCountEquals(1)
