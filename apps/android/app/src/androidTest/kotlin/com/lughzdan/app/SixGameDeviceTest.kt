@@ -44,7 +44,7 @@ class SixGameDeviceTest {
   }
  }
  private fun won(){compose.waitUntil(30_000){compose.onAllNodesWithText("إجابة صحيحة!",substring=true).fetchSemanticsNodes().isNotEmpty()}}
- private fun assertPartial(){val e=fixture("crossword").getJSONObject("payload").getJSONArray("entries").getJSONObject(0);val token=e.getJSONArray("tokens").getString(0);val desc="خلية ${e.getInt("row")} ${e.getInt("col")}";compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(desc).filter(hasText(token,substring=true)).fetchSemanticsNodes().isNotEmpty()}}
+ private fun assertPartial(){val e=fixture("crossword").getJSONObject("payload").getJSONArray("entries").getJSONObject(0);val token=e.getJSONArray("tokens").getString(0);val desc="خلية ${e.getInt("row")} ${e.getInt("col")}";compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(desc).filter(hasText(token,substring=true)).fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithContentDescription(desc).performScrollTo().assertIsDisplayed()}
  private fun crossword(partial:Boolean) {val entries=fixture("crossword").getJSONObject("payload").getJSONArray("entries");for(i in 0 until entries.length()){val e=entries.getJSONObject(i);val tokens=e.getJSONArray("tokens");for(j in 0 until tokens.length()){if(partial&&(i!=0||j!=0))return;val r=e.getInt("row")+if(e.getString("direction")=="down")j else 0;val c=e.getInt("col")-if(e.getString("direction")=="across")j else 0;cell("خلية $r $c");cell("مفتاح ${tokens.getString(j)}")}}}
  @Test fun phaseThreeCrosswordPartial(){open("crossword");crossword(true);assertPartial();screenshot("stage03-crossword-light")}
  @Test fun phaseFourRestoreCrosswordAndBuilder(){
