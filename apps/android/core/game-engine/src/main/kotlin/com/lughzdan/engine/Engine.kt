@@ -6,7 +6,19 @@ import java.text.Normalizer
 
 @Serializable data class Option(val id: String, val text: String)
 @Serializable data class Hint(val id: String, val kind: String, val text: String, val penalty: Int)
-@Serializable data class ChoicePayload(val prompt: String, val options: List<Option>, val correctId: String)
+@Serializable data class Cell(val row: Int, val col: Int)
+@Serializable data class CrosswordEntry(val id: String, val row: Int, val col: Int, val direction: String, val tokens: List<String>, val clue: String, val sourceRef: String)
+@Serializable data class SearchWord(val id: String, val label: String, val path: List<Cell>)
+@Serializable data class FixedSlot(val index: Int, val token: String)
+@Serializable data class MatchPair(val leftId: String, val rightId: String)
+@Serializable data class ChoicePayload(
+ val prompt: String = "", val options: List<Option> = emptyList(), val correctId: String = "",
+ val rows: Int = 0, val cols: Int = 0, val entries: List<CrosswordEntry> = emptyList(),
+ val grid: List<List<String>> = emptyList(), val words: List<SearchWord> = emptyList(),
+ val tiles: List<String> = emptyList(), val fixedSlots: List<FixedSlot> = emptyList(), val acceptedAnswers: List<String> = emptyList(),
+ val left: List<Option> = emptyList(), val right: List<Option> = emptyList(), val pairs: List<MatchPair> = emptyList(),
+ val items: List<Option> = emptyList(), val correctOrder: List<String> = emptyList(), val variant: String = "",
+)
 @Serializable data class PuzzleDefinition(
     val schemaVersion: Int, val puzzleId: String, val revision: Int, val gameId: String,
     val type: String, val world: String, val difficulty: Int, val rulesVersion: Int,
@@ -20,6 +32,10 @@ import java.text.Normalizer
     val wrongSubmissions: Int = 0, val score: Int = 0, val selectedId: String? = null,
     val usedHintIds: Set<String> = emptySet(), val processedActions: Set<String> = emptySet(),
     val submittedIds: List<String> = emptyList(),
+    val cells: Map<String, String> = emptyMap(), val selectedPath: List<Cell> = emptyList(),
+    val foundWordIds: Set<String> = emptySet(), val tileOrder: List<Int> = emptyList(),
+    val selectedTileIndices: List<Int> = emptyList(), val matchedPairs: List<MatchPair> = emptyList(),
+    val orderedIds: List<String> = emptyList(), val answerHistory: List<String> = emptyList(),
 )
 sealed interface PlayerAction {
     val id: String
@@ -27,11 +43,20 @@ sealed interface PlayerAction {
     data class Submit(override val id: String) : PlayerAction
     data class UseHint(override val id: String, val hintId: String) : PlayerAction
     data class Resume(override val id: String) : PlayerAction
+    data class InputCell(override val id: String, val row: Int, val col: Int, val token: String) : PlayerAction
+    data class SelectPath(override val id: String, val path: List<Cell>) : PlayerAction
+    data class AddTile(override val id: String, val tileIndex: Int) : PlayerAction
+    data class RemoveTile(override val id: String, val slotIndex: Int) : PlayerAction
+    data class Undo(override val id: String) : PlayerAction
+    data class Shuffle(override val id: String, val seed: Int) : PlayerAction
+    data class Match(override val id: String, val leftId: String, val rightId: String) : PlayerAction
+    data class Reorder(override val id: String, val itemIds: List<String>) : PlayerAction
 }
 data class ValidationResult(val errors: List<String>) { val valid get() = errors.isEmpty() }
 interface GamePlugin {
     val type: String
     fun validatePuzzle(puzzle: PuzzleDefinition): ValidationResult
+    fun validateSession(puzzle: PuzzleDefinition, session: GameSession): ValidationResult = validateGameSession(puzzle, session)
     fun createSession(puzzle: PuzzleDefinition, sessionId: String): GameSession
     fun evaluate(puzzle: PuzzleDefinition, session: GameSession, action: PlayerAction): GameSession
 }
@@ -57,7 +82,7 @@ class ChoicePlugin : GamePlugin {
         return GameSession(sessionId, puzzle.puzzleId, puzzle.revision)
     }
     override fun evaluate(puzzle: PuzzleDefinition, session: GameSession, action: PlayerAction): GameSession {
-        require(session.puzzleId == puzzle.puzzleId && session.revision == puzzle.revision && session.stateVersion == 1)
+        require(session.puzzleId == puzzle.puzzleId && session.revision == puzzle.revision && session.stateVersion in 1..2)
         if (session.status in setOf(SessionStatus.WON, SessionStatus.LOST) || action.id in session.processedActions) return session
         if (session.status == SessionStatus.PAUSED && action !is PlayerAction.Resume) return session
         val next = when (action) {
@@ -72,11 +97,12 @@ class ChoicePlugin : GamePlugin {
                     status = if (session.wrongSubmissions == 2) SessionStatus.LOST else SessionStatus.ACTIVE,
                     submittedIds = session.submittedIds + selected)
             }
+            else -> return session
         }
         return next.copy(processedActions = next.processedActions + action.id)
     }
 }
-class GameRegistry(plugins: List<GamePlugin> = listOf(ChoicePlugin())) {
+class GameRegistry(plugins: List<GamePlugin> = listOf(ChoicePlugin(), CrosswordPlugin(), WordsearchPlugin(), AnagramPlugin(), MatchingPlugin(), OrderPlugin())) {
     private val entries = plugins.associateBy { it.type }
     init { require(entries.size == plugins.size) }
     val types: Set<String> get() = entries.keys
@@ -86,7 +112,7 @@ object SessionCodec {
     val json = Json { encodeDefaults = true }
     fun encode(session: GameSession) = json.encodeToString(session)
     fun decode(value: String): GameSession = json.decodeFromString<GameSession>(value).also {
-        require(it.stateVersion == 1) { "Unsupported session state version" }
+        require(it.stateVersion in 1..2) { "Unsupported session state version" }
         require(it.revision > 0 && it.packVersion > 0 && it.wrongSubmissions in 0..3 && it.score >= 0)
         require(it.status == SessionStatus.WON || it.score == 0)
         require((it.status == SessionStatus.LOST) == (it.wrongSubmissions == 3))

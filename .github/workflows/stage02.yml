@@ -1,10 +1,10 @@
-name: Stage02 verification
+name: Lughzdan verification
 on:
   push:
-    branches: [main, 'feat/**']
+    branches: [main, 'feat/**', 'stage-03-advanced-arabic-games']
   pull_request:
 concurrency:
-  group: stage02-${{ github.head_ref || github.ref_name }}
+  group: lughzdan-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 permissions:
   contents: read

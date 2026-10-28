@@ -19,11 +19,11 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  private val initializationMutex=Mutex()
  private var initialized=false
  override val puzzles=dao.observePuzzles().map { rows->rows.map { json.decodeFromString<PuzzleDefinition>(it.definition) } }
- private val loadedSessions=combine(dao.observeSessions(),dao.observePuzzles(),dao.observePacks()) { rows,items,installed ->
+ private val loadedSessions=combine(dao.observeSessions(),dao.observePacks(),dao.observeContentCount()) { rows,installed,_ ->
   val available=mutableListOf<PlayRecord>();val unavailable=mutableListOf<UnavailableSession>()
   rows.forEach { row ->
    val state=runCatching { decodeStored(row) }.getOrNull()
-   val puzzleRow=items.find { it.puzzleId==row.puzzleId && it.revision==row.revision }
+   val puzzleRow=dao.puzzle(row.puzzleId,row.revision)
    val puzzle=if(state!=null && puzzleRow!=null) runCatching { validateRecord(state,puzzleRow) }.getOrNull() else null
    val pack=state?.let { saved->installed.find { it.packId==saved.packId && it.version==saved.packVersion } }
    if(state!=null && puzzle!=null && pack!=null) available.add(PlayRecord(state,puzzle))
@@ -40,13 +40,13 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   require(row.packId==state.packId && row.puzzleId==state.puzzleId && row.revision==state.revision)
   val p=json.decodeFromString<PuzzleDefinition>(row.definition)
   require(p.puzzleId==row.puzzleId && p.revision==row.revision && registry.plugin(p.type).validatePuzzle(p).valid)
-  val options=p.payload.options.map { it.id }.toSet()
-  require(state.selectedId==null || state.selectedId in options)
-  require(state.submittedIds.all { it in options })
-  require(state.usedHintIds.all { id->p.hints.any { it.id==id } })
+  require(registry.plugin(p.type).validateSession(p,state).valid)
   return p
  }
- override val progress=dao.observeProgress().map { rows->Progress(rows.sumOf { it.bestScore },rows.count { it.completed }) }
+ override val progress=combine(dao.observeProgress(),dao.observeAchievements()) { rows,achievements ->
+  Progress(rows.sumOf { it.bestScore },rows.count { it.completed },rows.sumOf { it.xp },
+   rows.groupBy { it.gameType }.map { (type,items)->GameProgress(type,items.sumOf { it.bestScore },items.count { it.completed },items.sumOf { it.attempts },items.sumOf { it.xp }) },achievements.map { it.id })
+ }
  override val packs=dao.observePacks().map { rows->rows.map { InstalledPack(it.packId,it.version,it.bytes,it.fixtureOnly) } }
  override suspend fun initialize()=withContext(Dispatchers.IO) { initializationMutex.withLock {
   if(initialized) return@withLock
@@ -61,23 +61,33 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   require(items.map { it.puzzleId to it.revision }.distinct().size==items.size)
   db.withTransaction {
    val installed=dao.pack(manifest.packId)
-   if(installed==null) {
-    dao.insertPuzzles(items.mapIndexed { index,p->LocalPuzzleEntity(p.puzzleId,p.revision,manifest.packId,json.encodeToString(p),index) })
+   if(installed==null || manifest.version>installed.version) {
+    val additions=items.mapIndexedNotNull { index,p->
+     val encoded=json.encodeToString(p)
+     val latest=dao.latestPuzzle(p.puzzleId)
+     require(latest==null || (latest.packId==manifest.packId && json.decodeFromString<PuzzleDefinition>(latest.definition).type==p.type)) { "Puzzle identity cannot change pack or game type" }
+     val prior=dao.puzzle(p.puzzleId,p.revision)
+     require(prior==null || (prior.packId==manifest.packId && prior.definition==encoded)) { "Revision is immutable" }
+     if(prior==null) LocalPuzzleEntity(p.puzzleId,p.revision,manifest.packId,encoded,index) else null
+    }
+    dao.insertPuzzles(additions)
     dao.install(InstalledContentPackEntity(manifest.packId,manifest.version,manifest.sha256,manifest.bytes,manifest.fixtureOnly))
-   } else require(installed.sha256==manifest.sha256 && installed.version==manifest.version) { "Bundled pack upgrade requires an explicit migration" }
+   } else if(installed.version==manifest.version) require(installed.sha256==manifest.sha256) { "Pack version is immutable" }
   }
   }
   // Recover once per repository lifetime; collecting a Flow must never pause live play.
   db.withTransaction {
    dao.storedSessions().forEach { row ->
-    val state=runCatching { decodeStored(row).also { saved->validateRecord(saved,dao.puzzle(row.puzzleId,row.revision) ?: error("Missing pinned puzzle")) } }.getOrNull()
+    val state=runCatching { decodeStored(row).also { saved->
+     require(dao.pinnedPack(saved.packId,saved.packVersion)!=null) { "Missing pinned pack" }
+     validateRecord(saved,dao.puzzle(row.puzzleId,row.revision) ?: error("Missing pinned puzzle")) } }.getOrNull()
     if(state?.status==SessionStatus.ACTIVE) dao.save(row.copy(state=SessionCodec.encode(state.copy(status=SessionStatus.PAUSED))))
    }
   }
   initialized=true
  } }
  override suspend fun start(puzzleId:String):String = db.withTransaction {
-  val row=dao.puzzles().filter { it.puzzleId==puzzleId }.maxByOrNull { it.revision } ?: error("Content missing")
+  val row=dao.latestPuzzle(puzzleId) ?: error("Content missing")
   val p=json.decodeFromString<PuzzleDefinition>(row.definition)
   val pack=dao.pack(row.packId) ?: error("Pack missing")
   val session=registry.plugin(p.type).createSession(p,UUID.randomUUID().toString()).copy(packId=pack.packId,packVersion=pack.version)
@@ -90,16 +100,20 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   val p=json.decodeFromString<PuzzleDefinition>(pRow.definition)
   val old=decodeStored(row)
   validateRecord(old,pRow)
-  require(pRow.packId==old.packId && dao.pack(old.packId)?.version==old.packVersion) { "Pinned pack version missing" }
+  require(pRow.packId==old.packId && dao.pinnedPack(old.packId,old.packVersion)!=null) { "Pinned pack version missing" }
   val next=registry.plugin(p.type).evaluate(p,old,action)
+  require(registry.plugin(p.type).validateSession(p,next).valid)
   if(next==old) return@withTransaction old
   dao.save(row.copy(state=SessionCodec.encode(next),updatedAt=System.currentTimeMillis()))
   if(next.status in setOf(SessionStatus.WON,SessionStatus.LOST)) {
    val receipt=dao.enqueue(SyncOperationEntity(UUID.randomUUID().toString(),sessionId,"complete_session",SessionCodec.encode(next)))
    if(receipt!=-1L) {
     val prior=dao.progress(p.puzzleId)
-    dao.saveProgress(PlayerProgressEntity(p.puzzleId,maxOf(prior?.bestScore?:0,next.score),(prior?.completed?:false)||next.status==SessionStatus.WON,(prior?.attempts?:0)+1))
-    if(next.status==SessionStatus.WON) dao.award(AchievementEntity("first_win",System.currentTimeMillis()))
+    dao.saveProgress(PlayerProgressEntity(p.puzzleId,maxOf(prior?.bestScore?:0,next.score),(prior?.completed?:false)||next.status==SessionStatus.WON,(prior?.attempts?:0)+1,p.type,maxOf(prior?.xp?:0,next.score)))
+    if(next.status==SessionStatus.WON) {
+     dao.award(AchievementEntity("first_win",System.currentTimeMillis()))
+     dao.award(AchievementEntity("first_win_${p.type}",System.currentTimeMillis()))
+    }
    }
   }
   next

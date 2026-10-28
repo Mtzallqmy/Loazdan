@@ -41,11 +41,14 @@ import com.lughzdan.engine.*
      composable("catalog") { Page {
       Text("الألعاب المتاحة",style=MaterialTheme.typography.headlineMedium)
       if(puzzles.isEmpty())Text("لا توجد حزمة معتمدة مثبتة. نسخة الإنتاج لا تتضمن مسودات الاختبار.")
-      if("choice" in GameRegistry().types && puzzles.isNotEmpty()) {
-       Text("تحدي المفردات العربية — أربعة اختيارات")
-       Text("محتوى اختبار غير معتمد علميًا",color=MaterialTheme.colorScheme.error)
-       puzzles.forEachIndexed { index,p->OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")} }
-      }
+      var filter by remember { mutableStateOf<String?>(null) }
+      TextButton(onClick={filter=null}){Text("كل الألعاب")}
+      gameNames.filterKeys { type->puzzles.any {it.type==type} }.forEach { (type,label)->TextButton(onClick={filter=type}){Text(label)} }
+      puzzles.forEachIndexed {index,p->if(p.type in GameRegistry().types&&(filter==null||filter==p.type)) {
+       Text(gameNames[p.type] ?: p.title)
+       OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")}
+      }}
+
      } }
      composable("session/{id}") { entry->
       val id=entry.arguments?.getString("id");val record=sessions.find { it.session.id==id }
@@ -58,16 +61,17 @@ import com.lughzdan.engine.*
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
        } else if(!terminal) {
         Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
-        p.payload.options.forEach { option->OutlinedButton(onClick={vm.select(s.id,option.id)},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==option.id) "✓ " else "")+option.text)} }
-        Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=s.selectedId!=null&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+        GameBoard(p,s,busy){vm.action(s.id,it)}
+        Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+
         if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
         p.hints.firstOrNull()?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy&&hint.id !in s.usedHintIds){Text("تلميح (−${hint.penalty} نقطة)")};if(hint.id in s.usedHintIds)Text(hint.text) }
        } else {
         Text(if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات",style=MaterialTheme.typography.titleLarge)
-        Text("الإجابة: ${p.payload.options.first { it.id==p.payload.correctId }.text}")
+        p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}
         Text(p.explanation)
         Text("المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق.",style=MaterialTheme.typography.bodySmall)
-        Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.first { it.id==key }.text })
+        Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
         Button(onClick={val next=puzzles[(puzzles.indexOfFirst { it.puzzleId==p.puzzleId }+1)%puzzles.size];play(next.puzzleId)},enabled=!busy){Text("اللغز التالي")}
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}

@@ -25,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 @HiltAndroidApp class LughzdanApplication:Application()
 @Module @InstallIn(SingletonComponent::class) object AppModule {
- @Provides @Singleton fun database(@ApplicationContext context:Context)=Room.databaseBuilder(context,LughzdanDatabase::class.java,"lughzdan.db").build()
+ @Provides @Singleton fun database(@ApplicationContext context:Context)=Room.databaseBuilder(context,LughzdanDatabase::class.java,"lughzdan.db").addMigrations(LughzdanDatabase.MIGRATION_1_2).build()
  @Provides @Singleton fun repository(@ApplicationContext context:Context,db:LughzdanDatabase):ProgressRepository=LocalGameRepository(context,db,BuildConfig.DEBUG)
  @Provides @Singleton fun settings(@ApplicationContext context:Context)=SettingsStore(context)
 }
