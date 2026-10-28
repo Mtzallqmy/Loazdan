@@ -5,6 +5,16 @@ cd "$(dirname "$0")/../apps/android"
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 adb shell pm clear com.lughzdan.app
+collect_evidence() {
+  local result=$?
+  mkdir -p artifacts/stage03
+  adb pull /sdcard/Android/data/com.lughzdan.app/files/ artifacts/stage03/device-files || true
+  for metric in artifacts/stage03/device-files/stage03-gfxinfo.txt artifacts/stage03/device-files/stage03-meminfo.txt; do
+    if [[ -f "$metric" ]]; then cat "$metric"; fi
+  done
+  if [[ "$result" -ne 0 ]]; then adb logcat -d -t 1000 > artifacts/stage03/failure-logcat.txt || true; fi
+}
+trap collect_evidence EXIT
 run_phase() {
   local output
   output=$(adb shell am instrument -w -r -e class "com.lughzdan.app.${2:-OfflineDeviceTest}#$1" com.lughzdan.app.test/androidx.test.runner.AndroidJUnitRunner)
@@ -35,10 +45,3 @@ run_phase phaseFiveVerifyBuilderResult SixGameDeviceTest
 adb shell svc wifi enable
 adb shell svc data enable
 run_phase phaseSixOtherBoards SixGameDeviceTest
-
-mkdir -p artifacts/stage03
-adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/gfxinfo.txt
-adb shell dumpsys meminfo com.lughzdan.app > artifacts/stage03/meminfo.txt
-cat artifacts/stage03/gfxinfo.txt
-cat artifacts/stage03/meminfo.txt
-adb pull /sdcard/Android/data/com.lughzdan.app/files/ artifacts/stage03/device-files
