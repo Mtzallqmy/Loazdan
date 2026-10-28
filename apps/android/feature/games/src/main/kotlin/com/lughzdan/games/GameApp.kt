@@ -32,8 +32,11 @@ import com.lughzdan.engine.*
     else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f)) {
      composable("home") { Page {
       Text("مدينة الكلمات",style=MaterialTheme.typography.headlineMedium)
-      Text("مستواك ${1+progress.completed/5} · ${progress.totalScore} نقطة · ${progress.completed} ألغاز مكتملة")
+      Text("مستواك ${ProgressionRules.playerLevel(progress.totalXp)} · ${progress.totalScore} نقطة · ${progress.completed} ألغاز مكتملة")
       Text("العب بالمحتوى المثبّت دون اتصال")
+      Text("الخبرة: ${progress.totalXp} XP · الصعوبة المفتوحة: ${ProgressionRules.unlockedDifficulty(progress.totalXp)}")
+      progress.perGame.forEach { item->Text("${gameNames[item.gameType] ?: item.gameType}: ${item.completed} مكتمل · ${item.totalScore} نقطة · ${item.attempts} جولة") }
+      if(progress.achievements.isNotEmpty())Text("الإنجازات: "+progress.achievements.joinToString("، "){if(it=="first_win")"أول فوز" else "أول فوز: "+(gameNames[it.removePrefix("first_win_")] ?: it)})
       sessions.firstOrNull()?.let { record->Button(onClick={nav.navigate("session/${record.session.id}")}){Text("متابعة آخر نشاط")} }
       Button(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
       TextButton(onClick={nav.navigate("history")}){Text("مراجعة الإجابات السابقة")}
@@ -46,8 +49,9 @@ import com.lughzdan.engine.*
       gameNames.filterKeys { type->puzzles.any {it.type==type} }.forEach { (type,label)->TextButton(onClick={filter=type}){Text(label)} }
       puzzles.forEachIndexed {index,p->if(p.type in GameRegistry().types&&(filter==null||filter==p.type)) {
        Text(gameNames[p.type] ?: p.title)
+       if(p.difficulty>ProgressionRules.unlockedDifficulty(progress.totalXp))Text("يفتح عند ${(p.difficulty-1)*300} XP")
        if(p.fixtureOnly)Text("محتوى اختبار غير معتمد علميًا",color=MaterialTheme.colorScheme.error)
-       OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")}
+       OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy&&p.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp),modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("لغز ${index+1} · الصعوبة ${p.difficulty}")}
       }}
 
      } }

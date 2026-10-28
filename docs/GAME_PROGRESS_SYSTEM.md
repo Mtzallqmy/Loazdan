@@ -9,3 +9,5 @@ A bundled upgrade is verified and all puzzles validated before the transaction. 
 Plugin session validation guards restored and saved records. Unsupported/inconsistent records remain stored and are reported unavailable. Valid active rounds become paused once per repository lifetime. Legacy choice records remain supported.
 
 Domain `Progress` exposes total score/XP/completions, per-game score/completions/attempts/XP and achievement IDs. These are local offline projections, not server-authoritative rewards or leaderboard results. Unique receipt insertion and progress updates share the session transaction.
+
+Practice unlocks: difficulty1 initially, +1 per300 best-score XP up to5; player level=1+floor(XP/250). The catalog enforces the shared ProgressionRules gate; each game has an entry level. Replay preserves max XP and cannot farm unlocks. Home shows per-game totals and earned achievements.
