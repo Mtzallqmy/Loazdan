@@ -98,19 +98,34 @@ class BoardAccessibilityTest {
   val entry=p.payload.entries.first()
   val description="خلية ${entry.row} ${entry.col}"
   val token=entry.tokens.first()
-  val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
-  compose.onNode(vertical).performScrollToNode(hasContentDescription(description))
+  showNestedCell(description)
   compose.onNodeWithContentDescription(description).performScrollTo().assertIsDisplayed().performClick()
-  compose.onNode(vertical).performScrollToNode(hasContentDescription("مفتاح $token"))
+  showNestedCell("مفتاح $token")
   compose.onNodeWithContentDescription("مفتاح $token").performScrollTo().assertIsDisplayed().performClick()
   compose.waitForIdle()
   // Check the committed engine state independently from accessibility text merging.
   compose.runOnIdle {org.junit.Assert.assertEquals(token,state.value.cells["${entry.row},${entry.col}"])}
-  compose.onNode(vertical).performScrollToNode(hasContentDescription(description))
+  showNestedCell(description)
   // Same merged semantics query used by the device persistence assertion.
   compose.onNodeWithContentDescription(description).assert(hasText(token,substring=true))
   compose.onAllNodesWithContentDescription(description).filter(hasText(token,substring=true)).assertCountEquals(1)
   compose.onNodeWithContentDescription("خلية 0 0").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"الخلية المحددة"))
+ }
+
+ private fun showNestedCell(description:String) {
+  val page=compose.onNode(SemanticsMatcher("vertical page"){it.config.contains(SemanticsProperties.VerticalScrollAxisRange)})
+  repeat(4) {
+   val viewport=page.fetchSemanticsNode().boundsInRoot
+   val target=compose.onNodeWithContentDescription(description).fetchSemanticsNode()
+   val top=target.positionInRoot.y
+   val bottom=top+target.size.height
+   val delta=when {top<viewport.top->top-viewport.top;bottom>viewport.bottom->bottom-viewport.bottom;else->0f}
+   if(kotlin.math.abs(delta)>1f) {
+    page.performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){it(0f,delta)}
+    compose.waitForIdle()
+   }
+  }
+  compose.onNodeWithContentDescription(description).assertIsDisplayed()
  }
 
 }
