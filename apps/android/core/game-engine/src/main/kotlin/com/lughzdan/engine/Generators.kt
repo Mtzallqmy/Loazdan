@@ -40,18 +40,43 @@ object CrosswordGenerator {
 object WordSearchGenerator {
  fun generate(words:List<GeneratorWord>,rows:Int,cols:Int,seed:Int,filler:List<String> = listOf("ا","ب","ت","س","م","ن"),maxAttempts:Int=1000):GenerationResult {
   if(words.size !in 1..30||filler.size !in 1..100||!validInput(words,rows,cols,maxAttempts)||filler.isEmpty()||filler.any {!validToken(it)}) return GenerationResult.Failure("invalid_input")
-  val rng=Random(seed);val board=mutableMapOf<Cell,String>();val placed=mutableListOf<SearchWord>();var attempts=0
-  for(w in words.sortedByDescending {it.tokens.size}){
-   val candidates=buildList {for(r in 0 until rows) for(c in 0 until cols) for(dr in -1..1) for(dc in -1..1) if(dr!=0||dc!=0) add(w.tokens.indices.map {Cell(r+it*dr,c+it*dc)})}.shuffled(rng)
-   var found:List<Cell>?=null
-   for(path in candidates){if(++attempts>maxAttempts) return GenerationResult.Failure("attempt_budget_exhausted");if(path.any {it.row !in 0 until rows||it.col !in 0 until cols}||path.zip(w.tokens).any {(c,t)->board[c]!=null&&board[c]!=t}) continue;found=path;break}
-   if(found==null) return GenerationResult.Failure("no_placement")
-   placed.add(SearchWord(w.id,w.tokens.joinToString(""),found));found.zip(w.tokens).forEach {(c,t)->board[c]=t}
+  val compare={t:String->ArabicText.comparison(t,NormalizationPolicy(removeMarks=true))}
+  val rng=Random(seed);var attempts=0
+  val ordered=words.sortedByDescending {it.tokens.size}
+  val candidates=ordered.map {w->buildList {
+   for(r in 0 until rows) for(c in 0 until cols) for(dr in -1..1) for(dc in -1..1) if(dr!=0||dc!=0) {
+    val path=w.tokens.indices.map {Cell(r+it*dr,c+it*dc)}
+    if(path.all {it.row in 0 until rows&&it.col in 0 until cols}) add(path)
+   }
+  }}
+  if(candidates.any {it.isEmpty()}) return GenerationResult.Failure("no_placement")
+  // A legal placement can still acquire undeclared words from random filler.
+  // Retry the whole layout so duplicates forced by placed words can also recover.
+  while(attempts<maxAttempts) {
+   val board=mutableMapOf<Cell,String>();val placed=mutableListOf<SearchWord>()
+   for((index,w) in ordered.withIndex()) {
+    var found:List<Cell>?=null
+    for(path in candidates[index].shuffled(rng)) {
+     if(attempts>=maxAttempts) return GenerationResult.Failure("attempt_budget_exhausted")
+     attempts++
+     if(path.zip(w.tokens).any {(c,t)->board[c]!=null&&compare(board.getValue(c))!=compare(t)}) continue
+     found=path;break
+    }
+    if(found==null) break
+    placed.add(SearchWord(w.id,w.tokens.joinToString(""),found));found.zip(w.tokens).forEach {(c,t)->board[c]=t}
+   }
+   if(placed.size!=words.size||placed.map {it.path.toSet()}.distinct().size!=placed.size) continue
+   if(attempts>=maxAttempts) return GenerationResult.Failure("attempt_budget_exhausted")
+   attempts++ // Filling and checking a complete board also consumes the global budget.
+   val grid=List(rows){r->List(cols){c->board[Cell(r,c)] ?: filler[rng.nextInt(filler.size)]}}
+   val normalizedGrid=grid.map {r->r.map(compare)}
+   if(words.any {w->
+    val declared=placed.filter {compare(it.label)==compare(w.tokens.joinToString(""))}.map {it.path.toSet()}.toSet()
+    occurrences(normalizedGrid,w.tokens.map(compare))!=declared
+   }) continue
+   return GenerationResult.Success(ChoicePayload(grid=grid,words=placed))
   }
-  if(placed.map {it.path.toSet()}.distinct().size!=placed.size) return GenerationResult.Failure("duplicate_path")
-  val grid=List(rows){r->List(cols){c->board[Cell(r,c)] ?: filler[rng.nextInt(filler.size)]}}
-  for(w in words){val declared=placed.filter {it.label==w.tokens.joinToString("")}.map {it.path.toSet()}.toSet();if(occurrences(grid.map {r->r.map {ArabicText.comparison(it,NormalizationPolicy(removeMarks=true))}},w.tokens.map {ArabicText.comparison(it,NormalizationPolicy(removeMarks=true))})!=declared) return GenerationResult.Failure("duplicate_occurrence")}
-  return GenerationResult.Success(ChoicePayload(grid=grid,words=placed))
+  return GenerationResult.Failure("attempt_budget_exhausted")
  }
 }
 object WordsearchGenerator {

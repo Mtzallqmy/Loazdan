@@ -34,7 +34,18 @@ class GamesTest {
  @Test fun generatorLimitsAndVariantWhitelist(){val w=GeneratorWord("a",listOf("ب","ا"),"q","s");assertTrue(CrosswordGenerator.generate(List(61){w},5,5,0) is GenerationResult.Failure);assertTrue(WordSearchGenerator.generate(listOf(w),5,5,0,maxAttempts=50001) is GenerationResult.Failure);assertFalse(OrderPlugin().validatePuzzle(p("order",order.copy(variant="unknown"))).valid);assertFalse(validToken("ب"+"ِ".repeat(20)))}
  @Test fun generatorsAreDeterministicBoundedAndValid(){val words=listOf(GeneratorWord("a",listOf("ب","ا","ت"),"q","s"),GeneratorWord("b",listOf("ا","س"),"q","s"));val samples=mutableListOf<Long>();var successes=0;var crosswordSuccesses=0;var searchSuccesses=0
   for(seed in 0..40){val start=System.nanoTime();val x=CrosswordGenerator.generate(words,5,5,seed,10000);val y=WordSearchGenerator.generate(words,5,5,seed,maxAttempts=10000);samples.add(System.nanoTime()-start);assertEquals(x,CrosswordGenerator.generate(words,5,5,seed,10000));assertEquals(y,WordSearchGenerator.generate(words,5,5,seed,maxAttempts=10000));if(x is GenerationResult.Success){successes++;crosswordSuccesses++;assertTrue(CrosswordPlugin().validatePuzzle(p("crossword",x.payload)).valid)};if(y is GenerationResult.Success){successes++;searchSuccesses++;assertTrue(WordsearchPlugin().validatePuzzle(p("wordsearch",y.payload)).valid)}}
-  assertTrue(crosswordSuccesses>0);assertTrue(searchSuccesses>0);assertTrue(CrosswordGenerator.generate(words,5,5,0,1) is GenerationResult.Failure);assertTrue(WordSearchGenerator.generate(words,2,2,0) is GenerationResult.Failure);samples.sort();println("generator_pair_ms p50=${samples[20]/1e6} p95=${samples[38]/1e6} runs=41 successes=$successes java=${System.getProperty("java.version")} os=${System.getProperty("os.name")}")
+  assertTrue("crossword seed corpus produced no valid boards",crosswordSuccesses>0);assertTrue("wordsearch seed corpus produced no valid boards",searchSuccesses>0);assertTrue(CrosswordGenerator.generate(words,5,5,0,1) is GenerationResult.Failure);assertTrue(WordSearchGenerator.generate(words,2,2,0) is GenerationResult.Failure);samples.sort();println("generator_pair_ms p50=${samples[20]/1e6} p95=${samples[38]/1e6} runs=41 successes=$successes java=${System.getProperty("java.version")} os=${System.getProperty("os.name")}")
+ }
+ @Test fun wordsearchRetriesAccidentalFillerWithinSharedBudget(){
+  val words=listOf(GeneratorWord("a",listOf("ب","ا","ت"),"q","s"),GeneratorWord("b",listOf("ا","س"),"q","s"))
+  val result=WordSearchGenerator.generate(words,5,5,0,maxAttempts=10000)
+  assertTrue("seed 0 must recover from accidental filler occurrences: $result",result is GenerationResult.Success)
+  result as GenerationResult.Success
+  assertTrue(WordsearchPlugin().validatePuzzle(p("wordsearch",result.payload)).valid)
+  assertEquals(result,WordSearchGenerator.generate(words,5,5,0,maxAttempts=10000))
+  assertEquals(GenerationResult.Failure("attempt_budget_exhausted"),WordSearchGenerator.generate(words,5,5,0,maxAttempts=1))
+  val impossible=listOf(GeneratorWord("a",listOf("ا","ا"),"q","s"))
+  assertEquals(GenerationResult.Failure("attempt_budget_exhausted"),WordSearchGenerator.generate(impossible,3,3,0,filler=listOf("ا"),maxAttempts=100))
  }
  @Test fun allBundledFixturesValidate(){var dir=File(System.getProperty("user.dir"));while(!File(dir,"contracts").isDirectory&&dir.parentFile!=null) dir=dir.parentFile;val files=File(dir,"apps/android/app/src/debug/assets").walkTopDown().filter {it.extension=="jsonl"}.toList();assertTrue(files.isNotEmpty());val registry=GameRegistry();var count=0;files.forEach {file->file.readLines().filter {it.isNotBlank()}.forEach {line->val p=SessionCodec.json.decodeFromString<PuzzleDefinition>(line);val result=registry.plugin(p.type).validatePuzzle(p);assertTrue("${p.puzzleId}: ${result.errors}",result.valid);count++}};assertTrue(count>=22)}
 }
