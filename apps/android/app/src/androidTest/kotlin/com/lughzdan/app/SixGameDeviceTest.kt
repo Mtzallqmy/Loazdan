@@ -51,7 +51,7 @@ class SixGameDeviceTest {
   try {
    compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(desc).filter(hasText(token,substring=true)).fetchSemanticsNodes().isNotEmpty()}
    compose.onNodeWithContentDescription(desc).performScrollTo().assertIsDisplayed()
-  } catch(error:AssertionError) {
+  } catch(error:Throwable) {
    compose.onRoot(useUnmergedTree=true).printToLog("CrosswordAcceptance")
    screenshot("stage03-crossword-assertion-failure")
    throw error
