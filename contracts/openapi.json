@@ -6354,6 +6354,15 @@
                             ]
                           }
                         ]
+                      },
+                      "properties": {
+                        "variant": {
+                          "enum": [
+                            "synonym",
+                            "antonym",
+                            "word_meaning"
+                          ]
+                        }
                       }
                     },
                     {
@@ -6452,7 +6461,10 @@
                         "sentence",
                         "story",
                         "procedure",
-                        "chronology"
+                        "chronology",
+                        "proverb",
+                        "poetry",
+                        "completion"
                       ]
                     },
                     "prompt": {

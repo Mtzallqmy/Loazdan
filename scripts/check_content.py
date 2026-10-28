@@ -39,6 +39,22 @@ for p in ps:
  elif t=='order':assert sorted(v['correctOrder'])==sorted(o['id'] for o in v['items'])
 for t in ['choice','crossword','wordsearch','anagram','matching','order']:assert counts[t]>=2
 for t,n in [('matching',6),('anagram',4),('order',4)]:assert len({p['payload'].get('variant') for p in ps if p['type']==t})==n
+# Literary ordering support is exercised with synthetic labels, never unverified quotations.
+order_sample=next(p for p in ps if p['type']=='order')
+import copy
+for variant in ['sentence','story','procedure','chronology','proverb','poetry','completion']:
+ sample=copy.deepcopy(order_sample);sample['payload']['variant']=variant
+ validator.validate(sample)
+ malformed=copy.deepcopy(sample);malformed['payload']['variant']='unregistered_mode'
+ assert not validator.is_valid(malformed)
+# Semantic union must reject mixed interactions and choice-only variants on pairs.
+semantic_sample=next(p for p in ps if p['type']=='matching' and 'options' in p['payload'])
+mixed=copy.deepcopy(semantic_sample);mixed['payload'].update(left=[],right=[],pairs=[])
+assert not validator.is_valid(mixed)
+pair_sample=next(p for p in ps if p['type']=='matching' and 'pairs' in p['payload'])
+for variant in ['intruder','context','difference']:
+ malformed=copy.deepcopy(pair_sample);malformed['payload']['variant']=variant
+ assert not validator.is_valid(malformed)
 old=subprocess.check_output(['git','show','HEAD:apps/android/app/src/debug/assets/data/vocabulary.jsonl'],cwd=root);assert data.splitlines()[:4]==old.splitlines()[:4]
 release=root/'apps/android/app/src/release/assets';assert not list(release.rglob('*.jsonl'))
 print(f'{len(ps)} debug-only solvable puzzles, variants, stable original definitions and SHA-256 validated')

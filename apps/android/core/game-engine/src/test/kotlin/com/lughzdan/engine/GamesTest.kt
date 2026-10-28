@@ -5,6 +5,20 @@ import java.io.File
 class GamesTest {
  private fun p(type:String,b:ChoicePayload)=PuzzleDefinition(1,"p",1,"g",type,"words",1,1,"arabic_basic_v1","t","draft",true,listOf("s"),"explanation",listOf(Hint("h","step","hint",10)),b)
  private val order=ChoicePayload(items=listOf(Option("a","A"),Option("b","B")),correctOrder=listOf("b","a"))
+ @Test fun literaryOrderingVariantsUseStableIdsAndResume(){
+  // Synthetic labels exercise contracts; they are neither proverbs nor quoted verse.
+  for(variant in listOf("proverb","poetry","completion")) {
+   val puzzle=p("order",order.copy(variant=variant,prompt="رتب البطاقات وفق المرجع المحدد"))
+   val engine=OrderPlugin();assertTrue(engine.validatePuzzle(puzzle).valid)
+   var session=engine.createSession(puzzle,"session-$variant")
+   session=engine.evaluate(puzzle,session,PlayerAction.Submit("wrong"));assertEquals(1,session.wrongSubmissions)
+   session=engine.evaluate(puzzle,session,PlayerAction.Reorder("reorder",listOf("b","a")))
+   session=SessionCodec.restore(SessionCodec.encode(session));assertTrue(engine.validateSession(puzzle,session).valid)
+   session=engine.evaluate(puzzle,session,PlayerAction.Resume("resume"))
+   session=engine.evaluate(puzzle,session,PlayerAction.Submit("win"));assertEquals(SessionStatus.WON,session.status)
+   assertEquals(session,engine.evaluate(puzzle,session,PlayerAction.Submit("win")))
+  }
+ }
  @Test fun legacyPayloadAndStateRemainReadable(){val b=SessionCodec.json.decodeFromString<ChoicePayload>("""{"prompt":"q","options":[],"correctId":"a"}""");assertEquals("a",b.correctId);val s=GameSession("s","p",2,packVersion=4,packId="pack",selectedId="a");assertEquals(s,SessionCodec.decode(SessionCodec.encode(s)))}
  @Test fun noChangeReorderIsAcknowledgedBeforeReplay(){val p=p("order",order);val e=OrderPlugin();var s=e.createSession(p,"s");val a=PlayerAction.Reorder("same",listOf("a","b"));s=e.evaluate(p,s,a);s=e.evaluate(p,s,PlayerAction.Reorder("changed",listOf("b","a")));assertEquals(s,e.evaluate(p,s,a))}
  @Test fun orderRejectsDuplicateItemsAndChargesHintOnce(){val p=p("order",order);val e=OrderPlugin();var s=e.createSession(p,"s");assertEquals(s,e.evaluate(p,s,PlayerAction.Reorder("bad",listOf("a","a"))));repeat(2){s=e.evaluate(p,s,PlayerAction.UseHint("h$it","h"))};s=e.evaluate(p,s,PlayerAction.Reorder("r",listOf("b","a")));s=e.evaluate(p,s,PlayerAction.Submit("win"));assertEquals(90,s.score);assertTrue(e.validateSession(p,s).valid);assertEquals(s,e.evaluate(p,s,PlayerAction.UseHint("x","h")))}

@@ -26,7 +26,7 @@ abstract class BoardPlugin(final override val type:String):GamePlugin {
  override fun validatePuzzle(puzzle:PuzzleDefinition)=ValidationResult(buildList {
   addAll(ChoicePlugin().validatePuzzle(puzzle.copy(type="choice",payload=ChoicePayload("q",listOf(Option("a","a"),Option("b","b")),"a"))).errors)
   if(puzzle.type!=type) add("wrong_type")
-  val allowed=when(type){"anagram"->setOf("","anagram","missing_letter","word_from_letters","word_from_word","multi_word","words_multiple","multiple","arrange","missing","extra");"matching"->setOf("","synonym","antonym","word_meaning","intruder","context","difference");"order"->setOf("","sentence","story","procedure","chronology");else->setOf("")}
+  val allowed=when(type){"anagram"->setOf("","anagram","missing_letter","word_from_letters","word_from_word","multi_word","words_multiple","multiple","arrange","missing","extra");"matching"->setOf("","synonym","antonym","word_meaning","intruder","context","difference");"order"->setOf("","sentence","story","procedure","chronology","proverb","poetry","completion");else->setOf("")}
   if(puzzle.payload.variant !in allowed) add("unsupported_variant")
   addAll(errors(puzzle))
  })
