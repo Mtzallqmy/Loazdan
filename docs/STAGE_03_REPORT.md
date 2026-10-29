@@ -1,11 +1,54 @@
-# Stage03 implementation report — verification in progress
+# تقرير المرحلة الثالثة — التحقق النهائي جارٍ
 
-Branch: stage-03-advanced-arabic-games. Existing Stage02 vocabulary remains. Added crossword, wordsearch, anagram/builder, semantic matching/choice and ordering with separate interactive boards, shared scoring, persisted concrete hints, replay-safe best-score XP, per-game statistics and difficulty unlocks.
+التاريخ: 2026-10-28. فرع العمل: `stage-03-advanced-arabic-games`، وطلب المراجعة [#2](https://github.com/Mtzallqmy/Loazdan/pull/2) فوق فرع المرحلة الثانية. لا دمج في main ولا إصدار رسمي.
 
-Room2 migration preserves old sessions/progress/achievements/receipts and pack-version pins; bundle2 import is verified and atomic. Original four choice records remain unchanged. Twenty-two original editorial debug drafts are present, with schema/solvability/hash validation; they are not human-reviewed approved content and release excludes them.
+## التنفيذ الفعلي
 
-SQL003 adds only six engine metadata rows with ON CONFLICT DO NOTHING, tested on an isolated Neon stage03-integration branch. No production/player data was changed. Backend TypeScript/PGlite16 tests passed locally; CI native PostgreSQL, Android build/Lint/unit/Room and multi-process offline/reboot device tests are running.
+ستة أنواع مسجلة بمحركات مستقلة عن Android والواجهات والشبكة: المفردات، المتقاطعة، البحث عن الكلمات، تركيب الحروف، العلاقات الدلالية، والترتيب. لكل نوع واجهة تفاعلية وتقييم ونقاط وتلميح وحالة قابلة للحفظ. مولّدا المتقاطعة والبحث حتميان بالبذرة ومحدودا البحث، ويفحصان صحة كل نتيجة قبل قبولها.
 
-Astra's static review repaired legacy-JSON upgrade incompatibility, invalid crossword runs/connectivity, duplicate search occurrences, fixed-tile inventory, explicit verification and action replay. Final runtime results and remaining defects must be added before approval. No successful Android or performance claim is made from the existence of code/tests.
+واجهة المتقاطعة تحدد الخلية والكلمة والاتجاه وترقم التعريفات، وتدعم لوحة عربية وإدخال IME للحرف المشكل أو الممتد. البحث يحتفظ بالمسارات المكتشفة. البناء يحترم هوية البلاطات وتكرار الحروف والمواضع الثابتة والكلمات المتعددة. العلاقات تشمل المطابقة والاختيارات السياقية؛ الترتيب يشمل عقود الجملة والمثل والشعر والتركيب والخطوات. لا أبيات منسوبة بلا تحقق.
 
-Outstanding evidence: final CI totals, real exported Room2 schema, all device phases/reboot, host generator timings, screenshots/resource artifacts, final Astra review. Dependency graph/required-check repository admin setup and human content approval remain deployment/release gates. No Stage04/05 implementation or official APK release was performed.
+يعمل المحتوى المثبت محليًا دون HTTP. Room2 يحتفظ بإصدارات الحزم والألغاز والجلسات القديمة، ويطبق ترحيلًا صريحًا من Room1. النتيجة وreceipt والتقدم والإنجازات تُحفظ في معاملة واحدة؛ XP هو أفضل نتيجة لكل لغز ولا يتضاعف بإعادة اللعب. فتح الصعوبات يطبق داخل معاملة بدء الجولة وفي التنقل. الإعدادات في DataStore.
+
+الحزمة debug تحتوي22 مسودة مؤلفة لأغراض التطوير، وكلها `fixtureOnly` وغير منشورة؛ أول أربعة ألغاز من المرحلة الثانية محفوظة دون تغيير. هذه ليست مكتبة لغوية معتمدة. نسخة release تستبعد المسودات، ونشر المحتوى الأدبي واللغوي يحتاج مراجعة وحقوقًا موثقة.
+
+## البناء والاختبارات
+
+الترجمة المحلية الجديدة للمحرك باستخدام Kotlin2.2.21 وserialization1.9.0 وJUnit4.13.2 اجتازت47 اختبارًا دون فشل، بتحميل engine.jar الجديد صراحةً في مقدمة classpath. فحص البذور أنتج82 شبكة صحيحة من41 بذرة لكل مولّد. الخادم اجتاز typecheck وbuild و16 اختبار تكامل محليًا باستخدام PGlite. فحص المخطط/OpenAPI/SQL اجتاز53 فحصًا، والتحقق من الحزمة والألغاز22 وSHA256 وفحص أنماط الأسرار نجحا.
+
+تشغيل GitHub Actions [40704686380](https://github.com/Mtzallqmy/Loazdan/actions/runs/40704686380) عند `be0d5a68c39fd62fccfdec0513f1cb2f2b13e9d8` نجح في بناء Android وLint و71 اختبارًا دون فشل: المحرك47، Room11، الشبكة4، DataStore1، واختبارات التطبيق8. نجح الخادم وقراءات PostgreSQL الفعلية والعقود أيضًا.
+
+اختبار API26 حل المفردات ثم توقف لأن صورة AOSP لا تمنح shell صلاحية CHANGE_WIFI_STATE؛ عُدّل سكربت المحاكي لاستخدام adb root على المحاكي القابل للتخلص فقط. API28 اجتاز مرحلتي المفردات والاستعادة دون اتصال، ثم توقف عند إثبات الحرف الجزئي في المتقاطعة. التشغيل اللاحق `ab8fde168` اجتاز72 اختبارًا وبناء/Lint؛ API26 اجتاز تبديل الشبكة والاستعادة بعد إصلاح صلاحية shell. أظهر التشخيص أن الاختبار كان يضغط خارج الجزء الظاهر بسبب اختيار أقرب حاوية تمرير أفقية؛ عُدّل ليُمرّر الصفحة العمودية أولًا ويتأكد من ظهور الخلية قبل الضغط، دون تخفيف شرط الحرف المحفوظ. نتيجة هذه المعالجة الأخيرة لا تزال قيد التحقق. هذا الفشل لم يُخفَ ولم يُحوّل إلى نجاح.
+
+نتائج المحاكيات النهائية تُضاف بعد اكتمال التشغيل، ولا يُعد وجود الاختبارات نجاحًا. تشغيل CI سابق عندc53e1bb اجتاز المحرك وRoom والشبكة وDataStore، وفشل اختبار UI القديم لأن أول زر في الفهرس الموسع صار خارج مجال اللمس؛ أضيف التمرير الصريح للاختبار. لا تُنسب نتائج المرحلة الثانية إلى الإضافات الجديدة.
+
+أوامر التحقق الأساسية:
+
+```bash
+cd apps/android
+./gradlew :app:assembleDebug :core:game-engine:test :data:testDebugUnitTest :core:datastore:testDebugUnitTest :core:network:testDebugUnitTest :app:testDebugUnitTest :app:lintDebug
+```
+
+```bash
+cd services/api
+npm run typecheck
+npm run build
+TEST_DATABASE_ENGINE=pglite npm test
+```
+
+اختبارات GitHub للخادم تستخدم PostgreSQL فعليًا، واختبارات الجهاز تنفذ `scripts/device_acceptance.sh` علىAPI26 وAPI28، مع force-stop، وفصل الشبكة، وإعادة تشغيل المحاكي، والتحقق من عدم تكرار المكافأة. يجب توثيق نتيجتها النهائية هنا قبل اعتماد المرحلة.
+
+## قاعدة البيانات والأمان
+
+الترحيل `003_stage_three_types.sql` مطبق على Neon `stage03-integration`، معرّف الفرع `br-still-grass-baixdxhx` ضمن المشروع القائم `young-hall-20561827` وقاعدة `lughzdan`. أُعيدت قراءة الأنواع الستة ونسخ المحرك/المخطط بنجاح. الترحيل يضيف metadata فقط دون نشر المسودات أو تغيير بيانات اللاعبين؛ فرع الإنتاج لم يُعدّل.
+
+الاتصال بقاعدة البيانات في الخادم فقط. لا اعتماديات Neon أو بيانات اعتمادها داخل Android. فحص أنماط الأسرار للمصادر نجح، لكنه ليس تدقيقًا شاملًا للاعتمادات أو APK. سياساتRLS ودورAPI المحدود باقية. مراجعةAstra المستقلة موثقة في `STAGE_03_ASTRA_REVIEW.md`؛ أُصلحت عيوب الترقية ومعالجة الشبكات والإدخال التي أكّدتها.
+
+## بوابات الاعتماد
+
+- نتائج البناء وLint وCompose والترحيل والمحاكيات للنسخة النهائية ما زالت قيد التحقق.
+- GitHub Dependency Review يتوقف لأن Dependency graph غير مفعّل في المستودع. لم يُحذف الفحص أو يُتجاوز؛ إعداد الأمان يحتاج صلاحية إدارة لا يوفرها اتصال GitHub المتاح.
+- المحتوى المنشور والمراجعة اللغوية البشرية ومواد الشعر الموثقة ليست معتمدة بعد.
+- قياسات هاتف متوسط فعلي وTalkBack الكامل واختبارات البطارية لم تُنفّذ. قياسات المحاكي أو JVM لا تثبت تحقيق ميزانياتها.
+
+المرحلة الرابعة غير منفذة. عقود الجلسات والحزم والمزامنة وملاحظات الانتقال في `STAGE_04_HANDOFF.md`؛ الانتقال يعتمد على نتائج القبول والاستثناءات المعلنة، ولا يعني هذا التقرير إجازة إصدار إنتاجي.

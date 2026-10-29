@@ -22,7 +22,7 @@ class OfflineRepositoryTest {
   db.games().install(InstalledContentPackEntity("fixture",7,"fixture-digest",1,true))
   db.games().insertPuzzles(listOf(LocalPuzzleEntity("p",1,"fixture",SessionCodec.json.encodeToString(p),0)))
  } }
- private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2).allowMainThreadQueries().build() }
+ private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3).allowMainThreadQueries().build() }
  @After fun close() { db.close();context.deleteDatabase(filename) }
  @Test fun solveCloseReopenOfflineAndDeduplicate()=runBlocking {
   var repository=LocalGameRepository(context,db,true)

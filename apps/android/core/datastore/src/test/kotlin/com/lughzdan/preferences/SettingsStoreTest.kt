@@ -11,8 +11,8 @@ import org.robolectric.annotation.Config
 class SettingsStoreTest {
  @Test fun preferencesSurviveStoreRecreation()=runBlocking {
   val context=ApplicationProvider.getApplicationContext<android.content.Context>()
-  val store=SettingsStore(context);store.dark(true);store.sound(true)
+  val store=SettingsStore(context);store.dark(true);store.sound(true);store.wifiOnly(false);store.automaticDownloads(false)
   val restored=SettingsStore(context).settings.first()
-  assertTrue(restored.dark);assertTrue(restored.sound)
+  assertTrue(restored.dark);assertTrue(restored.sound);assertFalse(restored.wifiOnly);assertFalse(restored.automaticDownloads)
  }
 }

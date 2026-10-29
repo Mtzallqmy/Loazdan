@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.*
@@ -24,7 +25,7 @@ import com.lughzdan.engine.*
  DisposableEffect(Unit) { onDispose { tone?.release() } }
  fun play(id:String) { vm.start(id) { nav.navigate("session/$it") } }
  LughzdanTheme(settings.dark) {
-  Scaffold(bottomBar={ if(ready) NavigationBar { listOf("home" to "الرئيسية","catalog" to "الألعاب","library" to "المكتبة","settings" to "الإعدادات").forEach { (route,label)->NavigationBarItem(selected=nav.currentBackStackEntryAsState().value?.destination?.route==route,onClick={ nav.navigate(route){launchSingleTop=true;popUpTo("home"){saveState=true};restoreState=true} },icon={Text(label.take(1))},label={Text(label)}) } } }) { padding ->
+  Scaffold(bottomBar={ if(ready) NavigationBar { listOf("home" to "الرئيسية","catalog" to "الألعاب","library" to "المكتبة","settings" to "الإعدادات").forEach { (route,label)->NavigationBarItem(modifier=Modifier.testTag("nav-$route"),selected=nav.currentBackStackEntryAsState().value?.destination?.route==route,onClick={ nav.navigate(route){launchSingleTop=true;popUpTo("home"){inclusive=false}} },icon={Text(label.take(1))},label={Text(label)}) } } }) { padding ->
    Column(Modifier.fillMaxSize().padding(padding).padding(horizontal=20.dp)) {
     Text("لُغْزَدان",style=MaterialTheme.typography.headlineLarge,modifier=Modifier.padding(vertical=16.dp))
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
@@ -47,6 +48,7 @@ import com.lughzdan.engine.*
       var filter by remember { mutableStateOf<String?>(null) }
       TextButton(onClick={filter=null}){Text("كل الألعاب")}
       gameNames.filterKeys { type->puzzles.any {it.type==type} }.forEach { (type,label)->TextButton(onClick={filter=type}){Text(label)} }
+      TextButton(onClick={vm.morePuzzles()}){Text("عرض المزيد من الألغاز المثبتة")}
       puzzles.forEachIndexed {index,p->if(p.type in GameRegistry().types&&(filter==null||filter==p.type)) {
        Text(gameNames[p.type] ?: p.title)
        if(p.difficulty>ProgressionRules.unlockedDifficulty(progress.totalXp))Text("يفتح عند ${(p.difficulty-1)*300} XP")
@@ -94,16 +96,17 @@ import com.lughzdan.engine.*
       unavailableSessions.forEach { Text(it.reason,color=MaterialTheme.colorScheme.error) }
       sessions.forEach { record->TextButton(onClick={nav.navigate("session/${record.session.id}")}){Text("${record.puzzle.payload.prompt} · ${record.session.score} نقطة")} }
      } }
-     composable("library") { Page {
-      Text("مكتبة المحتوى",style=MaterialTheme.typography.headlineMedium)
-      if(packs.isEmpty())Text("لا توجد حزم مثبتة.")
-      packs.forEach { pack->Text("${pack.id} · النسخة ${pack.version}\nمثبّت محليًا · ${pack.bytes} بايت\n"+if(pack.fixtureOnly)"حزمة اختبار غير معتمدة" else "محتوى منشور") }
-      Text("تنزيل الحزم الخارجية غير مفعّل في هذه المرحلة. المحتوى المثبت يعمل دون إنترنت.")
-     } }
+     composable("library") { ContentLibrary(vm,{nav.navigate("downloads")},{nav.navigate("storage")}) }
+     composable("downloads") { DownloadsScreen(vm) }
+     composable("storage") { StorageScreen(vm) }
      composable("settings") { Page {
       Text("الإعدادات",style=MaterialTheme.typography.headlineMedium)
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("الوضع الداكن");Switch(checked=settings.dark,onCheckedChange=vm::dark)}
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("صوت تأكيد الإجابة");Switch(checked=settings.sound,onCheckedChange=vm::sound)}
+      val contentPreferences by vm.contentPreferences.collectAsStateWithLifecycle()
+      Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("التنزيل عبر Wi-Fi فقط");Switch(checked=contentPreferences.wifiOnly,onCheckedChange={value->vm.contentAction { setWifiOnly(value) }})}
+      Text("تنزيل الحزم يدوي. لا تبدأ تنزيلات تلقائية.")
+      TextButton(onClick={nav.navigate("storage")}){Text("إدارة التخزين")}
       Text("التقدم والإعدادات محفوظان على هذا الجهاز. إزالة التطبيق تمسح بيانات الضيف. لا حساب أو رفع بيانات في هذه النسخة.")
      } }
     }

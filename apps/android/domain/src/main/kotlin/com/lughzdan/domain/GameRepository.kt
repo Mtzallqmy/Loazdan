@@ -13,6 +13,7 @@ interface ProgressRepository {
  val unavailableSessions:Flow<List<UnavailableSession>>
  val progress:Flow<Progress>
  val packs:Flow<List<InstalledPack>>
+ suspend fun loadMore() {}
  suspend fun initialize()
  suspend fun start(puzzleId:String):String
  suspend fun act(sessionId:String,action:PlayerAction):GameSession

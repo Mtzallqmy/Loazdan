@@ -3,7 +3,7 @@ package com.lughzdan.engine
 import kotlinx.serialization.Serializable
 import java.security.MessageDigest
 
-@Serializable enum class DownloadState { NOT_INSTALLED, QUEUED, DOWNLOADING, PAUSED, VERIFYING, INSTALLING, INSTALLED, UPDATE_AVAILABLE, FAILED }
+@Serializable enum class DownloadState { NOT_INSTALLED, QUEUED, DOWNLOADING, PAUSED, VERIFYING, INSTALLING, INSTALLED, UPDATE_AVAILABLE, FAILED, CANCELLED }
 @Serializable data class BundledManifest(val schemaVersion: Int, val packId: String, val version: Int, val fixtureOnly: Boolean, val path: String, val bytes: Long, val sha256: String)
 interface PackStorage { fun read(path: String): ByteArray }
 object BundledPackVerifier {

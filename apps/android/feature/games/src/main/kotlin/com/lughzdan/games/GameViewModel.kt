@@ -11,13 +11,19 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
-class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore):ViewModel() {
+class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore,val contentRepository:ContentRepository?=null):ViewModel() {
  val puzzles=repository.puzzles.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val sessions=repository.sessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val unavailableSessions=repository.unavailableSessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val progress=repository.progress.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),Progress(0,0))
  val packs=repository.packs.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val settings=settingsStore.settings.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),com.lughzdan.preferences.Settings())
+ val catalog=(contentRepository?.catalog ?: flowOf(emptyList())).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val downloads=(contentRepository?.downloads ?: flowOf(emptyList())).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val contentPreferences=(contentRepository?.preferences ?: flowOf(ContentPreferences())).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),ContentPreferences())
+ val storage=(contentRepository?.storage ?: flowOf(ContentStorage())).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),ContentStorage())
+ val cloudDisabledReason=(contentRepository?.disabledReason ?: flowOf("لم يُضبط خادم للمحتوى. يمكنك استخدام الحزم المثبتة دون اتصال.")).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),null)
+ fun contentAction(action:suspend ContentRepository.()->Unit) { val content=contentRepository ?: return;viewModelScope.launch { try { content.action() } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر إتمام عملية المحتوى. أعد المحاولة." } } }
  private val _ready=MutableStateFlow(false);val ready=_ready.asStateFlow()
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _busy=MutableStateFlow(false);val busy=_busy.asStateFlow()
@@ -25,6 +31,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val submissionPending=AtomicBoolean(false)
  init { initialize() }
  fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
+ fun morePuzzles() {viewModelScope.launch {repository.loadMore()}}
  fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);sessions.first { records->records.any { it.session.id==started } };onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
  fun action(id:String,action:PlayerAction) { dispatch(id,action) }
  private fun dispatch(id:String,action:PlayerAction)=viewModelScope.launch { mutex.withLock { _busy.value=true;try { val committed=repository.act(id,action);sessions.first { records->records.any { it.session==committed } };_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="لم تُحفظ الحركة. حاول مجددًا." } finally { _busy.value=false } } }

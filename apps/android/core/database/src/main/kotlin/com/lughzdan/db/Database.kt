@@ -11,15 +11,16 @@ import kotlinx.coroutines.flow.Flow
 @Entity(tableName="achievements") data class AchievementEntity(@PrimaryKey val id:String,val awardedAt:Long)
 @Entity(tableName="sync_operations",indices=[Index(value=["sessionId"],unique=true)]) data class SyncOperationEntity(@PrimaryKey val operationId:String,val sessionId:String,val kind:String,val payload:String)
 @Dao interface GameDao {
- @Query("SELECT puzzles.* FROM puzzles INNER JOIN (SELECT puzzleId, MAX(revision) AS revision FROM puzzles GROUP BY puzzleId) latest USING(puzzleId,revision) ORDER BY ordinal") fun observePuzzles():Flow<List<LocalPuzzleEntity>>
- @Query("SELECT puzzles.* FROM puzzles INNER JOIN (SELECT puzzleId, MAX(revision) AS revision FROM puzzles GROUP BY puzzleId) latest USING(puzzleId,revision) ORDER BY ordinal") suspend fun puzzles():List<LocalPuzzleEntity>
+ @Query("SELECT puzzles.* FROM puzzles INNER JOIN (SELECT puzzleId, MAX(revision) AS revision FROM puzzles WHERE NOT EXISTS(SELECT 1 FROM pack_heads h WHERE h.packId=puzzles.packId) OR EXISTS(SELECT 1 FROM pack_members m JOIN pack_heads h ON h.packId=m.packId AND h.activeVersion=m.version WHERE m.puzzleId=puzzles.puzzleId AND m.revision=puzzles.revision AND m.packId=puzzles.packId) GROUP BY puzzleId) latest USING(puzzleId,revision) ORDER BY ordinal LIMIT :limit") fun observePuzzles(limit:Int=200):Flow<List<LocalPuzzleEntity>>
+ @Query("SELECT puzzles.* FROM puzzles INNER JOIN (SELECT puzzleId, MAX(revision) AS revision FROM puzzles WHERE NOT EXISTS(SELECT 1 FROM pack_heads h WHERE h.packId=puzzles.packId) OR EXISTS(SELECT 1 FROM pack_members m JOIN pack_heads h ON h.packId=m.packId AND h.activeVersion=m.version WHERE m.puzzleId=puzzles.puzzleId AND m.revision=puzzles.revision AND m.packId=puzzles.packId) GROUP BY puzzleId) latest USING(puzzleId,revision) ORDER BY ordinal LIMIT 200") suspend fun puzzles():List<LocalPuzzleEntity>
+ @Query("SELECT * FROM puzzles WHERE puzzleId=:id ORDER BY revision DESC LIMIT 1") suspend fun anyPuzzle(id:String):LocalPuzzleEntity?
  @Query("SELECT * FROM puzzles WHERE puzzleId=:id AND revision=:revision") suspend fun puzzle(id:String,revision:Int):LocalPuzzleEntity?
  @Query("SELECT COUNT(*) FROM puzzles") fun observeContentCount():Flow<Long>
- @Query("SELECT * FROM puzzles WHERE puzzleId=:id ORDER BY revision DESC LIMIT 1") suspend fun latestPuzzle(id:String):LocalPuzzleEntity?
+ @Query("SELECT puzzles.* FROM puzzles WHERE puzzleId=:id AND (NOT EXISTS(SELECT 1 FROM pack_heads h WHERE h.packId=puzzles.packId) OR EXISTS(SELECT 1 FROM pack_members m JOIN pack_heads h ON h.packId=m.packId AND h.activeVersion=m.version WHERE m.puzzleId=puzzles.puzzleId AND m.revision=puzzles.revision AND m.packId=puzzles.packId)) ORDER BY revision DESC LIMIT 1") suspend fun latestPuzzle(id:String):LocalPuzzleEntity?
  @Insert(onConflict=OnConflictStrategy.ABORT) suspend fun insertPuzzles(items:List<LocalPuzzleEntity>)
  @Insert(onConflict=OnConflictStrategy.REPLACE) suspend fun install(pack:InstalledContentPackEntity)
  @Query("SELECT * FROM installed_packs") fun observePacks():Flow<List<InstalledContentPackEntity>>
- @Query("SELECT * FROM installed_packs WHERE packId=:id ORDER BY version DESC LIMIT 1") suspend fun pack(id:String):InstalledContentPackEntity?
+ @Query("SELECT p.* FROM installed_packs p LEFT JOIN pack_heads h ON h.packId=p.packId WHERE p.packId=:id AND (h.packId IS NULL OR h.activeVersion=p.version) ORDER BY p.version DESC LIMIT 1") suspend fun pack(id:String):InstalledContentPackEntity?
  @Query("SELECT * FROM installed_packs WHERE packId=:id AND version=:version") suspend fun pinnedPack(id:String,version:Int):InstalledContentPackEntity?
  @Query("SELECT * FROM achievements ORDER BY awardedAt,id") fun observeAchievements():Flow<List<AchievementEntity>>
  @Query("SELECT * FROM sessions ORDER BY updatedAt DESC,id DESC") fun observeSessions():Flow<List<GameSessionEntity>>
@@ -35,10 +36,14 @@ import kotlinx.coroutines.flow.Flow
  @Query("SELECT COUNT(*) FROM sync_operations") suspend fun operationCount():Int
  @Query("DELETE FROM puzzles WHERE packId=:packId") suspend fun removeContent(packId:String)
 }
-@Database(entities=[InstalledContentPackEntity::class,LocalPuzzleEntity::class,GameSessionEntity::class,PlayerProgressEntity::class,AchievementEntity::class,SyncOperationEntity::class],version=2,exportSchema=true)
+@Database(entities=[InstalledContentPackEntity::class,LocalPuzzleEntity::class,GameSessionEntity::class,PlayerProgressEntity::class,AchievementEntity::class,SyncOperationEntity::class,PackHeadEntity::class,PackMemberEntity::class,InstallJournalEntity::class,DownloadEntity::class,SyncDeliveryEntity::class,SyncAccountEntity::class,SyncReplicaEntity::class],version=3,exportSchema=true)
 abstract class LughzdanDatabase:RoomDatabase(){
  abstract fun games():GameDao
+ abstract fun content():ContentDao
  companion object {
+  val MIGRATION_2_3:Migration=object:Migration(2,3) {
+   override fun migrate(db:SupportSQLiteDatabase) { ContentSchema.statements.forEach(db::execSQL) }
+  }
   val MIGRATION_1_2:Migration=object:Migration(1,2) {
    override fun migrate(db:SupportSQLiteDatabase) {
     db.execSQL("CREATE TABLE installed_packs_v2 (packId TEXT NOT NULL, version INTEGER NOT NULL, sha256 TEXT NOT NULL, bytes INTEGER NOT NULL, fixtureOnly INTEGER NOT NULL, PRIMARY KEY(packId, version))")

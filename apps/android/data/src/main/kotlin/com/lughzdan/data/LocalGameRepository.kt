@@ -12,13 +12,16 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 import java.util.UUID
 
-class LocalGameRepository(private val context:Context,private val db:LughzdanDatabase,private val allowFixtures:Boolean,private val bundledContent:Pair<BundledManifest,ByteArray>?=null):ProgressRepository {
+class LocalGameRepository(private val context:Context,private val db:LughzdanDatabase,private val allowFixtures:Boolean,private val bundledContent:Pair<BundledManifest,ByteArray>?=null,private val recoverContent:suspend ()->Unit={}):ProgressRepository {
  private val dao=db.games()
  private val json=Json { encodeDefaults=true }
  private val registry=GameRegistry()
  private val initializationMutex=Mutex()
  private var initialized=false
- override val puzzles=dao.observePuzzles().map { rows->rows.map { json.decodeFromString<PuzzleDefinition>(it.definition) } }
+ private val catalogLimit=MutableStateFlow(200)
+ override suspend fun loadMore() {catalogLimit.value=Math.addExact(catalogLimit.value,200)}
+ @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+ override val puzzles=catalogLimit.flatMapLatest {dao.observePuzzles(it)}.map { rows->rows.map { json.decodeFromString<PuzzleDefinition>(it.definition) } }
  private val loadedSessions=combine(dao.observeSessions(),dao.observePacks(),dao.observeContentCount()) { rows,installed,_ ->
   val available=mutableListOf<PlayRecord>();val unavailable=mutableListOf<UnavailableSession>()
   rows.forEach { row ->
@@ -36,7 +39,8 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  private fun decodeStored(row:GameSessionEntity)=SessionCodec.decode(row.state).also {
   require(it.id==row.id && it.puzzleId==row.puzzleId && it.revision==row.revision)
  }
- private fun validateRecord(state:GameSession,row:LocalPuzzleEntity):PuzzleDefinition {
+ private suspend fun validateRecord(state:GameSession,row:LocalPuzzleEntity):PuzzleDefinition {
+  require(db.content().head(state.packId)==null || db.content().membership(state.packId,state.packVersion,state.puzzleId,state.revision)==1) {"Puzzle does not belong to pinned pack version"}
   require(row.packId==state.packId && row.puzzleId==state.puzzleId && row.revision==state.revision)
   val p=json.decodeFromString<PuzzleDefinition>(row.definition)
   require(p.puzzleId==row.puzzleId && p.revision==row.revision && registry.plugin(p.type).validatePuzzle(p).valid)
@@ -50,6 +54,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  override val packs=dao.observePacks().map { rows->rows.map { InstalledPack(it.packId,it.version,it.bytes,it.fixtureOnly) } }
  override suspend fun initialize()=withContext(Dispatchers.IO) { initializationMutex.withLock {
   if(initialized) return@withLock
+  recoverContent()
   // Release has no draft asset; empty content is explicit, never silently replaced by fixtures.
   if (bundledContent!=null || context.assets.list("").orEmpty().contains("bundled-manifest.json")) {
   val manifest=bundledContent?.first ?: json.decodeFromString<BundledManifest>(context.assets.open("bundled-manifest.json").bufferedReader().use { it.readText() })

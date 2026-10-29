@@ -37,3 +37,5 @@ An initial hosted attempt hit the role-flag restriction and rolled back. The cor
 ## Stage03 metadata migration
 
 `003_stage_three_types.sql` adds metadata for the six implemented rule types using INSERT ON CONFLICT DO NOTHING. It does not alter content definitions, published rows or player data. Applied on2026-10-28 to `stage03-integration` (`br-still-grass-baixdxhx`), a child of the reviewed Stage02 test branch in the same project/database. Read-back returned the six IDs with engine/schema versions; no approved/published puzzles were inserted. Runtime policies remain inherited and default deny outside the catalog. PostgreSQL native/PGlite migration tests run003 as part of empty→latest and verify repeated migration no-op. This is separate from the Android Room1→2 migration.
+
+Fresh read-back on2026-10-28 confirmed the003 ledger checksum `942e62106c55caaba013c23222253db4eda5cf6b8fc94338240102153d04273e`, exactly matching the committed SQL file. The ledger records application at2026-10-28T01:47:38.935Z; migrations001/002 retain their original checksums. This verification was read-only on the isolated Stage03 branch.
