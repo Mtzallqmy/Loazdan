@@ -1,7 +1,7 @@
 name: Lughzdan verification
 on:
   push:
-    branches: [main, 'feat/**', 'stage-03-advanced-arabic-games']
+    branches: [main, 'feat/**', 'stage-03-advanced-arabic-games', 'stage-04-offline-content-sync']
   pull_request:
 concurrency:
   group: lughzdan-${{ github.head_ref || github.ref_name }}
