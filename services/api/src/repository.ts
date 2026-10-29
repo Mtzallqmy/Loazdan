@@ -50,4 +50,13 @@ export class CatalogRepository {
     const rows = await this.rows<ContentPack>(`SELECT ${packColumns} FROM content.content_packs p JOIN content.content_pack_versions v ON v.pack_id=p.id WHERE p.id=$1::uuid AND p.withdrawn_at IS NULL AND v.status='published' AND v.published_at IS NOT NULL AND ($2::integer IS NULL OR v.version<$2) ORDER BY v.version DESC LIMIT $3`, [id, after, limit + 1]);
     return pageOf(rows, limit, scope, row => row.version);
   }
+  async compatiblePack(id:string, appVersionCode:number):Promise<ContentPack|null> { const [row]=await this.rows<ContentPack>(`SELECT ${packColumns} ${latestPack} AND p.id=$1::uuid`,[id,appVersionCode]);return row??null; }
+  async manifest(id: string, version?: number) {
+    const rows = await this.rows<{manifest: import('./content.js').SignedManifest; sha256: string}>(`SELECT v.manifest,v.manifest_sha256 AS sha256 FROM content.content_pack_versions v JOIN content.content_packs p ON p.id=v.pack_id WHERE pack_id=$1::uuid AND p.withdrawn_at IS NULL AND v.status='published' AND v.published_at IS NOT NULL AND ($2::integer IS NULL OR version=$2) ORDER BY version DESC LIMIT 1`, [id, version ?? null]);
+    return rows[0] ?? null;
+  }
+  async dependencies(id: string, version: number) {
+    return this.rows<{packId:string;version:number}>(`SELECT dependency_pack_id AS "packId",dependency_version AS version FROM content.pack_dependencies WHERE pack_id=$1::uuid AND version=$2 ORDER BY dependency_pack_id`,[id,version]);
+  }
+
 }

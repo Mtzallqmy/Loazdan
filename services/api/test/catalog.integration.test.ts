@@ -119,3 +119,11 @@ test('Stage03 additive drafts are idempotent and excluded from public catalog', 
   assert.equal((await app.inject('/api/v1/puzzles')).json().items.length,2);
   for (const type of ['crossword','wordsearch','anagram','matching','order']) assert.equal((await app.inject('/api/v1/puzzles?type='+type)).statusCode,200);
 });
+
+test('Stage04 pack routes keep drafts hidden and updates compatible; auth is fail closed',async()=>{
+ assert.equal((await app.inject('/api/v1/content-packs/'+id(21)+'/manifest')).statusCode,404);
+ assert.equal((await app.inject('/api/v1/content-packs/'+id(20)+'/manifest?version=3')).statusCode,404);
+ assert.equal((await app.inject('/api/v1/content-packs/'+id(20)+'/manifest?version=1')).statusCode,503);
+ const updates=await app.inject({method:'POST',url:'/api/v1/content-packs/updates',payload:{installed:[{packId:id(20),version:0},{packId:id(21),version:0}],appVersionCode:1}});assert.equal(updates.statusCode,200);assert.deepEqual(updates.json().updates.map((p:{id:string;version:number})=>[p.id,p.version]),[[id(20),1]]);
+ assert.equal((await app.inject('/api/v1/sync/pull')).statusCode,401);
+});

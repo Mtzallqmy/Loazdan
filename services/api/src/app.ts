@@ -1,3 +1,4 @@
+import { registerContentRoutes, type ContentOptions } from './routes.js';
 import { randomUUID, createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import Fastify from 'fastify';
@@ -10,7 +11,7 @@ import { ApiError } from './errors.js';
 import type { CatalogRepository } from './repository.js';
 const addFormats = createRequire(import.meta.url)('ajv-formats') as FormatsPlugin;
 
-export function buildApp(repository: CatalogRepository, options: { logger?: boolean } = {}) {
+export function buildApp(repository: CatalogRepository, options: ContentOptions & { logger?: boolean } = {}) {
   const app = Fastify({ logger: options.logger ?? false, trustProxy: false, disableRequestLogging: true, bodyLimit: 1024 * 1024, requestTimeout: 10_000, connectionTimeout: 10_000, genReqId: () => randomUUID(), requestIdHeader: false });
   // Bounded per-process LRU. Multi-instance deployments require gateway limits.
   app.register(rateLimit, { global: true, max: 120, timeWindow: 60_000, cache: 5000, keyGenerator: request => request.ip });
@@ -50,6 +51,7 @@ export function buildApp(repository: CatalogRepository, options: { logger?: bool
     return reply.send(data);
   };
   app.after(() => {
+  registerContentRoutes(app, repository, options);
   app.get('/health', { schema: { response: { 200: { type: 'object', additionalProperties: false, properties: { status: { const: 'ok' } }, required: ['status'] } } } }, async () => ({ status: 'ok' }));
   app.get('/health/ready', async () => {
     if (!await repository.ready()) throw new ApiError(503, 'TEMPORARY_UNAVAILABLE', 'Service temporarily unavailable');

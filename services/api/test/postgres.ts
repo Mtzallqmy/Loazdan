@@ -51,7 +51,7 @@ export async function startTestDatabase() {
     await run('initdb', ['-D', data, '-U', 'postgres', '--auth=trust', '--encoding=UTF8', '--locale=C']);
     await run('pg_ctl', ['-D', data, '-l', join(root, 'server.log'), '-o', `-h 127.0.0.1 -p ${port} -k ${root}`, '-w', 'start']); started = true;
     await owner.connect(); await migrate(owner);
-    return { owner, catalog, stop, root };
+    return { owner, catalog, pool, stop, root };
   } catch (error) { await stop(); throw error; }
 }
 
@@ -67,6 +67,6 @@ async function startWasmDatabase() {
   const pool = new Pool({ host: '127.0.0.1', port, database: 'postgres', user: 'postgres', max: 1 });
   const catalog = new CatalogDatabase(pool);
   const stop = async () => { await pool.end(); await owner.end(); await server.stop(); await engine.close(); };
-  try { await owner.connect(); await migrate(owner); return { owner, catalog, stop, root: 'memory://pglite-test' }; }
+  try { await owner.connect(); await migrate(owner); return { owner, catalog, pool, stop, root: 'memory://pglite-test' }; }
   catch (error) { await stop(); throw error; }
 }
