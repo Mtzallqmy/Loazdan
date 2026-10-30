@@ -58,10 +58,14 @@ class PackInstallerTest {
   assertEquals(1,db.content().head(pack)!!.activeVersion)
  }
  @Test fun rejectsImageMetadataThatDoesNotMatchSignedMedia()=runBlocking {
-  val image=VisualImage("test","media/test.png","Test image","clue",ref,"CC0",1,1,"0".repeat(64))
-  rejected {installer().install(signed(1,visual=image),"Unbound image")}
-  assertNull(db.content().head(pack)?.activeVersion)
-  assertTrue(db.games().puzzles().isEmpty())
+  val image=VisualImage("test","media/test.png","Test image","clue",ref,"CC0",1,1,hash(byteArrayOf(1,2,3)))
+  listOf(image.copy(sha256="0".repeat(64)),image.copy(sourceRef=other),image.copy(license="Unlicensed"),image.copy(alt="Changed description"),image.copy(assetPath="media/missing.png")).forEachIndexed {index,bad ->
+   rejected {installer().install(signed(index+1,visual=bad),"Unbound image")}
+   assertNull(db.content().head(pack)?.activeVersion)
+   assertTrue(db.games().puzzles().isEmpty())
+  }
+  installer().install(signed(6,visual=image,minEngine=3),"Bound image")
+  assertEquals(6,db.content().head(pack)!!.activeVersion)
  }
  @Test fun signedPublishedSourceCanProduceSyncOperation()=runBlocking {
   installer().install(signed(1),"Test")

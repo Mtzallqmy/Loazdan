@@ -128,6 +128,10 @@ object SessionCodec {
     fun decode(value: String): GameSession = json.decodeFromString<GameSession>(value).also {
         require(it.stateVersion in 1..2) { "Unsupported session state version" }
         require(it.revision > 0 && it.packVersion > 0 && it.wrongSubmissions in 0..3 && it.score >= 0)
+        require(answerTextValid(it.answerInput) && it.revealedRegions.all { region -> region in 0..63 })
+        require(it.selectedImageId == null || it.selectedImageId.isNotBlank())
+        require(it.imageOrder.size <= 24 && it.imageOrder.all { id -> id.isNotBlank() } && it.imageOrder.distinct().size == it.imageOrder.size)
+        require(it.imageMatches.size <= 12 && it.imageMatches.all { pair -> pair.leftId.isNotBlank() && pair.rightId.isNotBlank() } && it.imageMatches.map { pair -> pair.leftId }.distinct().size == it.imageMatches.size && it.imageMatches.map { pair -> pair.rightId }.distinct().size == it.imageMatches.size)
         require(it.status == SessionStatus.WON || it.score == 0)
         require((it.status == SessionStatus.LOST) == (it.wrongSubmissions == 3))
     }

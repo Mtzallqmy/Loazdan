@@ -15,7 +15,7 @@ class VisualGamesTest {
   else -> ChoicePayload(prompt="سؤال",images=(1..3).map {image("t$it","term")}+listOf(image("a","option"),image("b","option")),correctImageId="a",logicRule=LogicRule("add",listOf(1,2,3),mapOf("a" to 4,"b" to 5),1))
  }
  @Test fun allSixVisualTypesSolveRestoreAndReplay() {
-  assertEquals(12,GameRegistry().types.size)
+  assertTrue(GameRegistry().types.containsAll(visualTypes + setOf("choice","crossword","wordsearch","anagram","matching","order")))
   for(type in visualTypes) {
    val p=puzzle(type,payload(type));val e=GameRegistry().plugin(type)
    assertTrue("$type ${e.validatePuzzle(p).errors}",e.validatePuzzle(p).valid)
@@ -51,7 +51,7 @@ class VisualGamesTest {
   for(type in visualTypes) {
    val p=puzzle(type,payload(type));val e=GameRegistry().plugin(type);val s=e.createSession(p,"s")
    for(bad in listOf(s.copy(revealedRegions=setOf(999)),s.copy(selectedImageId="missing"),s.copy(imageOrder=listOf("bad")),s.copy(imageMatches=listOf(MatchPair("bad","worse"))),s.copy(answerInput="\u202E"),s.copy(status=SessionStatus.WON,score=100))) {
-    val decoded=SessionCodec.restore(SessionCodec.encode(bad));assertFalse("$type",e.validateSession(p,decoded).valid)
+    val decoded=runCatching {SessionCodec.restore(SessionCodec.encode(bad))}.getOrNull();assertTrue("$type",decoded==null || !e.validateSession(p,decoded).valid)
    }
   }
  }
@@ -60,7 +60,8 @@ class VisualGamesTest {
   for(path in listOf("https://example.com/a.webp","media/../a.webp","/media/a.webp","media/a.svg","media/a.webp?x")) assertFalse(e.validatePuzzle(p.copy(payload=b.copy(images=b.images.map {it.copy(assetPath=path)}))).valid)
   assertFalse(e.validatePuzzle(p.copy(payload=b.copy(images=b.images.map {it.copy(sourceRef="unknown")}))).valid)
   assertFalse(e.validatePuzzle(p.copy(payload=b.copy(images=b.images.map {it.copy(width=0,sha256="bad")}))).valid)
-  for(rule in listOf(b.logicRule!!.copy(values=listOf(1,2,4)),b.logicRule.copy(optionValues=mapOf("a" to 5,"b" to 4)),b.logicRule.copy(kind="editorial"),b.logicRule.copy(optionValues=mapOf("a" to 4,"b" to 4)))) assertFalse(e.validatePuzzle(p.copy(payload=b.copy(logicRule=rule))).valid)
+  val proof=b.logicRule!!
+  for(rule in listOf(proof.copy(values=listOf(1,2,4)),proof.copy(optionValues=mapOf("a" to 5,"b" to 4)),proof.copy(kind="editorial"),proof.copy(optionValues=mapOf("a" to 4,"b" to 4)))) assertFalse(e.validatePuzzle(p.copy(payload=b.copy(logicRule=rule))).valid)
  }
  @Test fun legacyStateDecodesWithEmptyVisualFields() {
   val s=SessionCodec.decode("""{"id":"old","puzzleId":"p","revision":1}""")

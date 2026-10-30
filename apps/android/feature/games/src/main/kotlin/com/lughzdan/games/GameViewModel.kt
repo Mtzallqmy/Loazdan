@@ -11,7 +11,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
-class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore,val contentRepository:ContentRepository?=null):ViewModel() {
+class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore,val contentRepository:ContentRepository?=null,val vocabularyRepository:VocabularyRepository?=null):ViewModel() {
  val puzzles=repository.puzzles.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val sessions=repository.sessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val unavailableSessions=repository.unavailableSessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())

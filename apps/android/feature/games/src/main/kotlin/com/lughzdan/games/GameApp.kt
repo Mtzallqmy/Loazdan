@@ -41,6 +41,7 @@ import com.lughzdan.engine.*
       sessions.firstOrNull()?.let { record->Button(onClick={nav.navigate("session/${record.session.id}")}){Text("متابعة آخر نشاط")} }
       Button(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
       TextButton(onClick={nav.navigate("history")}){Text("مراجعة الإجابات السابقة")}
+      if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}
      } }
      composable("catalog") { Page {
       Text("الألعاب المتاحة",style=MaterialTheme.typography.headlineMedium)
@@ -95,6 +96,7 @@ import com.lughzdan.engine.*
        }
       }
      }
+     composable("vocabulary") { vm.vocabularyRepository?.let { vocabulary->VocabularyScreen(vocabulary) { nav.navigate("catalog") } } }
      composable("history") { Page {
       Text("سجل الجولات",style=MaterialTheme.typography.headlineMedium)
       if(sessions.isEmpty())Text("ابدأ لغزًا لتظهر جولتك هنا.")

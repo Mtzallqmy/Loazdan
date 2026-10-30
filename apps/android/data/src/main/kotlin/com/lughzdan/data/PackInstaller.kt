@@ -24,8 +24,8 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
  private fun directory(id:String,version:Int)=File(root,"versions/$id/$version")
  private fun syncDirectory(file:File) { val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY,0);try {Os.fsync(fd)} finally {Os.close(fd)} }
  suspend fun verify(bytes:ByteArray):SignedManifest {
-  val preliminary=verifier.verify(bytes.inputStream(),appVersion,2)
-  return verifier.verify(bytes.inputStream(),appVersion,2,dao.head(preliminary.packId)?.highWater?:0)
+  val preliminary=verifier.verify(bytes.inputStream(),appVersion,3)
+  return verifier.verify(bytes.inputStream(),appVersion,3,dao.head(preliminary.packId)?.highWater?:0)
  }
  private suspend fun dependencies(m:SignedManifest) {
   val installed=mutableMapOf<Dependency,SignedManifest>()
@@ -34,7 +34,7 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
    if(d !in installed) {
     require(db.games().pinnedPack(d.packId,d.version)!=null) {"Dependency must be installed first"}
     val j=dao.journal(d.packId,d.version) ?: error("Dependency manifest unavailable")
-    val manifest=verifier.verify(j.manifest.byteInputStream(),appVersion,2)
+    val manifest=verifier.verify(j.manifest.byteInputStream(),appVersion,3)
     require(filesValid(manifest,directory(d.packId,d.version))) {"Dependency damaged"}
     installed[d]=manifest
     manifest.dependencies.forEach {load(it,seen)}
@@ -92,6 +92,18 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
      val p=json.decodeFromString<PuzzleDefinition>(line)
      require(p.status=="published" && !p.fixtureOnly && p.sourceRefs.all {ref->ref in m.sourceRefs}) {"Only referenced published puzzles can be installed"}
      require(GameRegistry().plugin(p.type).validatePuzzle(p).valid)
+     p.payload.images.forEach { image ->
+      val asset=m.assets.singleOrNull {it.path==image.assetPath}
+       ?: error("Visual image must reference a signed asset")
+      val media=m.files.singleOrNull {it.path==asset.path && it.kind=="media"}
+       ?: error("Visual image must reference signed media")
+      val source=m.references.singleOrNull {it.referenceId==asset.sourceReferenceId}
+       ?: error("Visual image source must be included in the signed manifest")
+      require(image.sha256==media.sha256 && image.sourceRef==asset.sourceReferenceId &&
+       image.sourceRef in p.sourceRefs && image.license==source.licenseCode && image.alt==asset.altText) {
+       "Visual image metadata differs from its signed asset and source"
+      }
+     }
      require(seen.add(p.puzzleId to p.revision)) {"Duplicate puzzle"}
      db.withTransaction {
       val prior=db.games().puzzle(p.puzzleId,p.revision)
@@ -121,12 +133,12 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
  suspend fun recover()=withContext(Dispatchers.IO) {mutex.withLock {
   for(j in dao.journals()) {
    if(j.phase=="DELETED")continue
-   val m=runCatching {verifier.verify(j.manifest.byteInputStream(),appVersion,2)}.getOrNull() ?: continue
+   val m=runCatching {verifier.verify(j.manifest.byteInputStream(),appVersion,3)}.getOrNull() ?: continue
    val final=directory(j.packId,j.version)
    val head=dao.head(j.packId)
    if(head?.activeVersion==j.version && !filesValid(m,final)) {
     val backup=head.previousVersion?.let {dao.journal(j.packId,it)}
-    val prior=backup?.let {runCatching {verifier.verify(it.manifest.byteInputStream(),appVersion,2)}.getOrNull()}
+    val prior=backup?.let {runCatching {verifier.verify(it.manifest.byteInputStream(),appVersion,3)}.getOrNull()}
     val valid=prior!=null && filesValid(prior,directory(prior.packId,prior.version))
     db.withTransaction {dao.head(head.copy(activeVersion=if(valid)prior!!.version else null,previousVersion=null,manifest=if(valid)backup!!.manifest else head.manifest,installedBytes=if(valid)prior!!.installedBytes else 0));dao.journal(j.copy(phase="QUARANTINED"));dao.deleteInstalledVersion(j.packId,j.version)}
    } else if(j.phase in setOf("PREPARING","PREPARED") && final.exists() && filesValid(m,final) && m.version >= (head?.highWater?:0)) {

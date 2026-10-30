@@ -61,7 +61,8 @@ DECLARE ref jsonb; dep record; actual jsonb; rec jsonb;
 BEGIN
  IF NEW.review_digest<>encode(sha256(convert_to(NEW.definition::text,'UTF8')),'hex') THEN RAISE EXCEPTION 'knowledge digest mismatch'; END IF;
  rec:=NEW.definition->'record';
- IF rec->>'id'<>NEW.id::text OR rec->>'kind'<>NEW.kind OR rec->>'authorId'<>NEW.author_id::text
+ IF rec->>'id' IS DISTINCT FROM NEW.id::text OR rec->>'kind' IS DISTINCT FROM NEW.kind OR rec->>'authorId' IS DISTINCT FROM NEW.author_id::text
+    OR jsonb_typeof(rec->'fixtureOnly') IS DISTINCT FROM 'boolean'
     OR jsonb_typeof(rec->'referenceIds') IS DISTINCT FROM 'array' OR jsonb_array_length(rec->'referenceIds')=0
     OR jsonb_typeof(rec->'links') IS DISTINCT FROM 'array'
     OR jsonb_typeof(NEW.definition->'references') IS DISTINCT FROM 'array'
@@ -94,7 +95,7 @@ BEGIN
  IF (TG_TABLE_NAME='source_references' AND EXISTS(SELECT 1 FROM content.knowledge_records k,jsonb_array_elements(k.definition->'references') r WHERE r->'reference'->>'id'=OLD.id::text))
  OR (TG_TABLE_NAME='content_sources' AND EXISTS(SELECT 1 FROM content.knowledge_records k,jsonb_array_elements(k.definition->'references') r WHERE r->'source'->>'id'=OLD.id::text)) THEN
  RAISE EXCEPTION 'source captured by immutable knowledge snapshot; create a new source/version'; END IF;
- RETURN OLD;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF; RETURN NEW;
 END $$;
 CREATE TRIGGER knowledge_source_freeze BEFORE UPDATE OR DELETE ON content.content_sources FOR EACH ROW EXECUTE FUNCTION editorial.freeze_knowledge_source();
 CREATE TRIGGER knowledge_reference_freeze BEFORE UPDATE OR DELETE ON content.source_references FOR EACH ROW EXECUTE FUNCTION editorial.freeze_knowledge_source();
@@ -113,7 +114,7 @@ END $$;
 CREATE TRIGGER knowledge_review_check BEFORE INSERT ON editorial.knowledge_reviews FOR EACH ROW EXECUTE FUNCTION editorial.check_knowledge_review();
 CREATE FUNCTION editorial.knowledge_publishable(record uuid) RETURNS boolean LANGUAGE sql STABLE AS $$
  WITH RECURSIVE nodes(id) AS (SELECT record UNION SELECT l.dependency_id FROM content.knowledge_links l JOIN nodes n ON l.record_id=n.id)
- SELECT count(*)>0 AND bool_and(
+ SELECT count(*)>0 AND coalesce(bool_and(
  k.definition->'record'->'fixtureOnly'='false'::jsonb
  AND NOT EXISTS(SELECT 1 FROM editorial.knowledge_reviews v WHERE v.record_id=k.id AND v.decision='rejected')
  AND NOT EXISTS(SELECT 1 FROM unnest(CASE WHEN k.kind IN ('poetry','rhetoric','quran_verse','quran_meaning') THEN ARRAY['linguist','scholar','publisher'] ELSE ARRAY['linguist','publisher'] END) required(role)
@@ -121,14 +122,14 @@ CREATE FUNCTION editorial.knowledge_publishable(record uuid) RETURNS boolean LAN
  AND NOT EXISTS(SELECT 1 FROM content.knowledge_references kr JOIN content.source_references sr ON sr.id=kr.reference_id JOIN content.content_sources s ON s.id=sr.source_id WHERE kr.record_id=k.id AND (s.approval_status NOT IN ('rights_verified','approved') OR NOT s.permitted_uses @> '["display","adapt","redistribute"]'::jsonb))
  AND (SELECT count(*) FROM content.knowledge_references WHERE record_id=k.id)=jsonb_array_length(k.definition->'record'->'referenceIds')
  AND (SELECT count(*) FROM content.knowledge_links WHERE record_id=k.id)=jsonb_array_length(k.definition->'record'->'links')
- ) FROM nodes JOIN content.knowledge_records k USING(id)
+ ),false) FROM nodes JOIN content.knowledge_records k USING(id)
 $$;
 CREATE FUNCTION editorial.check_knowledge_puzzle() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE k content.knowledge_records; p jsonb; expected jsonb;
 BEGIN
  SELECT * INTO STRICT k FROM content.knowledge_records WHERE id=NEW.record_id;
  SELECT definition INTO STRICT p FROM content.puzzle_versions WHERE puzzle_id=NEW.puzzle_id AND revision=NEW.revision;
- IF NEW.review_digest<>k.review_digest OR NOT editorial.knowledge_publishable(k.id) THEN RAISE EXCEPTION 'knowledge is not publishable'; END IF;
+ IF NEW.review_digest<>k.review_digest OR editorial.knowledge_publishable(k.id) IS DISTINCT FROM true THEN RAISE EXCEPTION 'knowledge is not publishable'; END IF;
  -- Full puzzle must be part of reviewed definition; a caller cannot replace its answer.
  expected:=k.definition->'exportPuzzle';
  IF expected IS NULL OR expected<>p THEN RAISE EXCEPTION 'puzzle differs from reviewed immutable export'; END IF;
@@ -139,7 +140,7 @@ CREATE TRIGGER knowledge_puzzle_check BEFORE INSERT ON content.knowledge_puzzle_
 CREATE FUNCTION editorial.freeze_knowledge_puzzle() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
  IF EXISTS(SELECT 1 FROM content.knowledge_puzzle_refs k WHERE k.puzzle_id=OLD.puzzle_id AND k.revision=OLD.revision) THEN RAISE EXCEPTION 'knowledge-bound puzzle snapshot/projections immutable'; END IF;
- RETURN OLD;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF; RETURN NEW;
 END $$;
 CREATE TRIGGER knowledge_puzzle_freeze BEFORE UPDATE OR DELETE ON content.puzzle_versions FOR EACH ROW EXECUTE FUNCTION editorial.freeze_knowledge_puzzle();
 CREATE TRIGGER knowledge_puzzle_refs_freeze BEFORE UPDATE OR DELETE ON content.puzzle_references FOR EACH ROW EXECUTE FUNCTION editorial.freeze_knowledge_puzzle();

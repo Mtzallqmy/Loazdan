@@ -1,0 +1,1387 @@
+{
+  "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+  "license": "PROJECT-ORIGINAL-FIXTURE",
+  "fixtureOnly": true,
+  "records": [
+    {
+      "assetId": "44a5631b-c0b3-5f26-898f-2af8fd9ca52f",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.png",
+      "sourceSha256": "3a0afd19e4257983edb996bf161fbce84f61506515018a9786727811483994ee",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.webp",
+        "sha256": "f7320992b5796abe002f585233e7e8619c09298adc9aa77cd257a30bbc69c002",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.thumb.webp",
+        "sha256": "ead7f37ec022875fbab813fec5b5971c3518145363b026b36e8ad8aff0677c6e",
+        "bytes": 2210,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "22019b8c-4046-50af-92cf-63ecf7609979",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/fe1ff1f55405ca36a78a7fa41fa8d9e1df2dbb93f01f2ac75cf2d1dfec383f77.png",
+      "sourceSha256": "4a78a7e9c0e771b2432ddb8dd19acc6179e60258c0400a8701cfb6187c61fe24",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/fe1ff1f55405ca36a78a7fa41fa8d9e1df2dbb93f01f2ac75cf2d1dfec383f77.webp",
+        "sha256": "026effc9a2e5968056da416c3898415db637dad609b4969ac9f87d01b85c12ff",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/fe1ff1f55405ca36a78a7fa41fa8d9e1df2dbb93f01f2ac75cf2d1dfec383f77.thumb.webp",
+        "sha256": "0626ac5badc2264557b7fcd469ef7564c7d015b7b5c793c6b454207f18e7f6f8",
+        "bytes": 1986,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "06fe3fa4-f8fd-5fe0-88bc-fb5a098559b1",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/f964776431730fc01f8c941f2ff04e2ae5472306d4e5be3bd76a7b3c4b2fba27.png",
+      "sourceSha256": "f0b84ed4ce3be1895c69216a637a272d2681a738e19b1e6c0fd55dba9b403669",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/f964776431730fc01f8c941f2ff04e2ae5472306d4e5be3bd76a7b3c4b2fba27.webp",
+        "sha256": "81be45413417126f05bc74cdb9d33b6e791ff0167b7e54e41a917104be2e9bd1",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/f964776431730fc01f8c941f2ff04e2ae5472306d4e5be3bd76a7b3c4b2fba27.thumb.webp",
+        "sha256": "347f953fd6e9040afd4db8d53e6fb16afee0e72ad7a3063efa190652c8c04ef2",
+        "bytes": 2062,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "a6c3d0e9-4cc6-55d6-8ee5-c784bb3726a6",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/c9eea3f2ee78168997bd1a9da1de43cbd51d6ae9210fdd06ae34b36e3e55ceab.png",
+      "sourceSha256": "55302c7ce1923f599a91fb8b48d466299b924dbed1df7027492587860076651a",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/c9eea3f2ee78168997bd1a9da1de43cbd51d6ae9210fdd06ae34b36e3e55ceab.webp",
+        "sha256": "256191d6905ce7cd46604f07cb89a47837a1f14373ed883181c866036010e5ca",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/c9eea3f2ee78168997bd1a9da1de43cbd51d6ae9210fdd06ae34b36e3e55ceab.thumb.webp",
+        "sha256": "60da4d49f8d817893cda7bfb04add5129d79a6aee9fa2bb1a28801337a595ac2",
+        "bytes": 1972,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "181b3900-c215-5f22-96f0-51c7dcdf9b3f",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/e2966866b0eac31d177c85696cbd9bf52ccb279e078af20ef0a08a8d9ac2d682.png",
+      "sourceSha256": "540991f7fb0a114cae06c956953e910dafd7cb8238c10707e8efbe70aa0fb43e",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/e2966866b0eac31d177c85696cbd9bf52ccb279e078af20ef0a08a8d9ac2d682.webp",
+        "sha256": "b090d01d703efa8972d8ee6ff7fb5af5596103b0b22ca7a483aee74eccd2fd5f",
+        "bytes": 374,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/e2966866b0eac31d177c85696cbd9bf52ccb279e078af20ef0a08a8d9ac2d682.thumb.webp",
+        "sha256": "f7606d27d25fb2f73025f916b8086015930d8522f93fb8b51e0e47ad4d4ce697",
+        "bytes": 1842,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "0bc9b822-08c8-5745-a901-95d67e0afdec",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/5a7670e92dc665319a20aa97700c6b8ebb85d2736d43e7e4d34635d1846d831d.png",
+      "sourceSha256": "c5acd527ef300f04b80e151bbcf886e2ab34c467d5860727692946bbe120f5ee",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/5a7670e92dc665319a20aa97700c6b8ebb85d2736d43e7e4d34635d1846d831d.webp",
+        "sha256": "be1cf7138c29a457344191dc6271a1634a350c5716fa87035d96156436a44c9f",
+        "bytes": 374,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/5a7670e92dc665319a20aa97700c6b8ebb85d2736d43e7e4d34635d1846d831d.thumb.webp",
+        "sha256": "71cc366e77c0c7603f454c9d1d4256b8c060f62d47c4099c6d2ce0c3e26f2cd7",
+        "bytes": 1390,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "f439dd51-ca8e-5569-80ed-a6ce21872b1b",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/5ec79f4f3ec60a9fa6dacb94a3d3cbe6ff41cef5e0af37e85e9d418ec5a10d45.png",
+      "sourceSha256": "ac826c413a2e2280de55d7f7bc21b4620603fbcc83ac3b9f2988c986929253bb",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/5ec79f4f3ec60a9fa6dacb94a3d3cbe6ff41cef5e0af37e85e9d418ec5a10d45.webp",
+        "sha256": "8ff48741eb5a6e04a73f6ed5cba47920fbf6d365c32a8cfbba01ddb391a68080",
+        "bytes": 374,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/5ec79f4f3ec60a9fa6dacb94a3d3cbe6ff41cef5e0af37e85e9d418ec5a10d45.thumb.webp",
+        "sha256": "da18049c5d38ed9c68ffa9c1becfbdb0b9f24faa33d7774522d0a5bf321abd41",
+        "bytes": 1762,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "1feae46b-10a1-5d49-80e5-83b1b21115fd",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/8c594ec294a191bcaee101ccd228f48d151a42f5b708f37828dd0cd26edf69b8.png",
+      "sourceSha256": "3cb0236357e7d5e33f640afc3c84d155286ac6a1456dd6914504fffe35ab55e3",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/8c594ec294a191bcaee101ccd228f48d151a42f5b708f37828dd0cd26edf69b8.webp",
+        "sha256": "e00c603b70e2a56989fa88833de81eba3a778497ea2fd9b76c93b030eb36b2c0",
+        "bytes": 374,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/8c594ec294a191bcaee101ccd228f48d151a42f5b708f37828dd0cd26edf69b8.thumb.webp",
+        "sha256": "7ff13d20c5711fba6dd6ebe4cc198a41867980f01a383a082903f66a55ecebfc",
+        "bytes": 1742,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "615b594e-3e36-5e8d-9578-24dff206ee8c",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/21ea557766ea3cd2c6eeb4a16b33cb0022631a3a065abf0ff6643dae71c39543.png",
+      "sourceSha256": "bb139722f38b6877666e9630dc701579ab8aa64161c14417cd1f70178a4cbbfe",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/21ea557766ea3cd2c6eeb4a16b33cb0022631a3a065abf0ff6643dae71c39543.webp",
+        "sha256": "1a280d581d4d277e3fefedc76fa5be2150fbe3f1582fcd01822f983c63d1828d",
+        "bytes": 378,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/21ea557766ea3cd2c6eeb4a16b33cb0022631a3a065abf0ff6643dae71c39543.thumb.webp",
+        "sha256": "e5821a43aea5220c28b44c1545c2a6a2d5a5c19e139d5a6759eeb54deb64c77d",
+        "bytes": 1142,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "94a50580-9688-58bc-81bf-31186c348565",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/9dd1ae902bf6eb737ab82c76829f9fa00c5eba7861db6d9673ca1046c3ae6529.png",
+      "sourceSha256": "c424a321067dcfb06cd724ec91b97cb6c202922e520a48a289acb7f2918429e0",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/9dd1ae902bf6eb737ab82c76829f9fa00c5eba7861db6d9673ca1046c3ae6529.webp",
+        "sha256": "cf67f2bbe45756d23e5975d2194e421757f8199ed819d9b0d5ed8536ca861316",
+        "bytes": 394,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/9dd1ae902bf6eb737ab82c76829f9fa00c5eba7861db6d9673ca1046c3ae6529.thumb.webp",
+        "sha256": "8add15b5927e8a6d87d393b2b698a38cc5544d007aa1929fa86b4fe7f5d639b5",
+        "bytes": 1488,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "ef05d484-fa78-53f0-91b1-239d38ea6d08",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/4cd957323e32a1ba64232f563086cae210b7749b2b28c1ab1eb6bc0489e9be39.png",
+      "sourceSha256": "9fe252ca4ae28b4b6114f1a2f61b20b6889a81dfd9cce7087ff73036acfc3af0",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/4cd957323e32a1ba64232f563086cae210b7749b2b28c1ab1eb6bc0489e9be39.webp",
+        "sha256": "44397369927e4e16b62ffb89e2110ff70f4429001f511ed7d7a4dce56d7caf3d",
+        "bytes": 306,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/4cd957323e32a1ba64232f563086cae210b7749b2b28c1ab1eb6bc0489e9be39.thumb.webp",
+        "sha256": "5660131f7d1b5481337ca8be02c1fa1456a08ff9e44af093c51d577910e5c379",
+        "bytes": 1838,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "25626b95-03b5-54e9-9f84-689af626ff48",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.png",
+      "sourceSha256": "95281c3ecaf77ba76bc1a3f8ffd721c2131e2c40d4eb79481566006613e22e1f",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.webp",
+        "sha256": "87bacb5a15a04d8c8b74e0bf9561339827c270fda3fd82d1a4b7c0d88d8e0462",
+        "bytes": 460,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.thumb.webp",
+        "sha256": "44510054a45a270bae4d7a8e6040e7e881c71099655f775e0c1970c62a924448",
+        "bytes": 2308,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "26653443-c8c2-520a-8050-2e9d7958ade6",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/7792341e9ead9844af9890ca9332ebae90918d03c0fbf0b1c5eabeb62bf6ff02.png",
+      "sourceSha256": "1ee637f439e43217cb694e238d64edf8d03c7e144c115ea2bae188ecbf7c76f6",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/7792341e9ead9844af9890ca9332ebae90918d03c0fbf0b1c5eabeb62bf6ff02.webp",
+        "sha256": "6a964201501862dd613ad3a905c6e89fb755236f4ed1b83ded09be05c79a3257",
+        "bytes": 306,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/7792341e9ead9844af9890ca9332ebae90918d03c0fbf0b1c5eabeb62bf6ff02.thumb.webp",
+        "sha256": "0c8b4c4225428493a47c0bad5dfbf7fc1dd3a76a5818a0300e359b601e4a005c",
+        "bytes": 1782,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "fb2c1a53-c51a-5ce1-87eb-7050504a9e22",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/38d85b7ace93da51a09588a82ffd2bb7285ddbd995a3fbc945808d53ae49d5b4.png",
+      "sourceSha256": "62b4b995a008288d48dea9b699f83b12dd10deefd017fe43fb80d77b81c03588",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/38d85b7ace93da51a09588a82ffd2bb7285ddbd995a3fbc945808d53ae49d5b4.webp",
+        "sha256": "113a4aff3c614fff92a05f3d3d6b288e0076bf5421faf5fa2efbef550e4137c2",
+        "bytes": 394,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/38d85b7ace93da51a09588a82ffd2bb7285ddbd995a3fbc945808d53ae49d5b4.thumb.webp",
+        "sha256": "418d56678d821e03e53ad7b5873ec0dbd5048c617b4f664f5c5636ec6e3ac0ab",
+        "bytes": 1496,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "548fdeb9-8053-5579-be2e-01df4a3d5e85",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2513906656ca5cf037170ee8977e32130886b306baa3a62ae61bca9778ce4d3e.png",
+      "sourceSha256": "f105d64b2a9475f8a9befa77191bb7bff125613e1fd8efe3b3231fe19cb09417",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2513906656ca5cf037170ee8977e32130886b306baa3a62ae61bca9778ce4d3e.webp",
+        "sha256": "9524eef70c66739e9377428c0267aa59f0aa18dce6489080172a275ce12ca453",
+        "bytes": 460,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2513906656ca5cf037170ee8977e32130886b306baa3a62ae61bca9778ce4d3e.thumb.webp",
+        "sha256": "bd1b742f5383f4c3b45fe3d48918e1aab8150cc166cdd345dcba9d14983e8f9c",
+        "bytes": 2312,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "2bad66db-ba37-5943-9483-4c79b9b0b698",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/7792341e9ead9844af9890ca9332ebae90918d03c0fbf0b1c5eabeb62bf6ff02.png",
+      "sourceSha256": "1ee637f439e43217cb694e238d64edf8d03c7e144c115ea2bae188ecbf7c76f6",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/7792341e9ead9844af9890ca9332ebae90918d03c0fbf0b1c5eabeb62bf6ff02.webp",
+        "sha256": "6a964201501862dd613ad3a905c6e89fb755236f4ed1b83ded09be05c79a3257",
+        "bytes": 306,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/7792341e9ead9844af9890ca9332ebae90918d03c0fbf0b1c5eabeb62bf6ff02.thumb.webp",
+        "sha256": "0c8b4c4225428493a47c0bad5dfbf7fc1dd3a76a5818a0300e359b601e4a005c",
+        "bytes": 1782,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "e35717a1-8521-5580-b28d-ba02734efe74",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.png",
+      "sourceSha256": "95281c3ecaf77ba76bc1a3f8ffd721c2131e2c40d4eb79481566006613e22e1f",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.webp",
+        "sha256": "87bacb5a15a04d8c8b74e0bf9561339827c270fda3fd82d1a4b7c0d88d8e0462",
+        "bytes": 460,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.thumb.webp",
+        "sha256": "44510054a45a270bae4d7a8e6040e7e881c71099655f775e0c1970c62a924448",
+        "bytes": 2308,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "dfab6eda-baa4-58f7-895f-0ddf6f017ecb",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/1c9f6228688089f9c3111417cae7855192d41ce7892684902b59e79ff0635f4c.png",
+      "sourceSha256": "027f79d21025dd2f3a1cfab3c18bec07f56d9bcd3746cc876af9402ff9d3f0e9",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/1c9f6228688089f9c3111417cae7855192d41ce7892684902b59e79ff0635f4c.webp",
+        "sha256": "eacb484cce8afbcf94ac37f81c8e863d878af9b573a85137a20b6aab71886023",
+        "bytes": 378,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/1c9f6228688089f9c3111417cae7855192d41ce7892684902b59e79ff0635f4c.thumb.webp",
+        "sha256": "7d902d286f97c339f4d896c8a3e1a2d4d0cdb9ecdb7c40c32c499f005c07a62d",
+        "bytes": 1470,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "399c271e-f0d1-51be-a9a9-a7173a3de515",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/774e17934d83919b48f9b0207c3945d1d476d362ba3cd91b2ff8edf0fde027fd.png",
+      "sourceSha256": "a81b6e1199e4bd4e718f8aee26a00165b0797d1a3c285fe0e70912e258c09c8b",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/774e17934d83919b48f9b0207c3945d1d476d362ba3cd91b2ff8edf0fde027fd.webp",
+        "sha256": "d1674d4d724a5a13beebe8508247efa34ea0f71c594f804cfa87650e173f85cc",
+        "bytes": 300,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/774e17934d83919b48f9b0207c3945d1d476d362ba3cd91b2ff8edf0fde027fd.thumb.webp",
+        "sha256": "92c69191227e45aa7575bd0de1034d1928366ed398ef46166a4b69e364a5ab96",
+        "bytes": 1558,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "b2f4c873-691a-52fc-bdf9-f2c3876d17c8",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/e6d3bdf539bdc253479f6da419171e4488a4a9d25e974490e2c8fd33e23ca5c3.png",
+      "sourceSha256": "ec4b973362c92c77d6c9525036d06f49eeb2674c7a00246fa1a089526becb5a8",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/e6d3bdf539bdc253479f6da419171e4488a4a9d25e974490e2c8fd33e23ca5c3.webp",
+        "sha256": "dd379a73c3bdd829f570e9f9b2030852dbc53d1014e6f6be570ce1a7289c9bec",
+        "bytes": 412,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/e6d3bdf539bdc253479f6da419171e4488a4a9d25e974490e2c8fd33e23ca5c3.thumb.webp",
+        "sha256": "3a73a11ba480e696cb7af80381d1b83d61d4fac26c5bc5350be62dd46f7e992c",
+        "bytes": 2182,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "4ba3731d-5e4d-5b0b-b367-57635131ad8e",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/aeaf35517abfd52bd64448235bd906f12796db3ed9c3c41c7b4f205f5a3a95d0.png",
+      "sourceSha256": "b2899b828fc160e18c9ba31c0ad411214639a392c45ca126a26aade2a4a9dac8",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/aeaf35517abfd52bd64448235bd906f12796db3ed9c3c41c7b4f205f5a3a95d0.webp",
+        "sha256": "1f05630a2a9f831a7e606345feed5edd0a98e45d51ad0eb8a26ce40e995a72d8",
+        "bytes": 336,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/aeaf35517abfd52bd64448235bd906f12796db3ed9c3c41c7b4f205f5a3a95d0.thumb.webp",
+        "sha256": "5a271bc6ba2b83fa4f9bc3c67f6eab33992f7ac65ffe08620515baa1243757f0",
+        "bytes": 1676,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "f3ab99d9-5e23-5261-9bd3-e2a052634fe3",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/ee2a8f91e7961604014a96bffba4009af55f735105418b631d6c93b9321adf9b.png",
+      "sourceSha256": "30c35e109e6b0710b2549f75e130a1634b4940785d535fcd10d0c3f669faf62e",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/ee2a8f91e7961604014a96bffba4009af55f735105418b631d6c93b9321adf9b.webp",
+        "sha256": "9748539ef4375bedadcb716fbd7517a4129129599d31f5ab500d9a3cbf9fa4f3",
+        "bytes": 408,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/ee2a8f91e7961604014a96bffba4009af55f735105418b631d6c93b9321adf9b.thumb.webp",
+        "sha256": "11d004cdbc01e86a2b5b44c6f1b0880a2ca9715d413a1fd5d247023560956710",
+        "bytes": 2074,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "4b91f855-9748-5328-9e21-dabee11c33a0",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.png",
+      "sourceSha256": "3a0afd19e4257983edb996bf161fbce84f61506515018a9786727811483994ee",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.webp",
+        "sha256": "f7320992b5796abe002f585233e7e8619c09298adc9aa77cd257a30bbc69c002",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.thumb.webp",
+        "sha256": "ead7f37ec022875fbab813fec5b5971c3518145363b026b36e8ad8aff0677c6e",
+        "bytes": 2210,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "fa2ecc03-f837-58ea-8da6-dc73610e8dd2",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/e2966866b0eac31d177c85696cbd9bf52ccb279e078af20ef0a08a8d9ac2d682.png",
+      "sourceSha256": "540991f7fb0a114cae06c956953e910dafd7cb8238c10707e8efbe70aa0fb43e",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/e2966866b0eac31d177c85696cbd9bf52ccb279e078af20ef0a08a8d9ac2d682.webp",
+        "sha256": "b090d01d703efa8972d8ee6ff7fb5af5596103b0b22ca7a483aee74eccd2fd5f",
+        "bytes": 374,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/e2966866b0eac31d177c85696cbd9bf52ccb279e078af20ef0a08a8d9ac2d682.thumb.webp",
+        "sha256": "f7606d27d25fb2f73025f916b8086015930d8522f93fb8b51e0e47ad4d4ce697",
+        "bytes": 1842,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "a922b112-1b28-501b-b92e-4f205658f032",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2e03663cd24b0139a03350568d11d3096d2b23e8f053e5b25073870a1daa099f.png",
+      "sourceSha256": "010e9bbc7e9290b224ae320f561f098a2a08d4abdab6a706de40be19a5d5d542",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2e03663cd24b0139a03350568d11d3096d2b23e8f053e5b25073870a1daa099f.webp",
+        "sha256": "c6e2a75b09ecc5a83be16edc0a63f03e21fa967014c41748a24c512456b0bb62",
+        "bytes": 92,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2e03663cd24b0139a03350568d11d3096d2b23e8f053e5b25073870a1daa099f.thumb.webp",
+        "sha256": "b668073e55f9680a1b33aecb27fde3c60071ef49a182da952fcc54b94f501ebf",
+        "bytes": 306,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "53e5e72a-8b92-573f-8059-e80b0e8af1d3",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/f8ee2dddc0ed2c576f916ca3014ea89f0e2c2c2ddd2a6243147ba3a1b2ce3d1a.png",
+      "sourceSha256": "1fe8596a043ef0a228391c903ad8057525a315f09481a02397ab5616d90d261f",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/f8ee2dddc0ed2c576f916ca3014ea89f0e2c2c2ddd2a6243147ba3a1b2ce3d1a.webp",
+        "sha256": "e371b265a09e6867838b16ece424af94e437b50bd06488f5cba8602c78097ced",
+        "bytes": 92,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/f8ee2dddc0ed2c576f916ca3014ea89f0e2c2c2ddd2a6243147ba3a1b2ce3d1a.thumb.webp",
+        "sha256": "b0b49cff8312ee3a3edb0822693e20f9d0bd85f7a9a9729701790e3a4a7c6187",
+        "bytes": 332,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "c44ccf6c-8562-5e60-9969-cb68bd8ad82a",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/835ed2a44d053ef8cc9f6d611d8250c5ecc3ac0dad2733f15b215bcd7adac46b.png",
+      "sourceSha256": "fb78ac38ea47664bfdc95866fdf68305835b115012ff4651df83f7be6bdd1cb0",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/835ed2a44d053ef8cc9f6d611d8250c5ecc3ac0dad2733f15b215bcd7adac46b.webp",
+        "sha256": "194cb3a8da7087516fc89fda52c65e3b1e2856d7eb1d64c888d96701275baf38",
+        "bytes": 374,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/835ed2a44d053ef8cc9f6d611d8250c5ecc3ac0dad2733f15b215bcd7adac46b.thumb.webp",
+        "sha256": "6cb32d0ed36dd6a2055215144cffcfb237d4e9145e701b545c5e190653885176",
+        "bytes": 1802,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "0b362afd-a810-5f25-a244-eed8b3bf696e",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/d2dbaf5f77c79fce66ba9273ad8aff6ec384f42d9642a0099b19819e962ce3df.png",
+      "sourceSha256": "d7b5647fb1db46537bddf061795d567865af68d9a27fcc7d4388818a0168dd36",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/d2dbaf5f77c79fce66ba9273ad8aff6ec384f42d9642a0099b19819e962ce3df.webp",
+        "sha256": "cacce3e8deb1f3e514b76fca9e62ceb93734fd23652a81586923ccfc5d18e650",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/d2dbaf5f77c79fce66ba9273ad8aff6ec384f42d9642a0099b19819e962ce3df.thumb.webp",
+        "sha256": "ea1be1eee328ae3243ab1f5963bd471dd365f0c7625459d5337dd943341785a5",
+        "bytes": 2144,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "0a15d376-1181-573b-b8f7-a9735694c653",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/bdded5f07227363d5245c1d66418a48ff77f99c3417de329a6ceead7559e9a36.png",
+      "sourceSha256": "e5a85baa6241b80478f55ed118156082df5063723997739014c34444f9b5a621",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/bdded5f07227363d5245c1d66418a48ff77f99c3417de329a6ceead7559e9a36.webp",
+        "sha256": "2f405acc956d547f093ee28b4347324d15de62c49423b9871dfcd5c390cac75f",
+        "bytes": 378,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/bdded5f07227363d5245c1d66418a48ff77f99c3417de329a6ceead7559e9a36.thumb.webp",
+        "sha256": "34734dff5aae651f05bc53dc184f180933bd54b756fcc7b2650e4c97453b8fa0",
+        "bytes": 1216,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "801d598e-9300-5a3b-a50c-2c61243d4650",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/a1208c81d239424b27f034f37a237fbd1a875943b7ed99edb0d5a40a447736fd.png",
+      "sourceSha256": "6f034897d0f2945cce6f5b196ed6687ce9c773c8a13bef6c502c42fd87350e4a",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/a1208c81d239424b27f034f37a237fbd1a875943b7ed99edb0d5a40a447736fd.webp",
+        "sha256": "618e77305999fbaaf811a6313a06341025a8e54dba0e711a47d664896f8433a5",
+        "bytes": 394,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/a1208c81d239424b27f034f37a237fbd1a875943b7ed99edb0d5a40a447736fd.thumb.webp",
+        "sha256": "8f0ba481a485ed82042428c99b6a23afb397ce7f34f77451687a5c0fee7cd82d",
+        "bytes": 1558,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "1913a8d9-0768-59db-a97f-09c64be55301",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2513906656ca5cf037170ee8977e32130886b306baa3a62ae61bca9778ce4d3e.png",
+      "sourceSha256": "f105d64b2a9475f8a9befa77191bb7bff125613e1fd8efe3b3231fe19cb09417",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2513906656ca5cf037170ee8977e32130886b306baa3a62ae61bca9778ce4d3e.webp",
+        "sha256": "9524eef70c66739e9377428c0267aa59f0aa18dce6489080172a275ce12ca453",
+        "bytes": 460,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2513906656ca5cf037170ee8977e32130886b306baa3a62ae61bca9778ce4d3e.thumb.webp",
+        "sha256": "bd1b742f5383f4c3b45fe3d48918e1aab8150cc166cdd345dcba9d14983e8f9c",
+        "bytes": 2312,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "4a37ec12-a88c-5ef0-94e3-1a5cf4e3ceca",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.png",
+      "sourceSha256": "95281c3ecaf77ba76bc1a3f8ffd721c2131e2c40d4eb79481566006613e22e1f",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.webp",
+        "sha256": "87bacb5a15a04d8c8b74e0bf9561339827c270fda3fd82d1a4b7c0d88d8e0462",
+        "bytes": 460,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/75c5536dfeec94d56af5bc7437405ff1b2ac10b07d175f5620a190d7c3106c27.thumb.webp",
+        "sha256": "44510054a45a270bae4d7a8e6040e7e881c71099655f775e0c1970c62a924448",
+        "bytes": 2308,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "f3cfeb29-0633-59cd-bede-84bbb912bd1d",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/38d85b7ace93da51a09588a82ffd2bb7285ddbd995a3fbc945808d53ae49d5b4.png",
+      "sourceSha256": "62b4b995a008288d48dea9b699f83b12dd10deefd017fe43fb80d77b81c03588",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/38d85b7ace93da51a09588a82ffd2bb7285ddbd995a3fbc945808d53ae49d5b4.webp",
+        "sha256": "113a4aff3c614fff92a05f3d3d6b288e0076bf5421faf5fa2efbef550e4137c2",
+        "bytes": 394,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/38d85b7ace93da51a09588a82ffd2bb7285ddbd995a3fbc945808d53ae49d5b4.thumb.webp",
+        "sha256": "418d56678d821e03e53ad7b5873ec0dbd5048c617b4f664f5c5636ec6e3ac0ab",
+        "bytes": 1496,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "bbc6d4f3-a0fd-565e-9923-563556358543",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/1c9f6228688089f9c3111417cae7855192d41ce7892684902b59e79ff0635f4c.png",
+      "sourceSha256": "027f79d21025dd2f3a1cfab3c18bec07f56d9bcd3746cc876af9402ff9d3f0e9",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/1c9f6228688089f9c3111417cae7855192d41ce7892684902b59e79ff0635f4c.webp",
+        "sha256": "eacb484cce8afbcf94ac37f81c8e863d878af9b573a85137a20b6aab71886023",
+        "bytes": 378,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/1c9f6228688089f9c3111417cae7855192d41ce7892684902b59e79ff0635f4c.thumb.webp",
+        "sha256": "7d902d286f97c339f4d896c8a3e1a2d4d0cdb9ecdb7c40c32c499f005c07a62d",
+        "bytes": 1470,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "ca7294b8-51f8-5143-b079-627e5bf58119",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.png",
+      "sourceSha256": "3a0afd19e4257983edb996bf161fbce84f61506515018a9786727811483994ee",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.webp",
+        "sha256": "f7320992b5796abe002f585233e7e8619c09298adc9aa77cd257a30bbc69c002",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.thumb.webp",
+        "sha256": "ead7f37ec022875fbab813fec5b5971c3518145363b026b36e8ad8aff0677c6e",
+        "bytes": 2210,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "5376716a-2010-5f2f-b950-07e4055e2b05",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/32059704dea4c60b886c89b46adfc0d8e7982c9510121fb507c55f33c1003113.png",
+      "sourceSha256": "a997633ba15571af72acbe1a171bd3a75c79de2f2873b97fbefbdd95c27486a2",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/32059704dea4c60b886c89b46adfc0d8e7982c9510121fb507c55f33c1003113.webp",
+        "sha256": "3ce866435c241fe67985a065061464fe1430a6c23964917ace8e6443e675fc60",
+        "bytes": 254,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/32059704dea4c60b886c89b46adfc0d8e7982c9510121fb507c55f33c1003113.thumb.webp",
+        "sha256": "f8ad9c2124aff5e0d2533080bff2d3ff69203327399aa6b228e581f3c5f555b2",
+        "bytes": 1530,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "b340f0d6-cf96-51eb-a4fa-525eb4622d9b",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.png",
+      "sourceSha256": "cccd3656018e30f388f3dae22f6ba6575517eb8163aee18548dfdc37f37d18a9",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.webp",
+        "sha256": "0c2a8b7ae55c2bea13dff466c080cb62753073195657d3f593e8f70d053750f8",
+        "bytes": 306,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.thumb.webp",
+        "sha256": "57ce7f3e33259a1bd55a757fdd0f37181765edaab57551bc1891388bfd902f09",
+        "bytes": 2160,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "6aceaa89-affa-54aa-9386-80e545518c47",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.png",
+      "sourceSha256": "5c683b201743f2ec330a658b392870cc5fd55d6318832bc02b09ec561ab95ea3",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.webp",
+        "sha256": "c2f7ac74398059cee12c91f6026779be12b4345322a7c21a82e66922bcfe8539",
+        "bytes": 468,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.thumb.webp",
+        "sha256": "6c0c7d0f81d3e714ea840dff3846379ef6e1eda196fab5e69f35b071201bf2dc",
+        "bytes": 3058,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "462d89b2-d115-5aaf-82b2-a53f39fe88d5",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.png",
+      "sourceSha256": "db59632b3d5acfe83904753da6190eaf08f6d2f96bcdfe638c78254246ddbd4c",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.webp",
+        "sha256": "f90685eb33335b0ee480a0fe044aefd31e6b05cdf0aea1bb063af71cf9251539",
+        "bytes": 484,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.thumb.webp",
+        "sha256": "892bdfc775a72fea85c5058313624b1e1a07a4862a85698eb9a1b60368778911",
+        "bytes": 3534,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "785b33e5-00ba-5cba-a66a-6957c859d505",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.png",
+      "sourceSha256": "fbae50ba336097a299c18d145589932192fff3ad5c6b613869b2c64f12d37bc9",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.webp",
+        "sha256": "9abfddaeb49ab0dcb908074ac2f695276014bea5eb27e1b6770c4156a3297bd4",
+        "bytes": 472,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.thumb.webp",
+        "sha256": "970a467f8ba0809913fe34ae3adf67bea34a9052472cce95f095a7ee896c2555",
+        "bytes": 4006,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "8ceb61fd-ac70-5010-988a-3654ee085308",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.png",
+      "sourceSha256": "3a0afd19e4257983edb996bf161fbce84f61506515018a9786727811483994ee",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.webp",
+        "sha256": "f7320992b5796abe002f585233e7e8619c09298adc9aa77cd257a30bbc69c002",
+        "bytes": 440,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2bdee31ac8485c2dee1da1dccb007e1922cff617602f8aef69237f5548f98a49.thumb.webp",
+        "sha256": "ead7f37ec022875fbab813fec5b5971c3518145363b026b36e8ad8aff0677c6e",
+        "bytes": 2210,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "0c5dc293-d88c-5e45-8bfe-4456d2a611e8",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/32059704dea4c60b886c89b46adfc0d8e7982c9510121fb507c55f33c1003113.png",
+      "sourceSha256": "a997633ba15571af72acbe1a171bd3a75c79de2f2873b97fbefbdd95c27486a2",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/32059704dea4c60b886c89b46adfc0d8e7982c9510121fb507c55f33c1003113.webp",
+        "sha256": "3ce866435c241fe67985a065061464fe1430a6c23964917ace8e6443e675fc60",
+        "bytes": 254,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/32059704dea4c60b886c89b46adfc0d8e7982c9510121fb507c55f33c1003113.thumb.webp",
+        "sha256": "f8ad9c2124aff5e0d2533080bff2d3ff69203327399aa6b228e581f3c5f555b2",
+        "bytes": 1530,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "f0f6700f-99a4-5017-bde6-8791ed2e27b4",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.png",
+      "sourceSha256": "cccd3656018e30f388f3dae22f6ba6575517eb8163aee18548dfdc37f37d18a9",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.webp",
+        "sha256": "0c2a8b7ae55c2bea13dff466c080cb62753073195657d3f593e8f70d053750f8",
+        "bytes": 306,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.thumb.webp",
+        "sha256": "57ce7f3e33259a1bd55a757fdd0f37181765edaab57551bc1891388bfd902f09",
+        "bytes": 2160,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "cc82602b-cb5f-5f5b-b32c-606274e44571",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.png",
+      "sourceSha256": "5c683b201743f2ec330a658b392870cc5fd55d6318832bc02b09ec561ab95ea3",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.webp",
+        "sha256": "c2f7ac74398059cee12c91f6026779be12b4345322a7c21a82e66922bcfe8539",
+        "bytes": 468,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.thumb.webp",
+        "sha256": "6c0c7d0f81d3e714ea840dff3846379ef6e1eda196fab5e69f35b071201bf2dc",
+        "bytes": 3058,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "bcdae797-5957-59e4-a180-d7289dc66efb",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.png",
+      "sourceSha256": "fbae50ba336097a299c18d145589932192fff3ad5c6b613869b2c64f12d37bc9",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.webp",
+        "sha256": "9abfddaeb49ab0dcb908074ac2f695276014bea5eb27e1b6770c4156a3297bd4",
+        "bytes": 472,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.thumb.webp",
+        "sha256": "970a467f8ba0809913fe34ae3adf67bea34a9052472cce95f095a7ee896c2555",
+        "bytes": 4006,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "05b75b3f-5014-53ce-934a-0a9fc255ee56",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.png",
+      "sourceSha256": "db59632b3d5acfe83904753da6190eaf08f6d2f96bcdfe638c78254246ddbd4c",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.webp",
+        "sha256": "f90685eb33335b0ee480a0fe044aefd31e6b05cdf0aea1bb063af71cf9251539",
+        "bytes": 484,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.thumb.webp",
+        "sha256": "892bdfc775a72fea85c5058313624b1e1a07a4862a85698eb9a1b60368778911",
+        "bytes": 3534,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    }
+  ]
+}

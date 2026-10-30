@@ -16,6 +16,7 @@ import java.io.File
 import java.util.Base64
 import com.lughzdan.db.LughzdanDatabase
 import com.lughzdan.domain.ProgressRepository
+import com.lughzdan.domain.VocabularyRepository
 import com.lughzdan.games.GameApp
 import com.lughzdan.games.GameViewModel
 import com.lughzdan.preferences.SettingsStore
@@ -33,7 +34,7 @@ import javax.inject.Singleton
  override val contentRuntime get()=runtime
 }
 @Module @InstallIn(SingletonComponent::class) object AppModule {
- @Provides @Singleton fun database(@ApplicationContext context:Context)=Room.databaseBuilder(context,LughzdanDatabase::class.java,"lughzdan.db").addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3).build()
+ @Provides @Singleton fun database(@ApplicationContext context:Context)=Room.databaseBuilder(context,LughzdanDatabase::class.java,"lughzdan.db").addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).build()
  @Provides @Singleton fun content(@ApplicationContext context:Context,db:LughzdanDatabase,settings:SettingsStore):LocalContentRepository {
   val keys=if(context.assets.list("").orEmpty().contains("pack-public-keys.json")) context.assets.open("pack-public-keys.json").bufferedReader().use { reader->Json.parseToJsonElement(reader.readText()).jsonObject.mapValues {Base64.getDecoder().decode(it.value.jsonPrimitive.content)} } else emptyMap()
   val installer=PackInstaller(db,File(context.filesDir,"packs"),ManifestVerifier(keys),BuildConfig.VERSION_CODE)
@@ -41,14 +42,16 @@ import javax.inject.Singleton
   return LocalContentRepository(context,db,settings,installer,api)
  }
  @Provides @Singleton fun repository(@ApplicationContext context:Context,db:LughzdanDatabase,content:LocalContentRepository):ProgressRepository=LocalGameRepository(context,db,BuildConfig.DEBUG,recoverContent=content::initialize)
+ @Provides @Singleton fun vocabulary(db:LughzdanDatabase):VocabularyRepository=LocalVocabularyRepository(db)
  @Provides @Singleton fun settings(@ApplicationContext context:Context)=SettingsStore(context)
 }
 @AndroidEntryPoint class MainActivity:ComponentActivity() {
  @Inject lateinit var repository:ProgressRepository
  @Inject lateinit var settings:SettingsStore
  @Inject lateinit var content:LocalContentRepository
+ @Inject lateinit var vocabulary:VocabularyRepository
  override fun onCreate(savedInstanceState:Bundle?) { super.onCreate(savedInstanceState)
-  val factory=object:ViewModelProvider.Factory { @Suppress("UNCHECKED_CAST") override fun <T:ViewModel> create(modelClass:Class<T>):T=GameViewModel(repository,settings,content) as T }
+  val factory=object:ViewModelProvider.Factory { @Suppress("UNCHECKED_CAST") override fun <T:ViewModel> create(modelClass:Class<T>):T=GameViewModel(repository,settings,content,vocabulary) as T }
   setContent { val vm:GameViewModel=viewModel(factory=factory);GameApp(vm) }
  }
 }

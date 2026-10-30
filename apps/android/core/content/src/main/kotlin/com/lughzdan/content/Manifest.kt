@@ -27,7 +27,9 @@ class ManifestVerifier(trustedKeys:Map<String,ByteArray>) {
   val bytes=input.readNBytesCompat(16*1024*1024)
   val text=Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes)).toString()
   // The canonicalizer's parser rejects duplicate keys, invalid escapes and lone surrogates.
-  JsonCanonicalizer(text)
+  try { JsonCanonicalizer(text) } catch(e:java.io.IOException) {
+   throw IllegalArgumentException("Invalid manifest JSON",e)
+  }
   val obj=Json.parseToJsonElement(text).jsonObject
   fun checkNumbers(e:JsonElement) { when(e) { is JsonObject->e.values.forEach(::checkNumbers); is JsonArray->e.forEach(::checkNumbers); is JsonPrimitive->if(!e.isString && e.content !in listOf("true","false","null")) { require(e.content.matches(Regex("-?(0|[1-9][0-9]*)"))) { "Integer required" }; require(e.content.toLong() in -9007199254740991L..9007199254740991L) }; else->Unit } }
   checkNumbers(obj)
