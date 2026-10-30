@@ -22,7 +22,7 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
  private val dao=db.content()
  val chunks=File(root,"chunks")
  private fun directory(id:String,version:Int)=File(root,"versions/$id/$version")
- private fun syncDirectory(file:File) { val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY or OsConstants.O_DIRECTORY,0);try {Os.fsync(fd)} finally {Os.close(fd)} }
+ private fun syncDirectory(file:File) { val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY,0);try {Os.fsync(fd)} finally {Os.close(fd)} }
  suspend fun verify(bytes:ByteArray):SignedManifest {
   val preliminary=verifier.verify(bytes.inputStream(),appVersion,2)
   return verifier.verify(bytes.inputStream(),appVersion,2,dao.head(preliminary.packId)?.highWater?:0)

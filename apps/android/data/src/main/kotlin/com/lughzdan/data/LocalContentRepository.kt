@@ -52,6 +52,7 @@ class LocalContentRepository(private val context:Context,private val db:Lughzdan
     if(found.any {it.id==h.packId && it.version>h.highWater} && dao.download(h.packId)?.state !in activeStates)download(h.packId)
    }
   }
+  Unit
  }
  override suspend fun details(packId:String)=catalog.first().find {it.id==packId}
  override suspend fun download(packId:String,allowMetered:Boolean) {
