@@ -39,12 +39,12 @@ class PackInstallerTest {
  private fun puzzle(revision:Int=1,status:String="published",fixture:Boolean=false,id:String=puzzleId)=PuzzleDefinition(1,id,revision,"5637c78f-fe7e-528c-9763-9450426f7f22","choice","words",1,1,"arabic_basic_v1","Runtime test puzzle",status,fixture,listOf(ref),"Runtime test explanation",emptyList(),ChoicePayload("Question",listOf(Option("a","A"),Option("b","B"),Option("c","C"),Option("d","D")),"a"))
  // These fixture values need only object-key sorting: no floats, negative zero or escaped controls.
  private fun canonical(e:JsonElement):JsonElement=when(e){is JsonObject->JsonObject(e.toSortedMap().mapValues{canonical(it.value)});is JsonArray->JsonArray(e.map(::canonical));else->e}
- private fun signed(version:Int,revision:Int=version,id:String=pack,status:String="published",fixture:Boolean=false,deps:List<Dependency> = emptyList(),title:String="Runtime test puzzle"):ByteArray {
-  val p=puzzle(revision,status,fixture,if(id==pack)puzzleId else other).copy(title=title)
+ private fun signed(version:Int,revision:Int=version,id:String=pack,status:String="published",fixture:Boolean=false,deps:List<Dependency> = emptyList(),title:String="Runtime test puzzle",visual:VisualImage?=null,minEngine:Int=1):ByteArray {
+  val p=puzzle(revision,status,fixture,if(id==pack)puzzleId else other).copy(title=title).let { if(visual==null) it else it.copy(payload=it.payload.copy(images=listOf(visual))) }
   val payload=(json.encodeToString(p)+"\n").toByteArray();val rights="Test-only rights notice\n".toByteArray()
-  val entries=listOf("data/puzzles.jsonl" to payload,"rights/source.txt" to rights)
-  val files=entries.map{(path,bytes)->val h=hash(bytes);File(root,"chunks/$h").apply{parentFile!!.mkdirs();writeBytes(bytes)};ManifestFile(path,if(path.startsWith("data/"))"puzzles" else "rights",h,bytes.size.toLong(),listOf(Chunk(h,bytes.size.toLong())))}
-  val manifest=SignedManifest(1,id,version,1,1,"ar","2026-10-26T00:00:00Z",files,files.sumOf{it.bytes},files.sumOf{it.bytes},deps,listOf(ref),"runtime-test","",emptyList(),listOf(SourceReference(ref,pack,"Runtime source","Test author","test locator","1","CC0","Test attribution","rights/source.txt")))
+  val entries=listOf("data/puzzles.jsonl" to payload,"rights/source.txt" to rights)+(if(visual!=null) listOf("media/test.png" to byteArrayOf(1,2,3)) else emptyList())
+  val files=entries.map{(path,bytes)->val h=hash(bytes);File(root,"chunks/$h").apply{parentFile!!.mkdirs();writeBytes(bytes)};ManifestFile(path,if(path.startsWith("data/"))"puzzles" else if(path.startsWith("media/"))"media" else "rights",h,bytes.size.toLong(),listOf(Chunk(h,bytes.size.toLong())))}
+  val manifest=SignedManifest(1,id,version,1,minEngine,"ar","2026-10-26T00:00:00Z",files,files.sumOf{it.bytes},files.sumOf{it.bytes},deps,listOf(ref),"runtime-test","",if(visual==null) emptyList() else listOf(Asset(other,"media/test.png",ref,"Test image")),listOf(SourceReference(ref,pack,"Runtime source","Test author","test locator","1","CC0","Test attribution","rights/source.txt")))
   val obj=json.parseToJsonElement(json.encodeToString(manifest)).jsonObject
   val bytes=canonical(JsonObject(obj.filterKeys{it!="signature"})).toString().toByteArray()
   val signer=Signature.getInstance("Ed25519");signer.initSign(keys.private);signer.update(bytes)
@@ -53,6 +53,16 @@ class PackInstallerTest {
  private suspend fun rejected(block:suspend ()->Unit){try{block();fail("Expected rejection")}catch(_:IllegalArgumentException){}catch(_:IllegalStateException){}}
  private suspend fun interrupted(phase:String,bytes:ByteArray){try{installer{if(it==phase)throw Interrupted(it)}.install(bytes,"Test pack");fail("Checkpoint not reached: $phase")}catch(e:Interrupted){assertEquals(phase,e.phase)}}
  private suspend fun progress(){db.games().saveProgress(PlayerProgressEntity(puzzleId,100,true,2,"choice",100));db.games().enqueue(SyncOperationEntity("receipt","session","complete_session","preserved"))}
+ @Test fun acceptsCurrentEngineManifest()=runBlocking {
+  installer().install(signed(1,minEngine=3),"Engine 3")
+  assertEquals(1,db.content().head(pack)!!.activeVersion)
+ }
+ @Test fun rejectsImageMetadataThatDoesNotMatchSignedMedia()=runBlocking {
+  val image=VisualImage("test","media/test.png","Test image","clue",ref,"CC0",1,1,"0".repeat(64))
+  rejected {installer().install(signed(1,visual=image),"Unbound image")}
+  assertNull(db.content().head(pack)?.activeVersion)
+  assertTrue(db.games().puzzles().isEmpty())
+ }
  @Test fun signedPublishedSourceCanProduceSyncOperation()=runBlocking {
   installer().install(signed(1),"Test")
   val terminal=GameSession("5637c78f-fe7e-528c-9763-9450426f7f24",puzzleId,1,packVersion=1,packId=pack,status=SessionStatus.WON,score=100)

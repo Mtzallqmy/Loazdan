@@ -61,7 +61,7 @@ import com.lughzdan.engine.*
       val id=entry.arguments?.getString("id");val record=sessions.find { it.session.id==id }
       if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
-       Text("مسودة اختبار · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
+       Text("${if(p.fixtureOnly) "مسودة اختبار" else "محتوى الحزمة"} · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
        val metrics=DifficultyController.metrics(p)
        Text("حجم التحدي: ${metrics.size} · تقاطعات: ${metrics.intersections}",style=MaterialTheme.typography.bodySmall)
        Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
@@ -71,7 +71,8 @@ import com.lughzdan.engine.*
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
        } else if(!terminal) {
         Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
-        GameBoard(p,s,busy){vm.action(s.id,it)}
+        val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }
+        CompositionLocalProvider(LocalGameImageLoader provides loader) { GameBoard(p,s,busy){vm.action(s.id,it)} }
         Button(onClick={vm.submit(s.id);if(settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_BEEP,80)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
 
         if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
@@ -80,8 +81,12 @@ import com.lughzdan.engine.*
        } else {
         Text(if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات",style=MaterialTheme.typography.titleLarge)
         p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}
+        if(p.type in visualGameTypes) {
+         val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }
+         CompositionLocalProvider(LocalGameImageLoader provides loader) {VisualSolution(p)}
+        }
         Text(p.explanation)
-        Text("المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق.",style=MaterialTheme.typography.bodySmall)
+        Text(if(p.fixtureOnly) "المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق." else "مراجع المحتوى: "+p.sourceRefs.joinToString("، "),style=MaterialTheme.typography.bodySmall)
         if(p.type!="choice")Text("إجاباتك: "+s.answerHistory.joinToString("، "))
         Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
         Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}

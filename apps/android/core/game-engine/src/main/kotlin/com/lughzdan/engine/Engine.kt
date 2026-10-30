@@ -11,12 +11,16 @@ import java.text.Normalizer
 @Serializable data class SearchWord(val id: String, val label: String, val path: List<Cell>)
 @Serializable data class FixedSlot(val index: Int, val token: String)
 @Serializable data class MatchPair(val leftId: String, val rightId: String)
+@Serializable data class VisualImage(val id: String, val assetPath: String, val alt: String, val role: String, val sourceRef: String, val license: String, val width: Int, val height: Int, val sha256: String)
+@Serializable data class LogicRule(val kind: String, val values: List<Int>, val optionValues: Map<String, Int>, val step: Int)
 @Serializable data class ChoicePayload(
  val prompt: String = "", val options: List<Option> = emptyList(), val correctId: String = "",
  val rows: Int = 0, val cols: Int = 0, val entries: List<CrosswordEntry> = emptyList(),
  val grid: List<List<String>> = emptyList(), val words: List<SearchWord> = emptyList(),
  val tiles: List<String> = emptyList(), val fixedSlots: List<FixedSlot> = emptyList(), val acceptedAnswers: List<String> = emptyList(),
  val left: List<Option> = emptyList(), val right: List<Option> = emptyList(), val pairs: List<MatchPair> = emptyList(),
+ val images: List<VisualImage> = emptyList(), val correctImageId: String = "", val correctImageOrder: List<String> = emptyList(),
+ val visualPairs: List<MatchPair> = emptyList(), val revealRows: Int = 0, val revealCols: Int = 0, val revealPenalty: Int = 0, val logicRule: LogicRule? = null,
  val items: List<Option> = emptyList(), val correctOrder: List<String> = emptyList(), val variant: String = "",
 )
 @Serializable data class PuzzleDefinition(
@@ -37,9 +41,16 @@ import java.text.Normalizer
     val selectedTileIndices: List<Int> = emptyList(), val matchedPairs: List<MatchPair> = emptyList(),
     val orderedIds: List<String> = emptyList(), val answerHistory: List<String> = emptyList(),
     val revealedHints: Map<String, String> = emptyMap(),
+    val answerInput: String = "", val revealedRegions: Set<Int> = emptySet(), val selectedImageId: String? = null,
+    val imageOrder: List<String> = emptyList(), val imageMatches: List<MatchPair> = emptyList(),
 )
 sealed interface PlayerAction {
     val id: String
+    data class InputAnswer(override val id: String, val answer: String) : PlayerAction
+    data class RevealRegion(override val id: String, val row: Int, val col: Int) : PlayerAction
+    data class SelectImage(override val id: String, val imageId: String) : PlayerAction
+    data class ReorderImages(override val id: String, val imageIds: List<String>) : PlayerAction
+    data class MatchImages(override val id: String, val leftId: String, val rightId: String) : PlayerAction
     data class Select(override val id: String, val optionId: String) : PlayerAction
     data class Submit(override val id: String) : PlayerAction
     data class UseHint(override val id: String, val hintId: String) : PlayerAction
@@ -63,8 +74,8 @@ interface GamePlugin {
     fun evaluate(puzzle: PuzzleDefinition, session: GameSession, action: PlayerAction): GameSession
 }
 object ScoringEngine {
-    fun score(p: PuzzleDefinition, wrong: Int, hints: Set<String>) =
-        (50 + 50 * p.difficulty - 10 * wrong - p.hints.filter { it.id in hints }.sumOf { it.penalty }).coerceAtLeast(0)
+    fun score(p: PuzzleDefinition, wrong: Int, hints: Set<String>, revealedRegions: Int = 0) =
+        (50 + 50 * p.difficulty - 10 * wrong - revealedRegions * p.payload.revealPenalty - p.hints.filter { it.id in hints }.sumOf { it.penalty }).coerceAtLeast(0)
 }
 class ChoicePlugin : GamePlugin {
     override val type = "choice"
@@ -105,7 +116,7 @@ class ChoicePlugin : GamePlugin {
         return next.copy(processedActions = next.processedActions + action.id)
     }
 }
-class GameRegistry(plugins: List<GamePlugin> = listOf(ChoicePlugin(), CrosswordPlugin(), WordsearchPlugin(), AnagramPlugin(), MatchingPlugin(), OrderPlugin())) {
+class GameRegistry(plugins: List<GamePlugin> = listOf(ChoicePlugin(), CrosswordPlugin(), WordsearchPlugin(), AnagramPlugin(), MatchingPlugin(), OrderPlugin(), FourPicturesPlugin(), GuessPicturePlugin(), ShadowPlugin(), SymbolsPlugin(), VisualAssociationPlugin(), VisualLogicPlugin())) {
     private val entries = plugins.associateBy { it.type }
     init { require(entries.size == plugins.size) }
     val types: Set<String> get() = entries.keys

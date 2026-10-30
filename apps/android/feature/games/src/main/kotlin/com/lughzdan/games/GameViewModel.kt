@@ -31,6 +31,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val submissionPending=AtomicBoolean(false)
  init { initialize() }
  fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
+ suspend fun readImage(sessionId:String,imageId:String)=repository.readImage(sessionId,imageId)
  fun morePuzzles() {viewModelScope.launch {repository.loadMore()}}
  fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);sessions.first { records->records.any { it.session.id==started } };onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
  fun action(id:String,action:PlayerAction) { dispatch(id,action) }

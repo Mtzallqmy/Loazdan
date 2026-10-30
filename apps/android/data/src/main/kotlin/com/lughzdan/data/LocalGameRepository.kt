@@ -52,6 +52,32 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
    rows.groupBy { it.gameType }.map { (type,items)->GameProgress(type,items.sumOf { it.bestScore },items.count { it.completed },items.sumOf { it.attempts },items.sumOf { it.xp }) },achievements.map { it.id })
  }
  override val packs=dao.observePacks().map { rows->rows.map { InstalledPack(it.packId,it.version,it.bytes,it.fixtureOnly) } }
+ override suspend fun readImage(sessionId:String,imageId:String):ByteArray?=withContext(Dispatchers.IO) {
+  val row=dao.session(sessionId) ?: return@withContext null
+  val state=decodeStored(row)
+  val puzzleRow=dao.puzzle(row.puzzleId,row.revision) ?: return@withContext null
+  val p=validateRecord(state,puzzleRow)
+  require(dao.pinnedPack(state.packId,state.packVersion)!=null)
+  val image=p.payload.images.singleOrNull {it.id==imageId} ?: return@withContext null
+  require(image.assetPath.matches(Regex("media/[A-Za-z0-9_/-]+\\.(png|webp|jpg)")) && image.assetPath.split('/').none {it==".."})
+  val input=if(db.content().head(state.packId)==null) {
+   require(allowFixtures && p.fixtureOnly) {"Unverified bundled media is not production content"}
+   context.assets.open(image.assetPath)
+  } else {
+   val root=java.io.File(context.filesDir,"packs/versions/${state.packId}/${state.packVersion}").canonicalFile
+   val file=java.io.File(root,image.assetPath).canonicalFile
+   require(file.path.startsWith(root.path+java.io.File.separator))
+   file.inputStream()
+  }
+  val bytes=input.use { source->
+   val output=java.io.ByteArrayOutputStream();val buffer=ByteArray(8192)
+   while(true) {val n=source.read(buffer);if(n<0)break;require(output.size()+n<=8*1024*1024) {"Image exceeds decode budget"};output.write(buffer,0,n)}
+   output.toByteArray()
+  }
+  val hash=java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)}
+  require(hash==image.sha256) {"Media integrity mismatch"}
+  bytes
+ }
  override suspend fun initialize()=withContext(Dispatchers.IO) { initializationMutex.withLock {
   if(initialized) return@withLock
   recoverContent()

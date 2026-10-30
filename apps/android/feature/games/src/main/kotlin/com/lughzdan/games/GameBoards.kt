@@ -18,7 +18,7 @@ import com.lughzdan.engine.*
 import java.util.UUID
 
 private fun aid()=UUID.randomUUID().toString()
-val gameNames=mapOf("choice" to "تحدي المفردات العربية — أربعة اختيارات","crossword" to "الكلمات المتقاطعة","wordsearch" to "البحث عن الكلمات","anagram" to "بناء الكلمات","matching" to "العلاقات الدلالية","order" to "ترتيب الكلمات")
+val gameNames=mapOf("choice" to "تحدي المفردات العربية — أربعة اختيارات","crossword" to "الكلمات المتقاطعة","wordsearch" to "البحث عن الكلمات","anagram" to "بناء الكلمات","matching" to "العلاقات الدلالية","order" to "ترتيب الكلمات", "four_pictures" to "أربع صور وكلمة", "guess_picture" to "خمن الصورة", "shadow" to "خمن الظل", "symbols" to "لغز الرموز", "visual_association" to "اكتشف العلاقة", "visual_logic" to "المنطق البصري")
 @Composable private fun Grid(rows:Int,cols:Int,cell:@Composable (Int,Int)->Unit) {
  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
   Column(Modifier.horizontalScroll(rememberScrollState())) { repeat(rows){r->Row {repeat(cols){c->cell(r,c)}}} }
@@ -33,6 +33,7 @@ val gameNames=mapOf("choice" to "تحدي المفردات العربية — أ
  "anagram" -> Builder(p,s,busy,send)
  "matching" -> if(p.payload.options.isNotEmpty()) { p.payload.options.forEach {o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} } } else Matching(p,s,busy,send)
  "order" -> Ordering(p,s,busy,send)
+ in visualGameTypes -> VisualBoard(p,s,busy,send)
  }
 }
 private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direction=="down")it else 0,e.col-if(e.direction=="across")it else 0) }
@@ -76,7 +77,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  p.payload.words.forEach {Text((if(it.id in s.foundWordIds)"✓ " else "○ ")+it.label)}
  TextButton(onClick={selectStart(null)},enabled=start!=null){Text("إلغاء تحديد البداية")}
 }
-@Composable private fun Builder(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
+@Composable internal fun Builder(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  Text("اضغط الحروف لبناء الإجابة؛ اضغط حرفًا في الإجابة لإزالته")
  val fixed=p.payload.fixedSlots.associate {it.index to it.token}
  val slotCount=maxOf(s.selectedTileIndices.size+fixed.size,(fixed.keys.maxOrNull()?:-1)+1)

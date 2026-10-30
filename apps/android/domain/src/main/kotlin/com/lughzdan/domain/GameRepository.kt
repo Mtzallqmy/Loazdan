@@ -17,6 +17,7 @@ interface ProgressRepository {
  suspend fun initialize()
  suspend fun start(puzzleId:String):String
  suspend fun act(sessionId:String,action:PlayerAction):GameSession
+ suspend fun readImage(sessionId:String,imageId:String):ByteArray? = null
 }
 class GameSessionManager(private val repository:ProgressRepository) {
  suspend fun start(puzzleId:String)=repository.start(puzzleId)

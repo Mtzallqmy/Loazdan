@@ -36,11 +36,15 @@ import kotlinx.coroutines.flow.Flow
  @Query("SELECT COUNT(*) FROM sync_operations") suspend fun operationCount():Int
  @Query("DELETE FROM puzzles WHERE packId=:packId") suspend fun removeContent(packId:String)
 }
-@Database(entities=[InstalledContentPackEntity::class,LocalPuzzleEntity::class,GameSessionEntity::class,PlayerProgressEntity::class,AchievementEntity::class,SyncOperationEntity::class,PackHeadEntity::class,PackMemberEntity::class,InstallJournalEntity::class,DownloadEntity::class,SyncDeliveryEntity::class,SyncAccountEntity::class,SyncReplicaEntity::class],version=3,exportSchema=true)
+@Database(entities=[InstalledContentPackEntity::class,LocalPuzzleEntity::class,GameSessionEntity::class,PlayerProgressEntity::class,AchievementEntity::class,SyncOperationEntity::class,PackHeadEntity::class,PackMemberEntity::class,InstallJournalEntity::class,DownloadEntity::class,SyncDeliveryEntity::class,SyncAccountEntity::class,SyncReplicaEntity::class,VocabularyEntity::class],version=4,exportSchema=true)
 abstract class LughzdanDatabase:RoomDatabase(){
  abstract fun games():GameDao
  abstract fun content():ContentDao
+ abstract fun vocabulary():VocabularyDao
  companion object {
+  val MIGRATION_3_4:Migration=object:Migration(3,4) {
+   override fun migrate(db:SupportSQLiteDatabase) { db.execSQL(VocabularySchema.CREATE) }
+  }
   val MIGRATION_2_3:Migration=object:Migration(2,3) {
    override fun migrate(db:SupportSQLiteDatabase) { ContentSchema.statements.forEach(db::execSQL) }
   }
