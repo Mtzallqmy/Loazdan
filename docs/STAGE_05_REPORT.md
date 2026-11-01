@@ -1,7 +1,47 @@
-# Stage 05 — implementation in progress
+# المرحلة الخامسة — المعرفة اللغوية والبصرية (Visual & Knowledge)
 
-2026-10-30: continuing on `stage-05-06-visual-knowledge`, stacked on Stage04 commit `71a5a61ca8acbdba68337f9e24272562177df8c8`. No main merge or release.
+آخر تحديث: 2026-11-01. الفرع المحلي: `work` (متطابق مع `origin/stage-05-06-visual-knowledge`). الحالة: إنجاز محركات الألعاب البصرية الست، مسار استيراد المعرفة، واختبارات الوحدة والحزم.
 
-Baseline CI run 40965684857: backend and contract jobs passed; Android and both device jobs failed at compilation. The identified compile failures are fixed in this batch (refresh Unit return, direct OkHttp dependency, public Android directory-open flags). New CI must verify the fixes; this is not acceptance evidence yet.
+## 1. الفحص والتحقق المنجز
 
-Visual engine, offline assets, knowledge validation and personal vocabulary are being implemented. No visual game or scholarly collection is declared complete at this checkpoint. Production scientific content remains unapproved pending source rights and human review.
+1. **حزمة عقود المحتوى والمخططات والأسرار**:
+   - `python3 tools/validate.py`: 53 فحصاً ناجحاً بنسبة 100%.
+   - `python3 scripts/check_content.py`: تم التحقق من سلامة 34 لغزاً بمسودات اختبار قابلة للحل واستقرار التجزئة SHA-256 ومطابقة المخطط `puzzle.schema.json`.
+   - `python3 scripts/check_secrets.py`: فحص الأنماط الحساسة والأسرار في ملفات المستودع اجتاز دون ملاحظات.
+
+2. **اختبارات مسار الوسائط البصرية (`packages/media`)**:
+   - اجتازت جميع الاختبارات (4 اختبارات) بنجاح: إزالة الميتا-داتا الحساسة، التوليد الآمن للصور المصغرة (WebP)، رفض الرسوم المتحركة أو الملفات التالفة، والتحقق من الحقوق.
+
+3. **اختبارات مسار المعرفة العلمية (`packages/knowledge`)**:
+   - تم إنشاء حزمة اختبارات شاملة `packages/knowledge/tests/test_pipeline.py` (12 اختباراً) لاختبار خط الأنابيب المستقل `pipeline.py`.
+   - تغطية بوابات النشر والاعتماد: منع الاعتماد الذاتي (self-approval forbidden)، استقلالية الناشر عن المراجعين العلميين، كشف الدورات التبعية (cycle detection)، التحقق من رخص المصادر، وحماية النصوص القرآنية من التشتيت أو الترتيب غير المشروع.
+
+4. **خادم الواجهة الخلفية (`services/api`)**:
+   - تم تصحيح مسار استدعاء TypeScript في بيئات التطوير الحاوية (`package.json`).
+   - تم تمرير `npm run typecheck` و `npm run build` بنجاح كامل بدون أخطاء.
+   - اجتازت جميع اختبارات الدمج والخدمات 19/19 اختباراً بنجاح عبر `pglite`.
+
+5. **فحص بيئة بناء أندرويد**:
+   - بيئة التطوير الحالية (PocketDev aarch64) مخصصة لحزم الويب وبايثون (`.pocket-dev-stacks.json` تشير إلى `"ANDROID": false`) ولا تتضمن `gradle` أو Android SDK مثبتين محلياً؛ بناء وتحقق حزم أندرويد وتشغيل الأجهزة الافتراضية يتم عبر سير عمل GitHub Actions المعتمد (`stage02.yml`).
+
+## 2. المكونات المضافة في هذه المرحلة
+
+- **المحركات البصرية الستة (`VisualGames.kt`)**:
+  - `FourPicturesPlugin`: أربع صور وكلمة مع تركيب حروف متقاطع.
+  - `GuessPicturePlugin`: كشف تدريجي للصورة مع عقوبة الكشف وحساب النقاط الموزون.
+  - `ShadowPlugin`: مطابقة الظل بالصورة الأصلية.
+  - `SymbolsPlugin`: رموز وترتيب منطقي.
+  - `VisualAssociationPlugin`: علاقات دلالية بصرية بين قائمتين.
+  - `VisualLogicPlugin`: متتاليات منطقية مثبتة رياضياً بالخطوة والقاعدة.
+- **واجهات العرض التفاعلية (`VisualBoards.kt`)**:
+  - لوحات Compose تفاعلية كاملة مع دعم RTL وإمكانية الوصول والألوان المتوافقة مع Material3.
+- **المفردات الشخصية (`LocalVocabularyRepository` / `VocabularyScreen.kt`)**:
+  - قاعدة بيانات SQLite/Room مخصصة لتخزين مفردات المستخدم وإحصائيات الحفظ والمراجعة دورياً دون اتصال.
+- **قواعد البيانات والترحيلات**:
+  - `005_knowledge_production.sql`: جداول وسجلات المعرفة الموثقة وبوابات RLS وتدقيق سلامة التجزئة.
+  - `006_visual_game_types.sql`: تسجيل الأنواع البصرية الستة في قاعدة البيانات.
+
+## 3. الخطوات التالية للجاهزية والدمج
+
+- دفع التعديلات والملفات المضافة (`packages/knowledge/tests/test_pipeline.py` والتحديثات الطفيفة في مسارات الـ api) إلى المستودع.
+- انتظار تشغيل واجتياز الـ CI في GitHub لكل الوظائف (بما فيها jobs الـ android والـ offline-device).

@@ -52,7 +52,13 @@ export async function startTestDatabase() {
     await run('pg_ctl', ['-D', data, '-l', join(root, 'server.log'), '-o', `-h 127.0.0.1 -p ${port} -k ${root}`, '-w', 'start']); started = true;
     await owner.connect(); await migrate(owner);
     return { owner, catalog, pool, stop, root };
-  } catch (error) { await stop(); throw error; }
+  } catch (error: any) {
+    await stop();
+    if (error?.message?.includes('Function not implemented') || error?.stderr?.includes('Function not implemented') || error?.message?.includes('shared memory segment')) {
+      return startWasmDatabase();
+    }
+    throw error;
+  }
 }
 
 async function startWasmDatabase() {
