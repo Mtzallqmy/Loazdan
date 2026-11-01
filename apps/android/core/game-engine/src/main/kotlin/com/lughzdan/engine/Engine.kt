@@ -12,6 +12,7 @@ import java.text.Normalizer
 @Serializable data class FixedSlot(val index: Int, val token: String)
 @Serializable data class MatchPair(val leftId: String, val rightId: String)
 @Serializable data class VisualImage(val id: String, val assetPath: String, val alt: String, val role: String, val sourceRef: String, val license: String, val width: Int, val height: Int, val sha256: String)
+@Serializable data class ImageGuessAsset(val assetId: String = "", val alt: String = "")
 @Serializable data class LogicRule(val kind: String, val values: List<Int>, val optionValues: Map<String, Int>, val step: Int)
 @Serializable data class ChoicePayload(
  val prompt: String = "", val options: List<Option> = emptyList(), val correctId: String = "",
@@ -22,6 +23,8 @@ import java.text.Normalizer
  val images: List<VisualImage> = emptyList(), val correctImageId: String = "", val correctImageOrder: List<String> = emptyList(),
  val visualPairs: List<MatchPair> = emptyList(), val revealRows: Int = 0, val revealCols: Int = 0, val revealPenalty: Int = 0, val logicRule: LogicRule? = null,
  val items: List<Option> = emptyList(), val correctOrder: List<String> = emptyList(), val variant: String = "",
+ val terms: List<Int> = emptyList(), val answer: Int = 0, val rule: String = "",
+ val mode: String = "", val assets: List<ImageGuessAsset> = emptyList(), val revealSteps: Int = 0,
 )
 @Serializable data class PuzzleDefinition(
     val schemaVersion: Int, val puzzleId: String, val revision: Int, val gameId: String,
@@ -116,7 +119,12 @@ class ChoicePlugin : GamePlugin {
         return next.copy(processedActions = next.processedActions + action.id)
     }
 }
-class GameRegistry(plugins: List<GamePlugin> = listOf(ChoicePlugin(), CrosswordPlugin(), WordsearchPlugin(), AnagramPlugin(), MatchingPlugin(), OrderPlugin(), FourPicturesPlugin(), GuessPicturePlugin(), ShadowPlugin(), SymbolsPlugin(), VisualAssociationPlugin(), VisualLogicPlugin())) {
+class GameRegistry(plugins: List<GamePlugin> = listOf(
+    ChoicePlugin(), CrosswordPlugin(), WordsearchPlugin(), AnagramPlugin(),
+    MatchingPlugin(), OrderPlugin(), TextAnswerPlugin(), SequencePlugin(), ImageGuessPlugin(),
+    FourPicturesPlugin(), GuessPicturePlugin(), ShadowPlugin(), SymbolsPlugin(),
+    VisualAssociationPlugin(), VisualLogicPlugin()
+)) {
     private val entries = plugins.associateBy { it.type }
     init { require(entries.size == plugins.size) }
     val types: Set<String> get() = entries.keys

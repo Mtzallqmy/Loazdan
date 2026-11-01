@@ -15,8 +15,8 @@ fun validateGameSession(p:PuzzleDefinition,s:GameSession)=ValidationResult(build
  val allowed=p.payload.entries.flatMap {entryCells(it)}.map {key(it)}.toSet()
  if(s.cells.any {(c,t)->c !in allowed||!validToken(t)}) add("invalid_cell_progress")
  if(p.type !in setOf("anagram","four_pictures")&&(s.selectedTileIndices.isNotEmpty()||s.tileOrder.isNotEmpty()||s.answerHistory.isNotEmpty())||p.type!="matching"&&s.matchedPairs.isNotEmpty()||p.type!="order"&&s.orderedIds.isNotEmpty()||p.type!="wordsearch"&&(s.selectedPath.isNotEmpty()||s.foundWordIds.isNotEmpty())||p.type!="crossword"&&s.cells.isNotEmpty()||!(p.type=="choice"||p.type=="matching"&&p.payload.options.isNotEmpty())&&(s.selectedId!=null||s.submittedIds.isNotEmpty())) add("foreign_progress")
- if(!answerTextValid(s.answerInput) || (p.type !in setOf("guess_picture","symbols") && s.answerInput.isNotEmpty())) add("invalid_answer_input")
- if(s.revealedRegions.any {it !in 0 until p.payload.revealRows*p.payload.revealCols} || (p.type!="guess_picture" && s.revealedRegions.isNotEmpty())) add("invalid_revealed_regions")
+ if(!answerTextValid(s.answerInput) || (p.type !in setOf("guess_picture","symbols","text_answer","sequence","image_guess") && s.answerInput.isNotEmpty())) add("invalid_answer_input")
+ if(s.revealedRegions.any {it !in 0 until if(p.type=="image_guess") p.payload.revealSteps*p.payload.revealSteps else p.payload.revealRows*p.payload.revealCols} || (p.type !in setOf("guess_picture","image_guess") && s.revealedRegions.isNotEmpty())) add("invalid_revealed_regions")
  if(s.selectedImageId!=null && (p.type !in setOf("shadow","visual_logic") || s.selectedImageId !in visualOptions(p))) add("invalid_selected_image")
  if((p.type=="symbols" && !imagePermutation(p,s.imageOrder)) || (p.type!="symbols" && s.imageOrder.isNotEmpty())) add("invalid_image_order")
  if(s.imageMatches.any {!imagePairValid(p,it)} || s.imageMatches.map {it.leftId}.distinct().size!=s.imageMatches.size || s.imageMatches.map {it.rightId}.distinct().size!=s.imageMatches.size || (p.type!="visual_association" && s.imageMatches.isNotEmpty())) add("invalid_image_matches")
@@ -27,6 +27,9 @@ fun validateGameSession(p:PuzzleDefinition,s:GameSession)=ValidationResult(build
   "matching"->if(p.payload.options.isNotEmpty()) s.selectedId==p.payload.correctId else s.matchedPairs.toSet()==p.payload.pairs.toSet()
   "order"->s.orderedIds==p.payload.correctOrder
   "anagram"->if(multipleAnswers(p)) p.payload.acceptedAnswers.all {a->s.answerHistory.any {normalized(p,a)==normalized(p,it)}} else s.selectedTileIndices.all {it in p.payload.tiles.indices}&&s.answerHistory.lastOrNull()==builtAnswer(p,s)&&p.payload.acceptedAnswers.any {normalized(p,it)==normalized(p,builtAnswer(p,s))}
+  "text_answer"->p.payload.acceptedAnswers.any {normalized(p,it)==normalized(p,s.answerInput)}
+  "sequence"->{val conv=s.answerInput.trim().map {when(it){in '٠'..'٩'->(it-'٠'+'0'.code).toChar();else->it}}.joinToString("");conv.toIntOrNull()==p.payload.answer}
+  "image_guess"->p.payload.acceptedAnswers.any {normalized(p,it)==normalized(p,s.answerInput)}
   in visualTypes->runCatching {visualSolved(p,s)}.getOrDefault(false)
   else->false};if(!solved) add("unsolved_terminal_record")}
 })

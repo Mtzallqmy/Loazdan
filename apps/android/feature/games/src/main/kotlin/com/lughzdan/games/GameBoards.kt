@@ -18,7 +18,23 @@ import com.lughzdan.engine.*
 import java.util.UUID
 
 private fun aid()=UUID.randomUUID().toString()
-val gameNames=mapOf("choice" to "تحدي المفردات العربية — أربعة اختيارات","crossword" to "الكلمات المتقاطعة","wordsearch" to "البحث عن الكلمات","anagram" to "بناء الكلمات","matching" to "العلاقات الدلالية","order" to "ترتيب الكلمات", "four_pictures" to "أربع صور وكلمة", "guess_picture" to "خمن الصورة", "shadow" to "خمن الظل", "symbols" to "لغز الرموز", "visual_association" to "اكتشف العلاقة", "visual_logic" to "المنطق البصري")
+val gameNames=mapOf(
+ "choice" to "تحدي المفردات العربية — أربعة اختيارات",
+ "crossword" to "الكلمات المتقاطعة",
+ "wordsearch" to "البحث عن الكلمات",
+ "anagram" to "بناء الكلمات",
+ "matching" to "العلاقات الدلالية",
+ "order" to "ترتيب الجمل والأبيات",
+ "text_answer" to "الكتابة والتعبير العربي",
+ "sequence" to "المتتاليات والأنماط المنطقية",
+ "image_guess" to "تخمين الصور",
+ "four_pictures" to "أربع صور وكلمة",
+ "guess_picture" to "خمن الصورة",
+ "shadow" to "خمن الظل",
+ "symbols" to "لغز الرموز",
+ "visual_association" to "اكتشف العلاقة",
+ "visual_logic" to "المنطق البصري"
+)
 @Composable private fun Grid(rows:Int,cols:Int,cell:@Composable (Int,Int)->Unit) {
  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
   Column(Modifier.horizontalScroll(rememberScrollState())) { repeat(rows){r->Row {repeat(cols){c->cell(r,c)}}} }
@@ -33,6 +49,9 @@ val gameNames=mapOf("choice" to "تحدي المفردات العربية — أ
  "anagram" -> Builder(p,s,busy,send)
  "matching" -> if(p.payload.options.isNotEmpty()) { p.payload.options.forEach {o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} } } else Matching(p,s,busy,send)
  "order" -> Ordering(p,s,busy,send)
+ "text_answer" -> TextAnswerBoard(p,s,busy,send)
+ "sequence" -> SequenceBoard(p,s,busy,send)
+ "image_guess" -> ImageGuessBoard(p,s,busy,send)
  in visualGameTypes -> VisualBoard(p,s,busy,send)
  }
 }
@@ -121,4 +140,79 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  val order=s.orderedIds.ifEmpty {p.payload.items.map {it.id}}
  Text("حرّك الكلمات لأعلى أو لأسفل")
  order.forEachIndexed {index,id->val text=p.payload.items.first {it.id==id}.text;Text("${index+1}. $text");Row {listOf(-1 to "لأعلى",1 to "لأسفل").forEach {(delta,label)->TextButton(onClick={val next=order.toMutableList();next.add(index+delta,next.removeAt(index));send(PlayerAction.Reorder(aid(),next))},enabled=!busy&&index+delta in order.indices,modifier=Modifier.heightIn(min=48.dp).semantics {contentDescription="$label $text"}){Text(label)}}}}
+}
+
+@Composable private fun TextAnswerBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
+ var input by rememberSaveable(p.puzzleId,s.answerInput){mutableStateOf(s.answerInput)}
+ Text(p.payload.prompt,style=MaterialTheme.typography.titleMedium)
+ OutlinedTextField(
+  value=input,
+  onValueChange={if(it.length<=2000){input=it;send(PlayerAction.InputAnswer(aid(),it))}},
+  label={Text("اكتب إجابتك بالعربية")},
+  enabled=!busy,
+  modifier=Modifier.fillMaxWidth()
+ )
+ if(p.normalization=="arabic_basic_v1") {
+  Text("ملاحظة: يُقبل الجواب بتجريد الحركات والهمزات.",style=MaterialTheme.typography.bodySmall)
+ }
+}
+
+@Composable private fun SequenceBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
+ var input by rememberSaveable(p.puzzleId,s.answerInput){mutableStateOf(s.answerInput)}
+ Text("أكمل المتتالية وفق النمط المنطقي:",style=MaterialTheme.typography.titleMedium)
+ Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+  p.payload.terms.forEach {term->
+   Surface(shape=MaterialTheme.shapes.medium,color=MaterialTheme.colorScheme.primaryContainer,modifier=Modifier.padding(vertical=8.dp)) {
+    Text("$term",modifier=Modifier.padding(horizontal=16.dp,vertical=10.dp),style=MaterialTheme.typography.titleLarge)
+   }
+  }
+  Surface(shape=MaterialTheme.shapes.medium,color=MaterialTheme.colorScheme.secondaryContainer,modifier=Modifier.padding(vertical=8.dp)) {
+   Text("؟",modifier=Modifier.padding(horizontal=16.dp,vertical=10.dp),style=MaterialTheme.typography.titleLarge)
+  }
+ }
+ if(p.payload.rule.isNotBlank()) {
+  Text(p.payload.rule,style=MaterialTheme.typography.bodyMedium)
+ }
+ OutlinedTextField(
+  value=input,
+  onValueChange={if(it.length<=50){input=it;send(PlayerAction.InputAnswer(aid(),it))}},
+  label={Text("العدد التالي (أرقام عربية أو لاتينية)")},
+  singleLine=true,
+  enabled=!busy,
+  modifier=Modifier.fillMaxWidth()
+ )
+}
+
+@Composable private fun ImageGuessBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
+ var input by rememberSaveable(p.puzzleId,s.answerInput){mutableStateOf(s.answerInput)}
+ Text("تخمين الصورة — النمط: ${when(p.payload.mode){"four"->"أربع صور";"reveal"->"كشف تدريجي";"shadow"->"ظل الصورة";"symbols"->"رموز متتالية";else->p.payload.mode}}",style=MaterialTheme.typography.titleSmall)
+ val steps=p.payload.revealSteps.coerceAtLeast(1)
+ val total=steps*steps
+ if(p.payload.mode=="reveal"&&p.payload.assets.isNotEmpty()) {
+  Text("اكشف أجزاء الصورة بالضغط على المربعات. الأجزاء المكشوفة: ${s.revealedRegions.size} / $total")
+  Grid(steps,steps){r,c->
+   val idx=r*steps+c
+   if(idx in s.revealedRegions) {
+    Surface(Modifier.size(48.dp).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant) {
+     Text("👁",Modifier.padding(8.dp))
+    }
+   } else {
+    OutlinedButton(
+     onClick={send(PlayerAction.RevealRegion(aid(),r,c))},
+     enabled=!busy,
+     modifier=Modifier.size(48.dp).padding(2.dp)
+    ) { Text("${idx+1}") }
+   }
+  }
+ }
+ p.payload.assets.forEachIndexed {idx,asset->
+  Text("عنصر ${idx+1}: ${asset.alt}",style=MaterialTheme.typography.bodySmall)
+ }
+ OutlinedTextField(
+  value=input,
+  onValueChange={if(it.length<=2000){input=it;send(PlayerAction.InputAnswer(aid(),it))}},
+  label={Text("اكتب ما تدل عليه الصورة")},
+  enabled=!busy,
+  modifier=Modifier.fillMaxWidth()
+ )
 }

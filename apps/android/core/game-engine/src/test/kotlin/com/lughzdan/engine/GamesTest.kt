@@ -66,4 +66,56 @@ class GamesTest {
   assertEquals(GenerationResult.Failure("attempt_budget_exhausted"),WordSearchGenerator.generate(impossible,3,3,0,filler=listOf("ا"),maxAttempts=100))
  }
  @Test fun allBundledFixturesValidate(){var dir=File(System.getProperty("user.dir"));while(!File(dir,"contracts").isDirectory&&dir.parentFile!=null) dir=dir.parentFile;val files=File(dir,"apps/android/app/src/debug/assets").walkTopDown().filter {it.extension=="jsonl"}.toList();assertTrue(files.isNotEmpty());val registry=GameRegistry();var count=0;files.forEach {file->file.readLines().filter {it.isNotBlank()}.forEach {line->val p=SessionCodec.json.decodeFromString<PuzzleDefinition>(line);val result=registry.plugin(p.type).validatePuzzle(p);assertTrue("${p.puzzleId}: ${result.errors}",result.valid);count++}};assertTrue(count>=22)}
+ @Test fun textAnswerValidatesAndEvaluates(){
+  val puzzle = p("text_answer", ChoicePayload(prompt = "ما عاصمة سلطنة عمان؟", acceptedAnswers = listOf("مسقط", "مدينة مسقط")))
+  val plugin = TextAnswerPlugin()
+  assertTrue(plugin.validatePuzzle(puzzle).valid)
+  var session = plugin.createSession(puzzle, "s-text")
+  session = plugin.evaluate(puzzle, session, PlayerAction.InputAnswer("1", "صلالة"))
+  session = plugin.evaluate(puzzle, session, PlayerAction.Submit("2"))
+  assertEquals(1, session.wrongSubmissions)
+  assertEquals(SessionStatus.ACTIVE, session.status)
+  session = plugin.evaluate(puzzle, session, PlayerAction.InputAnswer("3", "مَسْقَط"))
+  session = plugin.evaluate(puzzle, session, PlayerAction.Submit("4"))
+  assertEquals(SessionStatus.WON, session.status)
+  assertTrue(session.score > 0)
+  assertTrue(validateGameSession(puzzle, session).valid)
+ }
+ @Test fun sequenceValidatesAndAcceptsArabicDigits(){
+  val puzzle = p("sequence", ChoicePayload(terms = listOf(3, 6, 9, 12), answer = 15, rule = "أضف ثلاثة في كل خطوة"))
+  val plugin = SequencePlugin()
+  assertTrue(plugin.validatePuzzle(puzzle).valid)
+  var session = plugin.createSession(puzzle, "s-seq")
+  session = plugin.evaluate(puzzle, session, PlayerAction.InputAnswer("1", "١٥"))
+  session = plugin.evaluate(puzzle, session, PlayerAction.Submit("2"))
+  assertEquals(SessionStatus.WON, session.status)
+  assertTrue(validateGameSession(puzzle, session).valid)
+ }
+ @Test fun imageGuessValidatesAndReveals(){
+  val puzzle = p("image_guess", ChoicePayload(mode = "reveal", assets = listOf(ImageGuessAsset("166b17c4-16f1-5516-96d3-a49bd400b1b4", "صورة حصان عربي")), acceptedAnswers = listOf("حصان", "خيل", "جواد"), revealSteps = 3))
+  val plugin = ImageGuessPlugin()
+  assertTrue(plugin.validatePuzzle(puzzle).valid)
+  var session = plugin.createSession(puzzle, "s-img")
+  session = plugin.evaluate(puzzle, session, PlayerAction.RevealRegion("1", 0, 0))
+  assertEquals(setOf(0), session.revealedRegions)
+  session = plugin.evaluate(puzzle, session, PlayerAction.InputAnswer("2", "جواد"))
+  session = plugin.evaluate(puzzle, session, PlayerAction.Submit("3"))
+  assertEquals(SessionStatus.WON, session.status)
+  assertTrue(validateGameSession(puzzle, session).valid)
+ }
+ @Test fun allOpeningPackPuzzlesValidate(){
+  var dir=File(System.getProperty("user.dir"))
+  while(!File(dir,"contracts").isDirectory&&dir.parentFile!=null) dir=dir.parentFile
+  val packFile=File(dir,"packs/opening-pack-120/data/puzzles.jsonl")
+  if(packFile.exists()){
+   val registry=GameRegistry()
+   val lines=packFile.readLines().filter {it.isNotBlank()}
+   assertEquals(120,lines.size)
+   lines.forEach {line->
+    val p=SessionCodec.json.decodeFromString<PuzzleDefinition>(line)
+    val result=registry.plugin(p.type).validatePuzzle(p)
+    assertTrue("${p.puzzleId}: ${result.errors}",result.valid)
+   }
+  }
+ }
 }

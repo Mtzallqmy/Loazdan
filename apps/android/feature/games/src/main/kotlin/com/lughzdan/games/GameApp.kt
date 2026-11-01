@@ -25,24 +25,39 @@ import com.lughzdan.engine.*
  DisposableEffect(Unit) { onDispose { tone?.release() } }
  fun play(id:String) { vm.start(id) { nav.navigate("session/$it") } }
  LughzdanTheme(settings.dark) {
-  Scaffold(bottomBar={ if(ready) NavigationBar { listOf("home" to "الرئيسية","catalog" to "الألعاب","library" to "المكتبة","settings" to "الإعدادات").forEach { (route,label)->NavigationBarItem(modifier=Modifier.testTag("nav-$route"),selected=nav.currentBackStackEntryAsState().value?.destination?.route==route,onClick={ nav.navigate(route){launchSingleTop=true;popUpTo("home"){inclusive=false}} },icon={Text(label.take(1))},label={Text(label)}) } } }) { padding ->
+  Scaffold(bottomBar={ if(ready) NavigationBar { listOf("home" to "الرئيسية","worlds" to "العوالم","catalog" to "الألعاب","achievements" to "الإنجازات","profile" to "حسابي","settings" to "الإعدادات").forEach { (route,label)->NavigationBarItem(modifier=Modifier.testTag("nav-$route"),selected=nav.currentBackStackEntryAsState().value?.destination?.route==route,onClick={ nav.navigate(route){launchSingleTop=true;popUpTo("home"){inclusive=false}} },icon={Text(label.take(1))},label={Text(label)}) } } }) { padding ->
    Column(Modifier.fillMaxSize().padding(padding).padding(horizontal=20.dp)) {
     Text("لُغْزَدان",style=MaterialTheme.typography.headlineLarge,modifier=Modifier.padding(vertical=16.dp))
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
     if(!ready) { CircularProgressIndicator();Text("تهيئة المكتبة المحلية…") }
     else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f)) {
      composable("home") { Page {
-      Text("مدينة الكلمات",style=MaterialTheme.typography.headlineMedium)
+      Text("منصة لُغزدان للألعاب المعرفية",style=MaterialTheme.typography.headlineMedium)
       Text("مستواك ${ProgressionRules.playerLevel(progress.totalXp)} · ${progress.totalScore} نقطة · ${progress.completed} ألغاز مكتملة")
-      Text("العب بالمحتوى المثبّت دون اتصال")
-      Text("الخبرة: ${progress.totalXp} XP · الصعوبة المفتوحة: ${ProgressionRules.unlockedDifficulty(progress.totalXp)}")
-      progress.perGame.forEach { item->Text("${gameNames[item.gameType] ?: item.gameType}: ${item.completed} مكتمل · ${item.totalScore} نقطة · ${item.attempts} جولة") }
-      if(progress.achievements.isNotEmpty())Text("الإنجازات: "+progress.achievements.joinToString("، "){if(it=="first_win")"أول فوز" else "أول فوز: "+(gameNames[it.removePrefix("first_win_")] ?: it)})
-      sessions.firstOrNull()?.let { record->Button(onClick={nav.navigate("session/${record.session.id}")}){Text("متابعة آخر نشاط")} }
+      Text("العب بجميع العوالم المعرفية دون اتصال بالإنترنت")
+      Text("الخبرة: ${progress.totalXp} XP · الصعوبة المفتوحة: ${ProgressionRules.unlockedDifficulty(progress.totalXp)} من 5")
+      Row(Modifier.fillMaxWidth(), horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+       Button(onClick={nav.navigate("worlds")}, modifier=Modifier.weight(1f)){Text("استكشف العوالم")}
+       FilledTonalButton(onClick={nav.navigate("daily")}, modifier=Modifier.weight(1f)){Text("التحدي اليومي")}
+      }
+      sessions.firstOrNull()?.let { record->Button(onClick={nav.navigate("session/${record.session.id}")}, modifier=Modifier.fillMaxWidth()){Text("متابعة آخر نشاط")} }
       Button(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
-      TextButton(onClick={nav.navigate("history")}){Text("مراجعة الإجابات السابقة")}
-      if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}
+      Row(Modifier.fillMaxWidth(), horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+       OutlinedButton(onClick={nav.navigate("worlds")}, modifier=Modifier.weight(1f)){Text("العوالم")}
+       if(vm.vocabularyRepository!=null)OutlinedButton(onClick={nav.navigate("vocabulary")}, modifier=Modifier.weight(1f)){Text("مفرداتي")}
+      }
+      TextButton(onClick={nav.navigate("history")}){Text("سجل الجولات السابقة")}
+      TextButton(onClick={nav.navigate("library")}){Text("إدارة الحزم والمكتبة")}
      } }
+     composable("worlds") { WorldsScreen(vm) { worldId -> nav.navigate("world/$worldId") } }
+     composable("world/{id}") { entry ->
+      val worldId = entry.arguments?.getString("id") ?: "words"
+      WorldDetailScreen(worldId, vm, onPlay = { play(it) }, onBack = { nav.popBackStack() })
+     }
+     composable("achievements") { AchievementsScreen(vm) }
+     composable("daily") { DailyChallengeScreen(vm) { play(it) } }
+     composable("profile") { ProfileScreen(vm) { nav.navigate("account") } }
+     composable("account") { AccountSyncScreen(vm) }
      composable("catalog") { Page {
       Text("الألعاب المتاحة",style=MaterialTheme.typography.headlineMedium)
       if(puzzles.isEmpty())Text("لا توجد حزمة معتمدة مثبتة. نسخة الإنتاج لا تتضمن مسودات الاختبار.")
