@@ -33,21 +33,21 @@ val allWorlds = listOf(
 )
 
 val allAchievements = listOf(
-    "first_win" to ("بداية المسير", "أول فوز لك في لُغزدان", "🎯"),
-    "first_win_crossword" to ("حلال العقد", "أول فوز في الكلمات المتقاطعة", "📝"),
-    "first_win_wordsearch" to ("قناص الحروف", "أول فوز في البحث عن الكلمات", "🔍"),
-    "first_win_anagram" to ("بنّاء الكلمات", "أول فوز في ترتيب الحروف", "🧩"),
-    "first_win_choice" to ("صاحب الرأي", "أول فوز في أسئلة الاختيار", "✅"),
-    "first_win_matching" to ("جامع الروابط", "أول فوز في العلاقات الدلالية", "🔗"),
-    "first_win_order" to ("المنسق الماهر", "أول فوز في ترتيب الجمل والأبيات", "📊"),
-    "first_win_text_answer" to ("الفصيح الكاتب", "أول فوز في الكتابة المباشرة", "✍️"),
-    "first_win_sequence" to ("الرياضي المنطقي", "أول فوز في المتتاليات", "🔢"),
-    "first_win_four_pictures" to ("الرابط البصري", "أول فوز في أربع صور وكلمة", "🖼️"),
-    "first_win_guess_picture" to ("كاشف الأسرار", "أول فوز في خمن الصورة", "👁️"),
-    "first_win_shadow" to ("خبير الظلال", "أول فوز في مطابقة الظل", "👤"),
-    "first_win_symbols" to ("فكاك الشفرات", "أول فوز في لغز الرموز", "🔮"),
-    "first_win_visual_association" to ("الناقد الصوري", "أول فوز في العلاقات البصرية", "📐"),
-    "first_win_visual_logic" to ("عبقري المنطق", "أول فوز في المنطق البصري", "🧠")
+    "first_win" to Triple("بداية المسير", "أول فوز لك في لُغزدان", "🎯"),
+    "first_win_crossword" to Triple("حلال العقد", "أول فوز في الكلمات المتقاطعة", "📝"),
+    "first_win_wordsearch" to Triple("قناص الحروف", "أول فوز في البحث عن الكلمات", "🔍"),
+    "first_win_anagram" to Triple("بنّاء الكلمات", "أول فوز في ترتيب الحروف", "🧩"),
+    "first_win_choice" to Triple("صاحب الرأي", "أول فوز في أسئلة الاختيار", "✅"),
+    "first_win_matching" to Triple("جامع الروابط", "أول فوز في العلاقات الدلالية", "🔗"),
+    "first_win_order" to Triple("المنسق الماهر", "أول فوز في ترتيب الجمل والأبيات", "📊"),
+    "first_win_text_answer" to Triple("الفصيح الكاتب", "أول فوز في الكتابة المباشرة", "✍️"),
+    "first_win_sequence" to Triple("الرياضي المنطقي", "أول فوز في المتتاليات", "🔢"),
+    "first_win_four_pictures" to Triple("الرابط البصري", "أول فوز في أربع صور وكلمة", "🖼️"),
+    "first_win_guess_picture" to Triple("كاشف الأسرار", "أول فوز في خمن الصورة", "👁️"),
+    "first_win_shadow" to Triple("خبير الظلال", "أول فوز في مطابقة الظل", "👤"),
+    "first_win_symbols" to Triple("فكاك الشفرات", "أول فوز في لغز الرموز", "🔮"),
+    "first_win_visual_association" to Triple("الناقد الصوري", "أول فوز في العلاقات البصرية", "📐"),
+    "first_win_visual_logic" to Triple("عبقري المنطق", "أول فوز في المنطق البصري", "🧠")
 )
 
 @Composable
