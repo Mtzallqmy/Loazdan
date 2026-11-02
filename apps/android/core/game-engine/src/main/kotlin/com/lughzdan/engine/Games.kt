@@ -115,7 +115,7 @@ class AnagramPlugin:BoardPlugin("anagram") {
   if(b.acceptedAnswers.map {normalized(p,it)}.distinct().size!=b.acceptedAnswers.size) add("duplicate_normalized_answer")
   for(answer in b.acceptedAnswers){val ts=tokens(normalized(p,answer));val inventory=b.tiles.map {normalized(p,it)}.toMutableList();if(b.fixedSlots.size>=ts.size||ts.any {!inventory.remove(it)}||b.fixedSlots.any {it.index !in ts.indices||normalized(p,it.token)!=ts.getOrNull(it.index)}) add("unbuildable_answer")}
  }
- override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession=when(a){
+ public override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession=when(a){
   is PlayerAction.AddTile->if(a.tileIndex !in p.payload.tiles.indices||a.tileIndex in s.selectedTileIndices||a.tileIndex in reservedTiles(p.payload)) s else s.copy(selectedTileIndices=s.selectedTileIndices+a.tileIndex)
   is PlayerAction.RemoveTile->if(a.slotIndex !in s.selectedTileIndices.indices) s else s.copy(selectedTileIndices=s.selectedTileIndices.filterIndexed {i,_->i!=a.slotIndex})
   is PlayerAction.Undo->if(s.selectedTileIndices.isEmpty()) s else s.copy(selectedTileIndices=s.selectedTileIndices.dropLast(1))
