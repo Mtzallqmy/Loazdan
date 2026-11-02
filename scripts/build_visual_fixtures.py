@@ -61,7 +61,7 @@ def asset(name,kind='circle',count=1,color='#286fa8',role='clue',alt=None):
 
 levels=[]
 def level(kind,n,title,prompt,explanation,payload):
-    levels.append(dict(schemaVersion=1,puzzleId=UID(kind+str(n)),revision=1,gameId=UID('game-'+kind),type=kind,world='imagination' if kind!='visual_logic' else 'logic',difficulty=1 if n==1 else 2,rulesVersion=1,normalization='arabic_basic_v1',title=title,status='draft',fixtureOnly=True,sourceRefs=[SOURCE],explanation=explanation,hints=[dict(id='h1',kind='step',text=explanation,penalty=10)],payload=dict(prompt=prompt,**payload)))
+    levels.append(dict(schemaVersion=1,puzzleId=UID(kind+str(n)),revision=2 if kind=='visual_logic' else 1,gameId=UID('game-'+kind),type=kind,world='imagination' if kind!='visual_logic' else 'logic',difficulty=1 if n==1 else 2,rulesVersion=1,normalization='arabic_basic_v1',title=title,status='draft',fixtureOnly=True,sourceRefs=[SOURCE],explanation=explanation,hints=[dict(id='h1',kind='step',text=explanation,penalty=10)],payload=dict(prompt=prompt,**payload)))
 
 for n,kind,answer in [(1,'circle','دائرة'),(2,'triangle','مثلث')]:
     imgs=[asset(f'four-{n}-{i}',kind,color=c,alt=f'شكل {answer} بلون مختلف',role='clue') for i,c in enumerate(['#286fa8','#ce6047','#4e8a59','#9164a8'])]
@@ -80,11 +80,11 @@ for n,kinds in [(1,['circle','triangle','square']),(2,['house','tree','fish'])]:
     left=[asset(f'pairs-{n}-left-{i}',k,color='#286fa8',role='left',alt=f'الشكل الملون {i+1}') for i,k in enumerate(kinds)]
     right=[asset(f'pairs-{n}-right-{i}',k,color='#17293a',role='right',alt=f'ظل الشكل {i+1}') for i,k in enumerate(reversed(kinds))]
     level('visual_association',n,'صل الشكل بظله','صل كل شكل ملون بظله المطابق.', 'طابق حدود كل شكل؛ ترتيب الظلال مختلف.',dict(images=left+right,visualPairs=[dict(leftId=a['id'],rightId=right[2-i]['id']) for i,a in enumerate(left)]))
-for n,op,values,result,options in [(1,'add',[1,2,3],6,[5,6,7]),(2,'multiply',[1,2,3],6,[5,7,6])]:
+for n,op,values,result,options,step in [(1,'add',[1,2,3],4,[4,5,6],1),(2,'multiply',[1,2,4],8,[6,7,8],2)]:
     terms=[asset(f'logic-{n}-term-{i}','circle',count=v,color='#286fa8',role='term',alt=f'مجموعة من {v} دوائر') for i,v in enumerate(values)]
     choices=[asset(f'logic-{n}-option-{i}','circle',count=v,color='#ce6047',role='option',alt=f'خيار فيه {v} دوائر') for i,v in enumerate(options)]
-    prompt='اجمع أعداد الدوائر في المجموعات الثلاث واختر الناتج.' if op=='add' else 'اضرب أعداد الدوائر في المجموعات الثلاث واختر الناتج.'
-    level('visual_logic',n,'حساب بالصور',prompt,'١ + ٢ + ٣ = ٦' if op=='add' else '١ × ٢ × ٣ = ٦',dict(images=terms+choices,correctImageId=choices[options.index(result)]['id'],logicRule=dict(kind=op,values=values,optionValues={c['id']:v for c,v in zip(choices,options)},step=1)))
+    prompt='اختر المجموعة التي تكمل المتتالية البصرية.'
+    level('visual_logic',n,'حساب بالصور',prompt,'نضيف واحداً في كل خطوة، فيكون العدد التالي ٤.' if op=='add' else 'نضاعف العدد في كل خطوة، فيكون العدد التالي ٨.',dict(images=terms+choices,correctImageId=choices[options.index(result)]['id'],logicRule=dict(kind=op,values=values,optionValues={c['id']:v for c,v in zip(choices,options)},step=step)))
 
 (ROOT/'debugdata').mkdir(exist_ok=True)
 (ROOT/'debugdata/visual.jsonl').write_text(''.join(json.dumps(x,ensure_ascii=False)+'\n' for x in levels))

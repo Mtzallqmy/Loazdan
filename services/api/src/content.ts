@@ -1,9 +1,9 @@
 import manifestSchema from '../../../contracts/manifest.schema.json' with {type:'json'};
 import {Ajv2020} from 'ajv/dist/2020.js';
-import {createRequire} from 'node:module';
+import formats from 'ajv-formats';
 import type {FormatsPlugin} from 'ajv-formats';
 const schemaAjv=new Ajv2020({strict:false});
-(createRequire(import.meta.url)('ajv-formats') as FormatsPlugin)(schemaAjv);
+(formats as unknown as FormatsPlugin)(schemaAjv);
 const validateManifest=schemaAjv.compile(manifestSchema);
 import { createHash, verify, type KeyObject } from 'node:crypto';
 import { readFile } from 'node:fs/promises';

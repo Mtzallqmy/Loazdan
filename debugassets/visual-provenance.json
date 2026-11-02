@@ -1116,6 +1116,36 @@
     {
       "assetId": "6aceaa89-affa-54aa-9386-80e545518c47",
       "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+      "sourcePath": "media/75ba729c46710c1f34f60e31cf666a5419b4974c0b855d2569e4885ff68dd91b.png",
+      "sourceSha256": "c372cc160fb46f1d1ad4e5bf98da929cdbb113cfd40d4cdef63a0370c685f247",
+      "rights": {
+        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
+        "license_code": "PROJECT-ORIGINAL-FIXTURE",
+        "attribution": "LUGHZDAN original geometric development fixtures",
+        "can_derive": true,
+        "can_redistribute": true,
+        "can_use_offline": true
+      },
+      "image": {
+        "path": "media/75ba729c46710c1f34f60e31cf666a5419b4974c0b855d2569e4885ff68dd91b.webp",
+        "sha256": "86d1d1e5f182973cdb6919cb350560760e122d408dec4af0fb2a19d7ffb5f857",
+        "bytes": 342,
+        "width": 360,
+        "height": 280,
+        "mediaType": "image/webp"
+      },
+      "thumbnail": {
+        "path": "media/75ba729c46710c1f34f60e31cf666a5419b4974c0b855d2569e4885ff68dd91b.thumb.webp",
+        "sha256": "f7568525969d84a04e740f9cdd8c13009bb5ab67499b50ec357b732081b7f4c4",
+        "bytes": 2434,
+        "width": 160,
+        "height": 124,
+        "mediaType": "image/webp"
+      }
+    },
+    {
+      "assetId": "462d89b2-d115-5aaf-82b2-a53f39fe88d5",
+      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
       "sourcePath": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.png",
       "sourceSha256": "5c683b201743f2ec330a658b392870cc5fd55d6318832bc02b09ec561ab95ea3",
       "rights": {
@@ -1144,7 +1174,7 @@
       }
     },
     {
-      "assetId": "462d89b2-d115-5aaf-82b2-a53f39fe88d5",
+      "assetId": "785b33e5-00ba-5cba-a66a-6957c859d505",
       "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
       "sourcePath": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.png",
       "sourceSha256": "db59632b3d5acfe83904753da6190eaf08f6d2f96bcdfe638c78254246ddbd4c",
@@ -1168,36 +1198,6 @@
         "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.thumb.webp",
         "sha256": "892bdfc775a72fea85c5058313624b1e1a07a4862a85698eb9a1b60368778911",
         "bytes": 3534,
-        "width": 160,
-        "height": 124,
-        "mediaType": "image/webp"
-      }
-    },
-    {
-      "assetId": "785b33e5-00ba-5cba-a66a-6957c859d505",
-      "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
-      "sourcePath": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.png",
-      "sourceSha256": "fbae50ba336097a299c18d145589932192fff3ad5c6b613869b2c64f12d37bc9",
-      "rights": {
-        "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
-        "license_code": "PROJECT-ORIGINAL-FIXTURE",
-        "attribution": "LUGHZDAN original geometric development fixtures",
-        "can_derive": true,
-        "can_redistribute": true,
-        "can_use_offline": true
-      },
-      "image": {
-        "path": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.webp",
-        "sha256": "9abfddaeb49ab0dcb908074ac2f695276014bea5eb27e1b6770c4156a3297bd4",
-        "bytes": 472,
-        "width": 360,
-        "height": 280,
-        "mediaType": "image/webp"
-      },
-      "thumbnail": {
-        "path": "media/65f464953442a95b056877475a7c0050356835ecf52372ce172ced09115bc803.thumb.webp",
-        "sha256": "970a467f8ba0809913fe34ae3adf67bea34a9052472cce95f095a7ee896c2555",
-        "bytes": 4006,
         "width": 160,
         "height": 124,
         "mediaType": "image/webp"
@@ -1266,8 +1266,8 @@
     {
       "assetId": "f0f6700f-99a4-5017-bde6-8791ed2e27b4",
       "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
-      "sourcePath": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.png",
-      "sourceSha256": "cccd3656018e30f388f3dae22f6ba6575517eb8163aee18548dfdc37f37d18a9",
+      "sourcePath": "media/37e7a38a338f7b61f92e867355e27bb58ad4986511b3ba63e42711e6e81013cf.png",
+      "sourceSha256": "20a06fe0bb2ebc1a0ede500afb2624aa970332fe0ce0c660811893e5fbc1d528",
       "rights": {
         "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
         "license_code": "PROJECT-ORIGINAL-FIXTURE",
@@ -1277,17 +1277,17 @@
         "can_use_offline": true
       },
       "image": {
-        "path": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.webp",
-        "sha256": "0c2a8b7ae55c2bea13dff466c080cb62753073195657d3f593e8f70d053750f8",
-        "bytes": 306,
+        "path": "media/37e7a38a338f7b61f92e867355e27bb58ad4986511b3ba63e42711e6e81013cf.webp",
+        "sha256": "37802214f8655b33212cae283a32a33b16dc2fa453deb429d7022f4c22110471",
+        "bytes": 342,
         "width": 360,
         "height": 280,
         "mediaType": "image/webp"
       },
       "thumbnail": {
-        "path": "media/2eb1602c021ea326fd2bfe04a1c5d98afa13532e3a2c07f28f718540848a46c9.thumb.webp",
-        "sha256": "57ce7f3e33259a1bd55a757fdd0f37181765edaab57551bc1891388bfd902f09",
-        "bytes": 2160,
+        "path": "media/37e7a38a338f7b61f92e867355e27bb58ad4986511b3ba63e42711e6e81013cf.thumb.webp",
+        "sha256": "be2f679627c997ba5f7d4f495b33d7abc20353f2f3f2297535a1d3d39d2b9fae",
+        "bytes": 2610,
         "width": 160,
         "height": 124,
         "mediaType": "image/webp"
@@ -1296,8 +1296,8 @@
     {
       "assetId": "cc82602b-cb5f-5f5b-b32c-606274e44571",
       "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
-      "sourcePath": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.png",
-      "sourceSha256": "5c683b201743f2ec330a658b392870cc5fd55d6318832bc02b09ec561ab95ea3",
+      "sourcePath": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.png",
+      "sourceSha256": "db59632b3d5acfe83904753da6190eaf08f6d2f96bcdfe638c78254246ddbd4c",
       "rights": {
         "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
         "license_code": "PROJECT-ORIGINAL-FIXTURE",
@@ -1307,17 +1307,17 @@
         "can_use_offline": true
       },
       "image": {
-        "path": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.webp",
-        "sha256": "c2f7ac74398059cee12c91f6026779be12b4345322a7c21a82e66922bcfe8539",
-        "bytes": 468,
+        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.webp",
+        "sha256": "f90685eb33335b0ee480a0fe044aefd31e6b05cdf0aea1bb063af71cf9251539",
+        "bytes": 484,
         "width": 360,
         "height": 280,
         "mediaType": "image/webp"
       },
       "thumbnail": {
-        "path": "media/5108c1f6542cfa31a699f7295a543c6f96e9706d811b08fe65ffe27634e10671.thumb.webp",
-        "sha256": "6c0c7d0f81d3e714ea840dff3846379ef6e1eda196fab5e69f35b071201bf2dc",
-        "bytes": 3058,
+        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.thumb.webp",
+        "sha256": "892bdfc775a72fea85c5058313624b1e1a07a4862a85698eb9a1b60368778911",
+        "bytes": 3534,
         "width": 160,
         "height": 124,
         "mediaType": "image/webp"
@@ -1356,8 +1356,8 @@
     {
       "assetId": "05b75b3f-5014-53ce-934a-0a9fc255ee56",
       "sourceReferenceId": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
-      "sourcePath": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.png",
-      "sourceSha256": "db59632b3d5acfe83904753da6190eaf08f6d2f96bcdfe638c78254246ddbd4c",
+      "sourcePath": "media/65a72d11ad4c443f24a34475bebf0dff5ac7fd50e068425158a87eb4404af383.png",
+      "sourceSha256": "9df711ad60f35b851003435bd3d56f9d8a52d608f6f571a06ad1b0c2239e8085",
       "rights": {
         "source_reference_id": "e1620692-48a1-58a8-8e4a-58f8a8d55747",
         "license_code": "PROJECT-ORIGINAL-FIXTURE",
@@ -1367,17 +1367,17 @@
         "can_use_offline": true
       },
       "image": {
-        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.webp",
-        "sha256": "f90685eb33335b0ee480a0fe044aefd31e6b05cdf0aea1bb063af71cf9251539",
-        "bytes": 484,
+        "path": "media/65a72d11ad4c443f24a34475bebf0dff5ac7fd50e068425158a87eb4404af383.webp",
+        "sha256": "8ed6c98a232b6574474f82b3ca82c02e269acf70ad1614493c8c1eabf1340bcb",
+        "bytes": 348,
         "width": 360,
         "height": 280,
         "mediaType": "image/webp"
       },
       "thumbnail": {
-        "path": "media/d3f8b5e761f1b5ca5fc6f5a8eb507e0d30a9c4ab01aabfaedea45bd5123d6a1c.thumb.webp",
-        "sha256": "892bdfc775a72fea85c5058313624b1e1a07a4862a85698eb9a1b60368778911",
-        "bytes": 3534,
+        "path": "media/65a72d11ad4c443f24a34475bebf0dff5ac7fd50e068425158a87eb4404af383.thumb.webp",
+        "sha256": "be856f8232411ab8d3829837aad0a9efc2b77554bd10b838297a9cfe7f0d4fb2",
+        "bytes": 4414,
         "width": 160,
         "height": 124,
         "mediaType": "image/webp"

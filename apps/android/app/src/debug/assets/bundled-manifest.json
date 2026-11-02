@@ -1,1 +1,1 @@
-{"schemaVersion": 1, "packId": "dev-vocabulary", "version": 3, "fixtureOnly": true, "path": "data/vocabulary.jsonl", "bytes": 49344, "sha256": "bef99a6588c6d1b4b7093880fa300d244f5fadaf4d9f38d50e6f613a63b1c5a5"}
+{"schemaVersion": 1, "packId": "dev-vocabulary", "version": 4, "fixtureOnly": true, "path": "data/vocabulary.jsonl", "bytes": 50921, "sha256": "38c6166ab78d5603baaa504a4d34d920f22bdfa00252e24bf46ebbcf8d358f3a"}

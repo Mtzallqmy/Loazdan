@@ -7,6 +7,9 @@ private val Context.settingsDataStore by preferencesDataStore("settings")
 data class Settings(val dark:Boolean=false,val sound:Boolean=false,val wifiOnly:Boolean=true,val automaticDownloads:Boolean=false)
 class SettingsStore(context:Context) {
  private val store=context.settingsDataStore
+ private val guestId=stringPreferencesKey("local_guest_id")
+ val localGuestId=store.data.map { it[guestId].orEmpty() }
+ suspend fun ensureGuestId() {store.edit {if(it[guestId]==null)it[guestId]="guest-"+java.util.UUID.randomUUID().toString()}}
  private val dark=booleanPreferencesKey("dark")
  private val sound=booleanPreferencesKey("sound")
  private val wifiOnly=booleanPreferencesKey("wifi_only")

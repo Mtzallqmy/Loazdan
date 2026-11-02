@@ -1,8 +1,15 @@
 plugins { alias(libs.plugins.android.application); alias(libs.plugins.kotlin.android); alias(libs.plugins.compose); alias(libs.plugins.ksp); alias(libs.plugins.hilt) }
 android { namespace = "com.lughzdan.app"; compileSdk = 36
- defaultConfig { minSdk = 26; applicationId = "com.lughzdan.app"; targetSdk = 36; versionCode = 4; versionName = "0.5.0-dev"; buildConfigField("String", "CONTENT_API_URL", "\"" + providers.gradleProperty("contentApiUrl").orElse("").get().also { require(it.isEmpty() || it.matches(Regex("https://[A-Za-z0-9.-]+(?::[0-9]+)?/[A-Za-z0-9/_-]*"))) } + "\"") }
+ defaultConfig { minSdk = 26; applicationId = "com.lughzdan.app"; targetSdk = 36; versionCode = 100; versionName = "1.0.0"; buildConfigField("String", "CONTENT_API_URL", "\"" + providers.gradleProperty("contentApiUrl").orElse("https://br-purple-frost-baw74zwb-catalog.compute.c-8.eu-central-1.aws.neon.tech/").get().also { require(it.isEmpty() || it.matches(Regex("https://[A-Za-z0-9.-]+(?::[0-9]+)?/[A-Za-z0-9/_-]*"))) } + "\"") }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  buildFeatures { compose = true; buildConfig = true }
+ signingConfigs {
+  create("production") {
+   val path=providers.environmentVariable("LUGHZDAN_KEYSTORE").orNull
+   if(path!=null) {storeFile=file(path);storePassword=System.getenv("LUGHZDAN_STORE_PASSWORD");keyAlias="lughzdan";keyPassword=System.getenv("LUGHZDAN_STORE_PASSWORD")}
+  }
+ }
+ buildTypes { getByName("release") { ndk { abiFilters.add("arm64-v8a") }; if(providers.environmentVariable("LUGHZDAN_KEYSTORE").isPresent) signingConfig=signingConfigs.getByName("production") } }
  testOptions { unitTests.isIncludeAndroidResources = true }
 }
 kotlin { jvmToolchain(17) }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore,val contentRepository:ContentRepository?=null,val vocabularyRepository:VocabularyRepository?=null):ViewModel() {
+ val localGuestId=settingsStore.localGuestId.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),"")
  val puzzles=repository.puzzles.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val sessions=repository.sessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val unavailableSessions=repository.unavailableSessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
@@ -29,7 +30,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val _busy=MutableStateFlow(false);val busy=_busy.asStateFlow()
  private val mutex=Mutex()
  private val submissionPending=AtomicBoolean(false)
- init { initialize() }
+ init { viewModelScope.launch {settingsStore.ensureGuestId()}; initialize() }
  fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
  suspend fun readImage(sessionId:String,imageId:String)=repository.readImage(sessionId,imageId)
  fun morePuzzles() {viewModelScope.launch {repository.loadMore()}}

@@ -1,99 +1,1558 @@
 {
   "schemaVersion": 1,
-  "packId": "e56aa7f5-be95-5ac1-a0c1-2ec9b6c2a51f",
+  "packId": "668d91cc-b822-52ce-98bd-1b50accb9279",
   "version": 1,
-  "minAppVersionCode": 1,
-  "minEngineVersion": 1,
+  "minAppVersionCode": 100,
+  "minEngineVersion": 3,
   "locale": "ar",
-  "publishedAt": "2026-11-01T12:00:00Z",
+  "publishedAt": "2026-11-02T00:00:00Z",
   "files": [
     {
-      "path": "data/puzzles.jsonl",
+      "path": "data/opening-pack-120.jsonl",
       "kind": "puzzles",
-      "sha256": "7b5eaef9d33a7dc832a709549e5d4ba02d4d9e4d1f788a3993d08fa309df1922",
-      "bytes": 135727,
+      "sha256": "1656063b8e512363484372af1324a7ef7b4635edd684555e8ee5b397bb528d77",
+      "bytes": 139141,
       "chunks": [
         {
-          "sha256": "7b5eaef9d33a7dc832a709549e5d4ba02d4d9e4d1f788a3993d08fa309df1922",
-          "bytes": 135727
+          "sha256": "1656063b8e512363484372af1324a7ef7b4635edd684555e8ee5b397bb528d77",
+          "bytes": 139141
+        }
+      ]
+    },
+    {
+      "path": "media/c0d702f3f6cb08925dcd431b705ad9d44fee0c2e9eed61a69429252dbbe75d0d.webp",
+      "kind": "media",
+      "sha256": "c0d702f3f6cb08925dcd431b705ad9d44fee0c2e9eed61a69429252dbbe75d0d",
+      "bytes": 438,
+      "chunks": [
+        {
+          "sha256": "c0d702f3f6cb08925dcd431b705ad9d44fee0c2e9eed61a69429252dbbe75d0d",
+          "bytes": 438
+        }
+      ]
+    },
+    {
+      "path": "media/142e7f290e0fc7189dd9d7e4a3f3e8dfb303055f0dff3b82e95179ab7c785d30.webp",
+      "kind": "media",
+      "sha256": "142e7f290e0fc7189dd9d7e4a3f3e8dfb303055f0dff3b82e95179ab7c785d30",
+      "bytes": 432,
+      "chunks": [
+        {
+          "sha256": "142e7f290e0fc7189dd9d7e4a3f3e8dfb303055f0dff3b82e95179ab7c785d30",
+          "bytes": 432
+        }
+      ]
+    },
+    {
+      "path": "media/9fe526a922c5a0c3c6964110f561f94ab1ea8395249cdf93a3a7a40a9b13b33f.webp",
+      "kind": "media",
+      "sha256": "9fe526a922c5a0c3c6964110f561f94ab1ea8395249cdf93a3a7a40a9b13b33f",
+      "bytes": 426,
+      "chunks": [
+        {
+          "sha256": "9fe526a922c5a0c3c6964110f561f94ab1ea8395249cdf93a3a7a40a9b13b33f",
+          "bytes": 426
+        }
+      ]
+    },
+    {
+      "path": "media/aad3714db8658265d0a29c2a921d010e972eba52f00e1f24d92859bbe727f8d0.webp",
+      "kind": "media",
+      "sha256": "aad3714db8658265d0a29c2a921d010e972eba52f00e1f24d92859bbe727f8d0",
+      "bytes": 438,
+      "chunks": [
+        {
+          "sha256": "aad3714db8658265d0a29c2a921d010e972eba52f00e1f24d92859bbe727f8d0",
+          "bytes": 438
+        }
+      ]
+    },
+    {
+      "path": "media/442300a43f8742dc6137e0671cfc83c272320a56276c1e905380659036856f78.webp",
+      "kind": "media",
+      "sha256": "442300a43f8742dc6137e0671cfc83c272320a56276c1e905380659036856f78",
+      "bytes": 440,
+      "chunks": [
+        {
+          "sha256": "442300a43f8742dc6137e0671cfc83c272320a56276c1e905380659036856f78",
+          "bytes": 440
+        }
+      ]
+    },
+    {
+      "path": "media/661326969153275eb16aa77d9290e575cb946fec56fd56350f8af15c808b111b.webp",
+      "kind": "media",
+      "sha256": "661326969153275eb16aa77d9290e575cb946fec56fd56350f8af15c808b111b",
+      "bytes": 440,
+      "chunks": [
+        {
+          "sha256": "661326969153275eb16aa77d9290e575cb946fec56fd56350f8af15c808b111b",
+          "bytes": 440
+        }
+      ]
+    },
+    {
+      "path": "media/6e8bf1601b7ed0b1e861fa870060e5b80a6aa69366d04aae9365e3e680e7d06f.webp",
+      "kind": "media",
+      "sha256": "6e8bf1601b7ed0b1e861fa870060e5b80a6aa69366d04aae9365e3e680e7d06f",
+      "bytes": 440,
+      "chunks": [
+        {
+          "sha256": "6e8bf1601b7ed0b1e861fa870060e5b80a6aa69366d04aae9365e3e680e7d06f",
+          "bytes": 440
+        }
+      ]
+    },
+    {
+      "path": "media/6816b4ef3f75ef173bef6702e8b02d27efc5f8d3123628e90cecec631ead2e56.webp",
+      "kind": "media",
+      "sha256": "6816b4ef3f75ef173bef6702e8b02d27efc5f8d3123628e90cecec631ead2e56",
+      "bytes": 440,
+      "chunks": [
+        {
+          "sha256": "6816b4ef3f75ef173bef6702e8b02d27efc5f8d3123628e90cecec631ead2e56",
+          "bytes": 440
+        }
+      ]
+    },
+    {
+      "path": "media/7b12a4a6a8ed254b5dcc1118c888970ddbd966a6accdc04ade54b9a4d52316b3.webp",
+      "kind": "media",
+      "sha256": "7b12a4a6a8ed254b5dcc1118c888970ddbd966a6accdc04ade54b9a4d52316b3",
+      "bytes": 58,
+      "chunks": [
+        {
+          "sha256": "7b12a4a6a8ed254b5dcc1118c888970ddbd966a6accdc04ade54b9a4d52316b3",
+          "bytes": 58
+        }
+      ]
+    },
+    {
+      "path": "media/afdc427b0e1d10b95b872eb41b06e6902bfe6dabb5503718311941de08d31bf2.webp",
+      "kind": "media",
+      "sha256": "afdc427b0e1d10b95b872eb41b06e6902bfe6dabb5503718311941de08d31bf2",
+      "bytes": 62,
+      "chunks": [
+        {
+          "sha256": "afdc427b0e1d10b95b872eb41b06e6902bfe6dabb5503718311941de08d31bf2",
+          "bytes": 62
+        }
+      ]
+    },
+    {
+      "path": "media/2b51cc77cfdddcb02184614f4018317b8d7cbada19363c3313221e6bf07940e6.webp",
+      "kind": "media",
+      "sha256": "2b51cc77cfdddcb02184614f4018317b8d7cbada19363c3313221e6bf07940e6",
+      "bytes": 62,
+      "chunks": [
+        {
+          "sha256": "2b51cc77cfdddcb02184614f4018317b8d7cbada19363c3313221e6bf07940e6",
+          "bytes": 62
+        }
+      ]
+    },
+    {
+      "path": "media/3a1755eadd17ec146c29e7135a4c1da3ad2d69a6af3d90f5736404536bc9664e.webp",
+      "kind": "media",
+      "sha256": "3a1755eadd17ec146c29e7135a4c1da3ad2d69a6af3d90f5736404536bc9664e",
+      "bytes": 58,
+      "chunks": [
+        {
+          "sha256": "3a1755eadd17ec146c29e7135a4c1da3ad2d69a6af3d90f5736404536bc9664e",
+          "bytes": 58
+        }
+      ]
+    },
+    {
+      "path": "media/84b4c87bcf3b7374c6e903b105631932b8b5471a8fc009832b70e507f6ab8490.webp",
+      "kind": "media",
+      "sha256": "84b4c87bcf3b7374c6e903b105631932b8b5471a8fc009832b70e507f6ab8490",
+      "bytes": 452,
+      "chunks": [
+        {
+          "sha256": "84b4c87bcf3b7374c6e903b105631932b8b5471a8fc009832b70e507f6ab8490",
+          "bytes": 452
+        }
+      ]
+    },
+    {
+      "path": "media/e85c4022606557672641d8c512575c774f97d7b21a125f71f5bf5868a9d5fdaa.webp",
+      "kind": "media",
+      "sha256": "e85c4022606557672641d8c512575c774f97d7b21a125f71f5bf5868a9d5fdaa",
+      "bytes": 430,
+      "chunks": [
+        {
+          "sha256": "e85c4022606557672641d8c512575c774f97d7b21a125f71f5bf5868a9d5fdaa",
+          "bytes": 430
+        }
+      ]
+    },
+    {
+      "path": "media/7045583bfa01b3cf8518f9408a9e8d8ef7440d0ad80f576494a340de79c651c3.webp",
+      "kind": "media",
+      "sha256": "7045583bfa01b3cf8518f9408a9e8d8ef7440d0ad80f576494a340de79c651c3",
+      "bytes": 424,
+      "chunks": [
+        {
+          "sha256": "7045583bfa01b3cf8518f9408a9e8d8ef7440d0ad80f576494a340de79c651c3",
+          "bytes": 424
+        }
+      ]
+    },
+    {
+      "path": "media/46175f72385250978e2803b38e295ce7e84ba1ba3fe092b4d6cd221210ec7692.webp",
+      "kind": "media",
+      "sha256": "46175f72385250978e2803b38e295ce7e84ba1ba3fe092b4d6cd221210ec7692",
+      "bytes": 452,
+      "chunks": [
+        {
+          "sha256": "46175f72385250978e2803b38e295ce7e84ba1ba3fe092b4d6cd221210ec7692",
+          "bytes": 452
+        }
+      ]
+    },
+    {
+      "path": "media/7f6fc09bd61116d8447ad7fa22c761c95926ba5d4229435cc7c81faaf8c033d5.webp",
+      "kind": "media",
+      "sha256": "7f6fc09bd61116d8447ad7fa22c761c95926ba5d4229435cc7c81faaf8c033d5",
+      "bytes": 816,
+      "chunks": [
+        {
+          "sha256": "7f6fc09bd61116d8447ad7fa22c761c95926ba5d4229435cc7c81faaf8c033d5",
+          "bytes": 816
+        }
+      ]
+    },
+    {
+      "path": "media/c869d24cb9b296a7a1ebc0d313c32898f0e0587e26bfdf0de8bff2c64587ef2e.webp",
+      "kind": "media",
+      "sha256": "c869d24cb9b296a7a1ebc0d313c32898f0e0587e26bfdf0de8bff2c64587ef2e",
+      "bytes": 442,
+      "chunks": [
+        {
+          "sha256": "c869d24cb9b296a7a1ebc0d313c32898f0e0587e26bfdf0de8bff2c64587ef2e",
+          "bytes": 442
+        }
+      ]
+    },
+    {
+      "path": "media/dc18689e7fcc633452d7f3e4d2df481ebede02d4f5511ba34cb8723853570cd9.webp",
+      "kind": "media",
+      "sha256": "dc18689e7fcc633452d7f3e4d2df481ebede02d4f5511ba34cb8723853570cd9",
+      "bytes": 398,
+      "chunks": [
+        {
+          "sha256": "dc18689e7fcc633452d7f3e4d2df481ebede02d4f5511ba34cb8723853570cd9",
+          "bytes": 398
+        }
+      ]
+    },
+    {
+      "path": "media/318e45d86fd8a68923b6af845311010e293b09228be160192631c867afac1daa.webp",
+      "kind": "media",
+      "sha256": "318e45d86fd8a68923b6af845311010e293b09228be160192631c867afac1daa",
+      "bytes": 440,
+      "chunks": [
+        {
+          "sha256": "318e45d86fd8a68923b6af845311010e293b09228be160192631c867afac1daa",
+          "bytes": 440
+        }
+      ]
+    },
+    {
+      "path": "media/3853cc9a3e06973550830142b788668c14144d6a58a2ff4ff20c062c2b781576.webp",
+      "kind": "media",
+      "sha256": "3853cc9a3e06973550830142b788668c14144d6a58a2ff4ff20c062c2b781576",
+      "bytes": 58,
+      "chunks": [
+        {
+          "sha256": "3853cc9a3e06973550830142b788668c14144d6a58a2ff4ff20c062c2b781576",
+          "bytes": 58
+        }
+      ]
+    },
+    {
+      "path": "media/f182d6c9014fd5ad2e385a605d61b8942df43adee011e195bcda61a1021beb2b.webp",
+      "kind": "media",
+      "sha256": "f182d6c9014fd5ad2e385a605d61b8942df43adee011e195bcda61a1021beb2b",
+      "bytes": 518,
+      "chunks": [
+        {
+          "sha256": "f182d6c9014fd5ad2e385a605d61b8942df43adee011e195bcda61a1021beb2b",
+          "bytes": 518
+        }
+      ]
+    },
+    {
+      "path": "media/2e04865cc81aaf27497d81abf8bc92f0bb7822ce3b40f5907dfef4fb2c104663.webp",
+      "kind": "media",
+      "sha256": "2e04865cc81aaf27497d81abf8bc92f0bb7822ce3b40f5907dfef4fb2c104663",
+      "bytes": 518,
+      "chunks": [
+        {
+          "sha256": "2e04865cc81aaf27497d81abf8bc92f0bb7822ce3b40f5907dfef4fb2c104663",
+          "bytes": 518
+        }
+      ]
+    },
+    {
+      "path": "media/f4a1ce3df2d1ab69db3c46f6b57c0d85ce67dbb08acb65da8b9c8222a109b202.webp",
+      "kind": "media",
+      "sha256": "f4a1ce3df2d1ab69db3c46f6b57c0d85ce67dbb08acb65da8b9c8222a109b202",
+      "bytes": 518,
+      "chunks": [
+        {
+          "sha256": "f4a1ce3df2d1ab69db3c46f6b57c0d85ce67dbb08acb65da8b9c8222a109b202",
+          "bytes": 518
+        }
+      ]
+    },
+    {
+      "path": "media/3933d090f4ec52dda5fe68fff271c4a1a8bf95e4964c32dc4f5847179bc88e3d.webp",
+      "kind": "media",
+      "sha256": "3933d090f4ec52dda5fe68fff271c4a1a8bf95e4964c32dc4f5847179bc88e3d",
+      "bytes": 184,
+      "chunks": [
+        {
+          "sha256": "3933d090f4ec52dda5fe68fff271c4a1a8bf95e4964c32dc4f5847179bc88e3d",
+          "bytes": 184
+        }
+      ]
+    },
+    {
+      "path": "media/0612900e1e39eafb84c47d24236778fa8edaa5df3e7e5771dc24b5ab92c39198.webp",
+      "kind": "media",
+      "sha256": "0612900e1e39eafb84c47d24236778fa8edaa5df3e7e5771dc24b5ab92c39198",
+      "bytes": 184,
+      "chunks": [
+        {
+          "sha256": "0612900e1e39eafb84c47d24236778fa8edaa5df3e7e5771dc24b5ab92c39198",
+          "bytes": 184
+        }
+      ]
+    },
+    {
+      "path": "media/82661c2946024710fe40890a67210dcb620dc9b7cbd82063afffec893a529b49.webp",
+      "kind": "media",
+      "sha256": "82661c2946024710fe40890a67210dcb620dc9b7cbd82063afffec893a529b49",
+      "bytes": 462,
+      "chunks": [
+        {
+          "sha256": "82661c2946024710fe40890a67210dcb620dc9b7cbd82063afffec893a529b49",
+          "bytes": 462
+        }
+      ]
+    },
+    {
+      "path": "media/134b7b50e3a2d7a8cbcae237106e25aed28d59d23ff62e258fa3502b000cb6ff.webp",
+      "kind": "media",
+      "sha256": "134b7b50e3a2d7a8cbcae237106e25aed28d59d23ff62e258fa3502b000cb6ff",
+      "bytes": 462,
+      "chunks": [
+        {
+          "sha256": "134b7b50e3a2d7a8cbcae237106e25aed28d59d23ff62e258fa3502b000cb6ff",
+          "bytes": 462
+        }
+      ]
+    },
+    {
+      "path": "media/8122b9896544e19e00ebad9ffd2fa6421d560e1a2d892518b112dfd1f9f4ae89.webp",
+      "kind": "media",
+      "sha256": "8122b9896544e19e00ebad9ffd2fa6421d560e1a2d892518b112dfd1f9f4ae89",
+      "bytes": 438,
+      "chunks": [
+        {
+          "sha256": "8122b9896544e19e00ebad9ffd2fa6421d560e1a2d892518b112dfd1f9f4ae89",
+          "bytes": 438
+        }
+      ]
+    },
+    {
+      "path": "media/9c65caab12d3d8b785a82948ef74fc129ba8d4b072281908184081ef14532c31.webp",
+      "kind": "media",
+      "sha256": "9c65caab12d3d8b785a82948ef74fc129ba8d4b072281908184081ef14532c31",
+      "bytes": 606,
+      "chunks": [
+        {
+          "sha256": "9c65caab12d3d8b785a82948ef74fc129ba8d4b072281908184081ef14532c31",
+          "bytes": 606
+        }
+      ]
+    },
+    {
+      "path": "media/712aab173d64e74ff3906d47fbcfcc1ee3e528dc520752d0c6ea7aeb2b148343.webp",
+      "kind": "media",
+      "sha256": "712aab173d64e74ff3906d47fbcfcc1ee3e528dc520752d0c6ea7aeb2b148343",
+      "bytes": 432,
+      "chunks": [
+        {
+          "sha256": "712aab173d64e74ff3906d47fbcfcc1ee3e528dc520752d0c6ea7aeb2b148343",
+          "bytes": 432
+        }
+      ]
+    },
+    {
+      "path": "media/51f35f794d8e5b434bb264311830852a64f13a16f54e80a1653df586aab9b25f.webp",
+      "kind": "media",
+      "sha256": "51f35f794d8e5b434bb264311830852a64f13a16f54e80a1653df586aab9b25f",
+      "bytes": 794,
+      "chunks": [
+        {
+          "sha256": "51f35f794d8e5b434bb264311830852a64f13a16f54e80a1653df586aab9b25f",
+          "bytes": 794
+        }
+      ]
+    },
+    {
+      "path": "media/7946c59f50488031fb970b9fb63f2b810c7cef3548187a47a995cc5108ab94df.webp",
+      "kind": "media",
+      "sha256": "7946c59f50488031fb970b9fb63f2b810c7cef3548187a47a995cc5108ab94df",
+      "bytes": 880,
+      "chunks": [
+        {
+          "sha256": "7946c59f50488031fb970b9fb63f2b810c7cef3548187a47a995cc5108ab94df",
+          "bytes": 880
+        }
+      ]
+    },
+    {
+      "path": "media/da2dbd1d81be01a2426315b3aa157bb59d7c9ce7bb4c8752673d0cd0a8a3a229.webp",
+      "kind": "media",
+      "sha256": "da2dbd1d81be01a2426315b3aa157bb59d7c9ce7bb4c8752673d0cd0a8a3a229",
+      "bytes": 810,
+      "chunks": [
+        {
+          "sha256": "da2dbd1d81be01a2426315b3aa157bb59d7c9ce7bb4c8752673d0cd0a8a3a229",
+          "bytes": 810
+        }
+      ]
+    },
+    {
+      "path": "media/15e3c0b3ff510cd7a360becd1ef489f9140e0a0ec0ebdbb04971e740d16b52a1.webp",
+      "kind": "media",
+      "sha256": "15e3c0b3ff510cd7a360becd1ef489f9140e0a0ec0ebdbb04971e740d16b52a1",
+      "bytes": 536,
+      "chunks": [
+        {
+          "sha256": "15e3c0b3ff510cd7a360becd1ef489f9140e0a0ec0ebdbb04971e740d16b52a1",
+          "bytes": 536
+        }
+      ]
+    },
+    {
+      "path": "media/dcc044854f415a95049de0b31a014ae6965fac087f0678cd151dcbea185448f6.webp",
+      "kind": "media",
+      "sha256": "dcc044854f415a95049de0b31a014ae6965fac087f0678cd151dcbea185448f6",
+      "bytes": 888,
+      "chunks": [
+        {
+          "sha256": "dcc044854f415a95049de0b31a014ae6965fac087f0678cd151dcbea185448f6",
+          "bytes": 888
+        }
+      ]
+    },
+    {
+      "path": "media/39403cef4eda914489109f60acece27d2f101623d364fb61142f5051549af51b.webp",
+      "kind": "media",
+      "sha256": "39403cef4eda914489109f60acece27d2f101623d364fb61142f5051549af51b",
+      "bytes": 586,
+      "chunks": [
+        {
+          "sha256": "39403cef4eda914489109f60acece27d2f101623d364fb61142f5051549af51b",
+          "bytes": 586
+        }
+      ]
+    },
+    {
+      "path": "media/6544199ca248851ed6a9b7ec2edf0c57dab17387c07fe62a48726a49fc79e977.webp",
+      "kind": "media",
+      "sha256": "6544199ca248851ed6a9b7ec2edf0c57dab17387c07fe62a48726a49fc79e977",
+      "bytes": 740,
+      "chunks": [
+        {
+          "sha256": "6544199ca248851ed6a9b7ec2edf0c57dab17387c07fe62a48726a49fc79e977",
+          "bytes": 740
+        }
+      ]
+    },
+    {
+      "path": "media/e645c112a8d07f31b938e80e7a8f74b091dbd573eb5320f647d01cab80ab22d1.webp",
+      "kind": "media",
+      "sha256": "e645c112a8d07f31b938e80e7a8f74b091dbd573eb5320f647d01cab80ab22d1",
+      "bytes": 1200,
+      "chunks": [
+        {
+          "sha256": "e645c112a8d07f31b938e80e7a8f74b091dbd573eb5320f647d01cab80ab22d1",
+          "bytes": 1200
+        }
+      ]
+    },
+    {
+      "path": "media/28f0782b300ceabb87ddcd8feeab0bd226b00979809ab5756d14ef82eb6b2441.webp",
+      "kind": "media",
+      "sha256": "28f0782b300ceabb87ddcd8feeab0bd226b00979809ab5756d14ef82eb6b2441",
+      "bytes": 906,
+      "chunks": [
+        {
+          "sha256": "28f0782b300ceabb87ddcd8feeab0bd226b00979809ab5756d14ef82eb6b2441",
+          "bytes": 906
+        }
+      ]
+    },
+    {
+      "path": "media/5ed18a6aa56984e2935ba9685e31cbf908fb904567395b715eb1ce51a6ad2b05.webp",
+      "kind": "media",
+      "sha256": "5ed18a6aa56984e2935ba9685e31cbf908fb904567395b715eb1ce51a6ad2b05",
+      "bytes": 1230,
+      "chunks": [
+        {
+          "sha256": "5ed18a6aa56984e2935ba9685e31cbf908fb904567395b715eb1ce51a6ad2b05",
+          "bytes": 1230
+        }
+      ]
+    },
+    {
+      "path": "media/6222d589df012cec9ff07e76c29659ff6b93a8f90b8166b839239434ec382c47.webp",
+      "kind": "media",
+      "sha256": "6222d589df012cec9ff07e76c29659ff6b93a8f90b8166b839239434ec382c47",
+      "bytes": 1250,
+      "chunks": [
+        {
+          "sha256": "6222d589df012cec9ff07e76c29659ff6b93a8f90b8166b839239434ec382c47",
+          "bytes": 1250
+        }
+      ]
+    },
+    {
+      "path": "media/d60a1ec697587235e329860a4fc88077bb624d0911295819011195e5c828e371.webp",
+      "kind": "media",
+      "sha256": "d60a1ec697587235e329860a4fc88077bb624d0911295819011195e5c828e371",
+      "bytes": 1034,
+      "chunks": [
+        {
+          "sha256": "d60a1ec697587235e329860a4fc88077bb624d0911295819011195e5c828e371",
+          "bytes": 1034
+        }
+      ]
+    },
+    {
+      "path": "media/45d5a014822d57fb2e4cfbec0b2624f2d99a77f84ed82d8283d904939d1e3fb3.webp",
+      "kind": "media",
+      "sha256": "45d5a014822d57fb2e4cfbec0b2624f2d99a77f84ed82d8283d904939d1e3fb3",
+      "bytes": 1312,
+      "chunks": [
+        {
+          "sha256": "45d5a014822d57fb2e4cfbec0b2624f2d99a77f84ed82d8283d904939d1e3fb3",
+          "bytes": 1312
+        }
+      ]
+    },
+    {
+      "path": "rights/original.txt",
+      "kind": "rights",
+      "sha256": "353a6a18a5616673da373e20a26bed5d313c0603afc4a1ca505772ce5763bd26",
+      "bytes": 176,
+      "chunks": [
+        {
+          "sha256": "353a6a18a5616673da373e20a26bed5d313c0603afc4a1ca505772ce5763bd26",
+          "bytes": 176
         }
       ]
     }
   ],
-  "downloadBytes": 135727,
-  "installedBytes": 135727,
+  "downloadBytes": 163451,
+  "installedBytes": 163451,
   "dependencies": [],
   "sourceRefs": [
-    "wafayat-ayan-ibn-khallikan",
-    "lisan-arab-bsr",
-    "quran-uthmani-taha",
-    "lisan-arab-rhm",
-    "tafsir-tabari",
-    "tafsir-ibn-kathir-masad",
-    "lisan-arab-qsd",
-    "qamus-muhit-hkm",
-    "al-aghani-isfahani",
-    "diwan-shafii",
-    "diwan-mutanabbi",
-    "lisan-arab-qlm",
-    "qamus-muhit-tabia",
-    "tafsir-tabari-ikhlas",
-    "al-hayawan-jahiz",
-    "mizan-dhahab-arud",
-    "al-bayan-tabyin-jahiz",
-    "tafsir-ibn-kathir-naba",
-    "lisan-arab-ymm",
-    "diwan-antara",
-    "al-shawqiyyat",
-    "tafsir-ibn-kathir-falaq",
-    "mufradat-isfahani",
-    "usul-handasa-uqlidis",
-    "dalail-ijaz-jurjani",
-    "lisan-arab-ktb",
-    "tafsir-tabari-yusuf",
-    "quran-uthmani-ikhlas",
-    "gharib-quran-ibn-qutaybah",
-    "dawaer-tabia-ulum",
-    "tafsir-ibn-kathir-kawthar",
-    "furuq-lughawiyya-askari",
-    "tafsir-ibn-kathir-saffat",
-    "talkhis-miftah-qazwini",
-    "project-visual-provenance",
-    "tafsir-ibn-kathir-takwir",
-    "quran-uthmani-fatihah",
-    "al-balaghah-wadihah",
-    "mughalataat-mantiqiyya-adel",
-    "tarikh-adab-arabi-zayyat",
-    "asrar-balaghah-jurjani",
-    "al-mantiq-tarafat-turath",
-    "manhaj-bahth-ilmi-badawi",
-    "lisan-arab-adl",
-    "original-math-fixture",
-    "lisan-arab-asjad",
-    "fiqh-lugha-thaalibi",
-    "tafsir-tabari-fil",
-    "diwan-abi-firas",
-    "majma-amthal-maydani",
-    "diwan-mutanabbi-sharh-ukbari",
-    "lisan-arab-ant",
-    "diwan-aghani-hayat-shabbi",
-    "tafsir-ibn-kathir-ikhlas",
-    "sharh-muallaqat-zawzani",
-    "usul-mantiq-muzaffar",
-    "lisan-arab-syn",
-    "lisan-arab-shb",
-    "tanazur-mantiqi-qiyas",
-    "lisan-arab-sdq"
+    "0024bcb4-f086-5b8e-8ed0-a77399e57f34",
+    "08febb94-926d-5b1a-bb87-2771c81f491a",
+    "09696eb2-8b93-5882-80ab-6bd0fb079e6c",
+    "0c37d806-294a-5404-9657-18bbc5086915",
+    "0c40f555-09a7-5254-903f-797bbbe464a7",
+    "0d545ae4-3dde-5cf2-8003-ba315dfa7f62",
+    "11300ea6-a69d-5cf1-b3a2-7e5e129de234",
+    "1731b9b2-3731-59f3-a4b7-ef069c740a1d",
+    "17772cde-246a-53ed-a56f-d3cde5c1b270",
+    "1b71e70c-3479-5b61-95df-56d38a8c6ef5",
+    "1eb47d59-9a8b-57a3-be42-e081de179e15",
+    "215520d4-598f-509a-909d-849868b84468",
+    "22b40676-c3b2-5416-87e9-16d068db7d02",
+    "2cbf5b3b-7cab-5290-aea1-722275df5857",
+    "2f3b48c3-b841-5022-bf1e-8ccdee8ee659",
+    "3749f02e-8cc3-5e11-be9f-dc4833e918f5",
+    "3db6b610-9842-59fd-bc11-0c4618adf2ad",
+    "4030742c-e594-5be5-a9da-ad81ec2404a4",
+    "493ff287-5721-5410-bf56-165c2178d5d1",
+    "49f06c99-39bf-5c3a-ad43-44125571994d",
+    "4a68c84e-417f-50ac-88ee-60fc08fee63f",
+    "4ab440ec-576f-5db6-be3f-dbd2482ed11f",
+    "4ce0a35e-fb92-529f-9e8d-b7bb553d76f9",
+    "4f69fe54-f871-57ae-b2b9-9d3a7940d2d0",
+    "54d70f7e-9bf1-567d-a9c5-14d23a5f7d3f",
+    "56687304-f226-52fc-a8dd-349533eb9a3e",
+    "56919489-bc9e-56c0-8edb-d2f1e1ca47b5",
+    "56cec5db-9545-5540-a7e2-476a01cbe88f",
+    "608f603f-c11b-5a9a-8fbc-e7912e4473a7",
+    "63b13143-93a2-5848-8e3d-9b65df97c15c",
+    "6a1c2206-5bf5-5037-bc44-360e863c45e1",
+    "70cafa9a-b62d-5aff-a622-8e319f8d66fb",
+    "74e570af-8203-53ac-9e13-9d5877dbd1c1",
+    "764f6534-749f-52e3-ad07-4fce044c9330",
+    "7edb986b-356b-58bd-a8fd-82c777223887",
+    "8093ce4f-d410-5932-bfc1-1bd13b2389f6",
+    "87bd1ace-19cc-5f73-80f5-622b87a45848",
+    "900440c9-f355-5710-8d55-6df3361d4167",
+    "90c57de7-7bd0-56d6-b827-88913609e398",
+    "a1c4a361-7d2d-5abf-b9d6-cf86d91ba8fe",
+    "a66534e5-8f2d-5138-b738-6f51b94446a3",
+    "aa3efdcf-0c7c-5ab3-9ceb-10f1ece7a6ce",
+    "ad81b378-6f5a-5b0b-9863-3bb43a2e0786",
+    "b5ef50eb-bd8c-5bec-bfd3-f1b082318d39",
+    "be47c98e-408f-596c-8575-3cbadc70737e",
+    "c534ec31-5ff9-57f8-ba4a-e5fd0e1e5f0e",
+    "c7192071-5b52-573e-a2d3-b1c0b4ff4f80",
+    "cae904eb-f81f-5b23-bbfb-f1c81f193fe4",
+    "d43da1ad-a295-5359-8c9f-5eae33cdf494",
+    "d7a1fdc4-77ba-5518-8843-122cd4ef2796",
+    "d98cb443-8e1b-55c3-a1df-f2ffe551a4bd",
+    "da3aaed7-b553-5dc9-9535-119a517e2a97",
+    "dd3958da-dc50-5378-a635-1e4bd7159e92",
+    "e3fc0090-efd1-5495-8943-10d0dd390a1e",
+    "eb4b2bda-9af1-5e52-ba71-2f6dd9daf5fe",
+    "f10e20e2-1884-5c4e-9b8a-e87caf83466e",
+    "f3a598a8-c3ee-57bb-9552-fd18a90bb78e",
+    "f53686f1-dbb6-5aa8-a49c-4ec73cfcc038",
+    "f6d84762-5a5e-5176-8d25-47da32ed969b",
+    "ff28d474-1d70-55ea-a1d4-3c64e9eb44d1"
   ],
-  "assets": [],
+  "keyId": "release2026",
+  "assets": [
+    {
+      "assetId": "c0d702f3-f6cb-5892-adcd-431b705ad9d4",
+      "path": "media/c0d702f3f6cb08925dcd431b705ad9d44fee0c2e9eed61a69429252dbbe75d0d.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "دائرة"
+    },
+    {
+      "assetId": "142e7f29-0e0f-5718-add9-d7e4a3f3e8df",
+      "path": "media/142e7f290e0fc7189dd9d7e4a3f3e8dfb303055f0dff3b82e95179ab7c785d30.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "دائرة"
+    },
+    {
+      "assetId": "9fe526a9-22c5-50c3-a696-4110f561f94a",
+      "path": "media/9fe526a922c5a0c3c6964110f561f94ab1ea8395249cdf93a3a7a40a9b13b33f.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "دائرة"
+    },
+    {
+      "assetId": "aad3714d-b865-5265-a0a2-9c2a921d010e",
+      "path": "media/aad3714db8658265d0a29c2a921d010e972eba52f00e1f24d92859bbe727f8d0.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "دائرة"
+    },
+    {
+      "assetId": "442300a4-3f87-52dc-a137-e0671cfc83c2",
+      "path": "media/442300a43f8742dc6137e0671cfc83c272320a56276c1e905380659036856f78.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مثلث"
+    },
+    {
+      "assetId": "66132696-9153-575e-a16a-a77d9290e575",
+      "path": "media/661326969153275eb16aa77d9290e575cb946fec56fd56350f8af15c808b111b.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مثلث"
+    },
+    {
+      "assetId": "6e8bf160-1b7e-50b1-a861-fa870060e5b8",
+      "path": "media/6e8bf1601b7ed0b1e861fa870060e5b80a6aa69366d04aae9365e3e680e7d06f.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مثلث"
+    },
+    {
+      "assetId": "6816b4ef-3f75-5f17-abef-6702e8b02d27",
+      "path": "media/6816b4ef3f75ef173bef6702e8b02d27efc5f8d3123628e90cecec631ead2e56.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مثلث"
+    },
+    {
+      "assetId": "7b12a4a6-a8ed-554b-adcc-1118c888970d",
+      "path": "media/7b12a4a6a8ed254b5dcc1118c888970ddbd966a6accdc04ade54b9a4d52316b3.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مربع"
+    },
+    {
+      "assetId": "afdc427b-0e1d-50b9-ab87-2eb41b06e690",
+      "path": "media/afdc427b0e1d10b95b872eb41b06e6902bfe6dabb5503718311941de08d31bf2.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مربع"
+    },
+    {
+      "assetId": "2b51cc77-cfdd-5cb0-a184-614f4018317b",
+      "path": "media/2b51cc77cfdddcb02184614f4018317b8d7cbada19363c3313221e6bf07940e6.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مربع"
+    },
+    {
+      "assetId": "3a1755ea-dd17-5c14-ac29-e7135a4c1da3",
+      "path": "media/3a1755eadd17ec146c29e7135a4c1da3ad2d69a6af3d90f5736404536bc9664e.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مربع"
+    },
+    {
+      "assetId": "84b4c87b-cf3b-5374-a6e9-03b105631932",
+      "path": "media/84b4c87bcf3b7374c6e903b105631932b8b5471a8fc009832b70e507f6ab8490.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "قمر"
+    },
+    {
+      "assetId": "e85c4022-6065-5767-a641-d8c512575c77",
+      "path": "media/e85c4022606557672641d8c512575c774f97d7b21a125f71f5bf5868a9d5fdaa.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "هلال"
+    },
+    {
+      "assetId": "7045583b-fa01-53cf-a518-f9408a9e8d8e",
+      "path": "media/7045583bfa01b3cf8518f9408a9e8d8ef7440d0ad80f576494a340de79c651c3.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "هلال"
+    },
+    {
+      "assetId": "46175f72-3852-5097-ae28-03b38e295ce7",
+      "path": "media/46175f72385250978e2803b38e295ce7e84ba1ba3fe092b4d6cd221210ec7692.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "هلال"
+    },
+    {
+      "assetId": "7f6fc09b-d611-56d8-a47a-d7fa22c761c9",
+      "path": "media/7f6fc09bd61116d8447ad7fa22c761c95926ba5d4229435cc7c81faaf8c033d5.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "شمس"
+    },
+    {
+      "assetId": "c869d24c-b9b2-56a7-a1eb-c0d313c32898",
+      "path": "media/c869d24cb9b296a7a1ebc0d313c32898f0e0587e26bfdf0de8bff2c64587ef2e.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "شجرة"
+    },
+    {
+      "assetId": "dc18689e-7fcc-5334-a2d7-f3e4d2df481e",
+      "path": "media/dc18689e7fcc633452d7f3e4d2df481ebede02d4f5511ba34cb8723853570cd9.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "كتاب"
+    },
+    {
+      "assetId": "318e45d8-6fd8-5689-a3b6-af845311010e",
+      "path": "media/318e45d86fd8a68923b6af845311010e293b09228be160192631c867afac1daa.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مثلث"
+    },
+    {
+      "assetId": "3853cc9a-3e06-5735-a083-0142b788668c",
+      "path": "media/3853cc9a3e06973550830142b788668c14144d6a58a2ff4ff20c062c2b781576.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "مربع"
+    },
+    {
+      "assetId": "f182d6c9-014f-55ad-ae38-5a605d61b894",
+      "path": "media/f182d6c9014fd5ad2e385a605d61b8942df43adee011e195bcda61a1021beb2b.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "نجم"
+    },
+    {
+      "assetId": "2e04865c-c81a-5f27-a97d-81abf8bc92f0",
+      "path": "media/2e04865cc81aaf27497d81abf8bc92f0bb7822ce3b40f5907dfef4fb2c104663.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "نجم"
+    },
+    {
+      "assetId": "f4a1ce3d-f2d1-5b69-ab3c-46f6b57c0d85",
+      "path": "media/f4a1ce3df2d1ab69db3c46f6b57c0d85ce67dbb08acb65da8b9c8222a109b202.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "نجم"
+    },
+    {
+      "assetId": "3933d090-f4ec-52dd-a5fe-68fff271c4a1",
+      "path": "media/3933d090f4ec52dda5fe68fff271c4a1a8bf95e4964c32dc4f5847179bc88e3d.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "سيف"
+    },
+    {
+      "assetId": "0612900e-1e39-5afb-a4c4-7d24236778fa",
+      "path": "media/0612900e1e39eafb84c47d24236778fa8edaa5df3e7e5771dc24b5ab92c39198.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "سيف"
+    },
+    {
+      "assetId": "82661c29-4602-5710-ae40-890a67210dcb",
+      "path": "media/82661c2946024710fe40890a67210dcb620dc9b7cbd82063afffec893a529b49.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "درع"
+    },
+    {
+      "assetId": "134b7b50-e3a2-57a8-abca-e237106e25ae",
+      "path": "media/134b7b50e3a2d7a8cbcae237106e25aed28d59d23ff62e258fa3502b000cb6ff.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "درع"
+    },
+    {
+      "assetId": "8122b989-6544-519e-a0eb-ad9ffd2fa642",
+      "path": "media/8122b9896544e19e00ebad9ffd2fa6421d560e1a2d892518b112dfd1f9f4ae89.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "دائرة"
+    },
+    {
+      "assetId": "9c65caab-12d3-58b7-a5a8-2948ef74fc12",
+      "path": "media/9c65caab12d3d8b785a82948ef74fc129ba8d4b072281908184081ef14532c31.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 2"
+    },
+    {
+      "assetId": "712aab17-3d64-574f-a390-6d47fbcfcc1e",
+      "path": "media/712aab173d64e74ff3906d47fbcfcc1ee3e528dc520752d0c6ea7aeb2b148343.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 4"
+    },
+    {
+      "assetId": "51f35f79-4d8e-5b43-abb2-64311830852a",
+      "path": "media/51f35f794d8e5b434bb264311830852a64f13a16f54e80a1653df586aab9b25f.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 6"
+    },
+    {
+      "assetId": "7946c59f-5048-5031-ab97-0b9fb63f2b81",
+      "path": "media/7946c59f50488031fb970b9fb63f2b810c7cef3548187a47a995cc5108ab94df.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 8"
+    },
+    {
+      "assetId": "da2dbd1d-81be-51a2-a263-15b3aa157bb5",
+      "path": "media/da2dbd1d81be01a2426315b3aa157bb59d7c9ce7bb4c8752673d0cd0a8a3a229.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 6"
+    },
+    {
+      "assetId": "15e3c0b3-ff51-5cd7-a360-becd1ef489f9",
+      "path": "media/15e3c0b3ff510cd7a360becd1ef489f9140e0a0ec0ebdbb04971e740d16b52a1.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 5"
+    },
+    {
+      "assetId": "dcc04485-4f41-5a95-a49d-e0b31a014ae6",
+      "path": "media/dcc044854f415a95049de0b31a014ae6965fac087f0678cd151dcbea185448f6.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 10"
+    },
+    {
+      "assetId": "39403cef-4eda-5144-a910-9f60acece27d",
+      "path": "media/39403cef4eda914489109f60acece27d2f101623d364fb61142f5051549af51b.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 15"
+    },
+    {
+      "assetId": "6544199c-a248-551e-a6a9-b7ec2edf0c57",
+      "path": "media/6544199ca248851ed6a9b7ec2edf0c57dab17387c07fe62a48726a49fc79e977.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 22"
+    },
+    {
+      "assetId": "e645c112-a8d0-5f31-a938-e80e7a8f74b0",
+      "path": "media/e645c112a8d07f31b938e80e7a8f74b091dbd573eb5320f647d01cab80ab22d1.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 20"
+    },
+    {
+      "assetId": "28f0782b-300c-5abb-a7dd-cd8feeab0bd2",
+      "path": "media/28f0782b300ceabb87ddcd8feeab0bd226b00979809ab5756d14ef82eb6b2441.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 10"
+    },
+    {
+      "assetId": "5ed18a6a-a569-54e2-a35b-a9685e31cbf9",
+      "path": "media/5ed18a6aa56984e2935ba9685e31cbf908fb904567395b715eb1ce51a6ad2b05.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 20"
+    },
+    {
+      "assetId": "6222d589-df01-5cec-aff0-7e76c29659ff",
+      "path": "media/6222d589df012cec9ff07e76c29659ff6b93a8f90b8166b839239434ec382c47.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 30"
+    },
+    {
+      "assetId": "d60a1ec6-9758-5235-a329-860a4fc88077",
+      "path": "media/d60a1ec697587235e329860a4fc88077bb624d0911295819011195e5c828e371.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 40"
+    },
+    {
+      "assetId": "45d5a014-822d-57fb-ae4c-fbec0b2624f2",
+      "path": "media/45d5a014822d57fb2e4cfbec0b2624f2d99a77f84ed82d8283d904939d1e3fb3.webp",
+      "sourceReferenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "altText": "عدد 38"
+    }
+  ],
   "references": [
     {
-      "referenceId": "ref-lughzdan-reviewed-corpus",
-      "sourceId": "src-lughzdan-core",
-      "citation": "حزمة لُغزدان الافتتاحية المراجعة 120 لغزاً",
-      "licenseCode": "CC-BY-SA-4.0",
-      "noticePath": "data/puzzles.jsonl",
-      "attribution": "فريق لُغزدان للمحتوى واللغة والمصادر المعتمدة"
+      "referenceId": "0024bcb4-f086-5b8e-8ed0-a77399e57f34",
+      "sourceId": "0024bcb4-f086-5b8e-8ed0-a77399e57f34",
+      "sourceName": "tafsir-tabari",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-tabari",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-tabari",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "08febb94-926d-5b1a-bb87-2771c81f491a",
+      "sourceId": "08febb94-926d-5b1a-bb87-2771c81f491a",
+      "sourceName": "lisan-arab-asjad",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-asjad",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-asjad",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "09696eb2-8b93-5882-80ab-6bd0fb079e6c",
+      "sourceId": "09696eb2-8b93-5882-80ab-6bd0fb079e6c",
+      "sourceName": "majma-amthal-maydani",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "majma-amthal-maydani",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "majma-amthal-maydani",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "0c37d806-294a-5404-9657-18bbc5086915",
+      "sourceId": "0c37d806-294a-5404-9657-18bbc5086915",
+      "sourceName": "asrar-balaghah-jurjani",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "asrar-balaghah-jurjani",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "asrar-balaghah-jurjani",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "0c40f555-09a7-5254-903f-797bbbe464a7",
+      "sourceId": "0c40f555-09a7-5254-903f-797bbbe464a7",
+      "sourceName": "mizan-dhahab-arud",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "mizan-dhahab-arud",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "mizan-dhahab-arud",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "0d545ae4-3dde-5cf2-8003-ba315dfa7f62",
+      "sourceId": "0d545ae4-3dde-5cf2-8003-ba315dfa7f62",
+      "sourceName": "dalail-ijaz-jurjani",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "dalail-ijaz-jurjani",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "dalail-ijaz-jurjani",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "11300ea6-a69d-5cf1-b3a2-7e5e129de234",
+      "sourceId": "11300ea6-a69d-5cf1-b3a2-7e5e129de234",
+      "sourceName": "original-math-fixture",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "original-math-fixture",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "original-math-fixture",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "1731b9b2-3731-59f3-a4b7-ef069c740a1d",
+      "sourceId": "1731b9b2-3731-59f3-a4b7-ef069c740a1d",
+      "sourceName": "tafsir-tabari-yusuf",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-tabari-yusuf",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-tabari-yusuf",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "17772cde-246a-53ed-a56f-d3cde5c1b270",
+      "sourceId": "17772cde-246a-53ed-a56f-d3cde5c1b270",
+      "sourceName": "tafsir-ibn-kathir-takwir",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-takwir",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-takwir",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "1b71e70c-3479-5b61-95df-56d38a8c6ef5",
+      "sourceId": "1b71e70c-3479-5b61-95df-56d38a8c6ef5",
+      "sourceName": "tafsir-ibn-kathir-saffat",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-saffat",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-saffat",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "1eb47d59-9a8b-57a3-be42-e081de179e15",
+      "sourceId": "1eb47d59-9a8b-57a3-be42-e081de179e15",
+      "sourceName": "al-shawqiyyat",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "al-shawqiyyat",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "al-shawqiyyat",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "215520d4-598f-509a-909d-849868b84468",
+      "sourceId": "215520d4-598f-509a-909d-849868b84468",
+      "sourceName": "lisan-arab-shb",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-shb",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-shb",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "22b40676-c3b2-5416-87e9-16d068db7d02",
+      "sourceId": "22b40676-c3b2-5416-87e9-16d068db7d02",
+      "sourceName": "manhaj-bahth-ilmi-badawi",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "manhaj-bahth-ilmi-badawi",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "manhaj-bahth-ilmi-badawi",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "2cbf5b3b-7cab-5290-aea1-722275df5857",
+      "sourceId": "2cbf5b3b-7cab-5290-aea1-722275df5857",
+      "sourceName": "tafsir-tabari-ikhlas",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-tabari-ikhlas",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-tabari-ikhlas",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "2f3b48c3-b841-5022-bf1e-8ccdee8ee659",
+      "sourceId": "2f3b48c3-b841-5022-bf1e-8ccdee8ee659",
+      "sourceName": "al-balaghah-wadihah",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "al-balaghah-wadihah",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "al-balaghah-wadihah",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "3749f02e-8cc3-5e11-be9f-dc4833e918f5",
+      "sourceId": "3749f02e-8cc3-5e11-be9f-dc4833e918f5",
+      "sourceName": "diwan-aghani-hayat-shabbi",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "diwan-aghani-hayat-shabbi",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "diwan-aghani-hayat-shabbi",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "3db6b610-9842-59fd-bc11-0c4618adf2ad",
+      "sourceId": "3db6b610-9842-59fd-bc11-0c4618adf2ad",
+      "sourceName": "fiqh-lugha-thaalibi",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "fiqh-lugha-thaalibi",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "fiqh-lugha-thaalibi",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "4030742c-e594-5be5-a9da-ad81ec2404a4",
+      "sourceId": "4030742c-e594-5be5-a9da-ad81ec2404a4",
+      "sourceName": "tanazur-mantiqi-qiyas",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tanazur-mantiqi-qiyas",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tanazur-mantiqi-qiyas",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "493ff287-5721-5410-bf56-165c2178d5d1",
+      "sourceId": "493ff287-5721-5410-bf56-165c2178d5d1",
+      "sourceName": "tarikh-adab-arabi-zayyat",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tarikh-adab-arabi-zayyat",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tarikh-adab-arabi-zayyat",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "49f06c99-39bf-5c3a-ad43-44125571994d",
+      "sourceId": "49f06c99-39bf-5c3a-ad43-44125571994d",
+      "sourceName": "lisan-arab-qlm",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-qlm",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-qlm",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "4a68c84e-417f-50ac-88ee-60fc08fee63f",
+      "sourceId": "4a68c84e-417f-50ac-88ee-60fc08fee63f",
+      "sourceName": "tafsir-ibn-kathir-masad",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-masad",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-masad",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "4ab440ec-576f-5db6-be3f-dbd2482ed11f",
+      "sourceId": "4ab440ec-576f-5db6-be3f-dbd2482ed11f",
+      "sourceName": "tafsir-ibn-kathir-naba",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-naba",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-naba",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "4ce0a35e-fb92-529f-9e8d-b7bb553d76f9",
+      "sourceId": "4ce0a35e-fb92-529f-9e8d-b7bb553d76f9",
+      "sourceName": "diwan-mutanabbi-sharh-ukbari",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "diwan-mutanabbi-sharh-ukbari",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "diwan-mutanabbi-sharh-ukbari",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "4f69fe54-f871-57ae-b2b9-9d3a7940d2d0",
+      "sourceId": "4f69fe54-f871-57ae-b2b9-9d3a7940d2d0",
+      "sourceName": "lisan-arab-ant",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-ant",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-ant",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "54d70f7e-9bf1-567d-a9c5-14d23a5f7d3f",
+      "sourceId": "54d70f7e-9bf1-567d-a9c5-14d23a5f7d3f",
+      "sourceName": "lisan-arab-rhm",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-rhm",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-rhm",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "56687304-f226-52fc-a8dd-349533eb9a3e",
+      "sourceId": "56687304-f226-52fc-a8dd-349533eb9a3e",
+      "sourceName": "furuq-lughawiyya-askari",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "furuq-lughawiyya-askari",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "furuq-lughawiyya-askari",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "56919489-bc9e-56c0-8edb-d2f1e1ca47b5",
+      "sourceId": "56919489-bc9e-56c0-8edb-d2f1e1ca47b5",
+      "sourceName": "al-hayawan-jahiz",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "al-hayawan-jahiz",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "al-hayawan-jahiz",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "56cec5db-9545-5540-a7e2-476a01cbe88f",
+      "sourceId": "56cec5db-9545-5540-a7e2-476a01cbe88f",
+      "sourceName": "diwan-mutanabbi",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "diwan-mutanabbi",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "diwan-mutanabbi",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "608f603f-c11b-5a9a-8fbc-e7912e4473a7",
+      "sourceId": "608f603f-c11b-5a9a-8fbc-e7912e4473a7",
+      "sourceName": "wafayat-ayan-ibn-khallikan",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "wafayat-ayan-ibn-khallikan",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "wafayat-ayan-ibn-khallikan",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "63b13143-93a2-5848-8e3d-9b65df97c15c",
+      "sourceId": "63b13143-93a2-5848-8e3d-9b65df97c15c",
+      "sourceName": "lisan-arab-ktb",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-ktb",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-ktb",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "6a1c2206-5bf5-5037-bc44-360e863c45e1",
+      "sourceId": "6a1c2206-5bf5-5037-bc44-360e863c45e1",
+      "sourceName": "gharib-quran-ibn-qutaybah",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "gharib-quran-ibn-qutaybah",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "gharib-quran-ibn-qutaybah",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "70cafa9a-b62d-5aff-a622-8e319f8d66fb",
+      "sourceId": "70cafa9a-b62d-5aff-a622-8e319f8d66fb",
+      "sourceName": "qamus-muhit-hkm",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "qamus-muhit-hkm",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "qamus-muhit-hkm",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "74e570af-8203-53ac-9e13-9d5877dbd1c1",
+      "sourceId": "74e570af-8203-53ac-9e13-9d5877dbd1c1",
+      "sourceName": "lisan-arab-sdq",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-sdq",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-sdq",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "764f6534-749f-52e3-ad07-4fce044c9330",
+      "sourceId": "764f6534-749f-52e3-ad07-4fce044c9330",
+      "sourceName": "tafsir-ibn-kathir-ikhlas",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-ikhlas",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-ikhlas",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "7edb986b-356b-58bd-a8fd-82c777223887",
+      "sourceId": "7edb986b-356b-58bd-a8fd-82c777223887",
+      "sourceName": "quran-uthmani-taha",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "quran-uthmani-taha",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "quran-uthmani-taha",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "8093ce4f-d410-5932-bfc1-1bd13b2389f6",
+      "sourceId": "8093ce4f-d410-5932-bfc1-1bd13b2389f6",
+      "sourceName": "sharh-muallaqat-zawzani",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "sharh-muallaqat-zawzani",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "sharh-muallaqat-zawzani",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "87bd1ace-19cc-5f73-80f5-622b87a45848",
+      "sourceId": "87bd1ace-19cc-5f73-80f5-622b87a45848",
+      "sourceName": "lisan-arab-ymm",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-ymm",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-ymm",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "900440c9-f355-5710-8d55-6df3361d4167",
+      "sourceId": "900440c9-f355-5710-8d55-6df3361d4167",
+      "sourceName": "lisan-arab-bsr",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-bsr",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-bsr",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "90c57de7-7bd0-56d6-b827-88913609e398",
+      "sourceId": "90c57de7-7bd0-56d6-b827-88913609e398",
+      "sourceName": "al-mantiq-tarafat-turath",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "al-mantiq-tarafat-turath",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "al-mantiq-tarafat-turath",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "a1c4a361-7d2d-5abf-b9d6-cf86d91ba8fe",
+      "sourceId": "a1c4a361-7d2d-5abf-b9d6-cf86d91ba8fe",
+      "sourceName": "al-aghani-isfahani",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "al-aghani-isfahani",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "al-aghani-isfahani",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "sourceId": "a66534e5-8f2d-5138-b738-6f51b94446a3",
+      "sourceName": "لُغزدان — الرسوم الأصلية",
+      "author": "مالك مشروع لُغزدان",
+      "locator": "scripts/prepare_release_pack.py",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Lughzdan-Original",
+      "attribution": "Original illustrations for LUGHZDAN",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "aa3efdcf-0c7c-5ab3-9ceb-10f1ece7a6ce",
+      "sourceId": "aa3efdcf-0c7c-5ab3-9ceb-10f1ece7a6ce",
+      "sourceName": "mughalataat-mantiqiyya-adel",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "mughalataat-mantiqiyya-adel",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "mughalataat-mantiqiyya-adel",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "ad81b378-6f5a-5b0b-9863-3bb43a2e0786",
+      "sourceId": "ad81b378-6f5a-5b0b-9863-3bb43a2e0786",
+      "sourceName": "usul-handasa-uqlidis",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "usul-handasa-uqlidis",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "usul-handasa-uqlidis",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "b5ef50eb-bd8c-5bec-bfd3-f1b082318d39",
+      "sourceId": "b5ef50eb-bd8c-5bec-bfd3-f1b082318d39",
+      "sourceName": "talkhis-miftah-qazwini",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "talkhis-miftah-qazwini",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "talkhis-miftah-qazwini",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "be47c98e-408f-596c-8575-3cbadc70737e",
+      "sourceId": "be47c98e-408f-596c-8575-3cbadc70737e",
+      "sourceName": "qamus-muhit-tabia",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "qamus-muhit-tabia",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "qamus-muhit-tabia",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "c534ec31-5ff9-57f8-ba4a-e5fd0e1e5f0e",
+      "sourceId": "c534ec31-5ff9-57f8-ba4a-e5fd0e1e5f0e",
+      "sourceName": "dawaer-tabia-ulum",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "dawaer-tabia-ulum",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "dawaer-tabia-ulum",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "c7192071-5b52-573e-a2d3-b1c0b4ff4f80",
+      "sourceId": "c7192071-5b52-573e-a2d3-b1c0b4ff4f80",
+      "sourceName": "tafsir-ibn-kathir-falaq",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-falaq",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-falaq",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "cae904eb-f81f-5b23-bbfb-f1c81f193fe4",
+      "sourceId": "cae904eb-f81f-5b23-bbfb-f1c81f193fe4",
+      "sourceName": "diwan-antara",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "diwan-antara",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "diwan-antara",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "d43da1ad-a295-5359-8c9f-5eae33cdf494",
+      "sourceId": "d43da1ad-a295-5359-8c9f-5eae33cdf494",
+      "sourceName": "quran-uthmani-fatihah",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "quran-uthmani-fatihah",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "quran-uthmani-fatihah",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "d7a1fdc4-77ba-5518-8843-122cd4ef2796",
+      "sourceId": "d7a1fdc4-77ba-5518-8843-122cd4ef2796",
+      "sourceName": "lisan-arab-syn",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-syn",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-syn",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "d98cb443-8e1b-55c3-a1df-f2ffe551a4bd",
+      "sourceId": "d98cb443-8e1b-55c3-a1df-f2ffe551a4bd",
+      "sourceName": "lisan-arab-qsd",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-qsd",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-qsd",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "da3aaed7-b553-5dc9-9535-119a517e2a97",
+      "sourceId": "da3aaed7-b553-5dc9-9535-119a517e2a97",
+      "sourceName": "quran-uthmani-ikhlas",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "quran-uthmani-ikhlas",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "quran-uthmani-ikhlas",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "dd3958da-dc50-5378-a635-1e4bd7159e92",
+      "sourceId": "dd3958da-dc50-5378-a635-1e4bd7159e92",
+      "sourceName": "usul-mantiq-muzaffar",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "usul-mantiq-muzaffar",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "usul-mantiq-muzaffar",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "e3fc0090-efd1-5495-8943-10d0dd390a1e",
+      "sourceId": "e3fc0090-efd1-5495-8943-10d0dd390a1e",
+      "sourceName": "diwan-shafii",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "diwan-shafii",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "diwan-shafii",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "eb4b2bda-9af1-5e52-ba71-2f6dd9daf5fe",
+      "sourceId": "eb4b2bda-9af1-5e52-ba71-2f6dd9daf5fe",
+      "sourceName": "tafsir-ibn-kathir-kawthar",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-ibn-kathir-kawthar",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-ibn-kathir-kawthar",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "f10e20e2-1884-5c4e-9b8a-e87caf83466e",
+      "sourceId": "f10e20e2-1884-5c4e-9b8a-e87caf83466e",
+      "sourceName": "al-bayan-tabyin-jahiz",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "al-bayan-tabyin-jahiz",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "al-bayan-tabyin-jahiz",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "f3a598a8-c3ee-57bb-9552-fd18a90bb78e",
+      "sourceId": "f3a598a8-c3ee-57bb-9552-fd18a90bb78e",
+      "sourceName": "mufradat-isfahani",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "mufradat-isfahani",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "mufradat-isfahani",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "f53686f1-dbb6-5aa8-a49c-4ec73cfcc038",
+      "sourceId": "f53686f1-dbb6-5aa8-a49c-4ec73cfcc038",
+      "sourceName": "lisan-arab-adl",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "lisan-arab-adl",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "lisan-arab-adl",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "f6d84762-5a5e-5176-8d25-47da32ed969b",
+      "sourceId": "f6d84762-5a5e-5176-8d25-47da32ed969b",
+      "sourceName": "diwan-abi-firas",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "diwan-abi-firas",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "diwan-abi-firas",
+      "noticePath": "rights/original.txt"
+    },
+    {
+      "referenceId": "ff28d474-1d70-55ea-a1d4-3c64e9eb44d1",
+      "sourceId": "ff28d474-1d70-55ea-a1d4-3c64e9eb44d1",
+      "sourceName": "tafsir-tabari-fil",
+      "author": "لم يحدد في سجل المصدر الأصلي",
+      "locator": "tafsir-tabari-fil",
+      "sourceVersion": "opening-2026",
+      "licenseCode": "LicenseRef-Source-Text",
+      "attribution": "tafsir-tabari-fil",
+      "noticePath": "rights/original.txt"
     }
-  ]
+  ],
+  "signature": "2h-I5DvtzLYhwEUS8qtp2m4VmL6fRr1PvUShfYWBVEsPmsl5HkqlxT23kx2-gd_g1raXvl-pLLgK9I8Z7mGCBQ"
 }

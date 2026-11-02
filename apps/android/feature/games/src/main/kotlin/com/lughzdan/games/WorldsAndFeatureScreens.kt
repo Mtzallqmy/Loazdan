@@ -307,8 +307,7 @@ fun ProfileScreen(vm: GameViewModel, onNavigateToSync: () -> Unit) {
 
 @Composable
 fun AccountSyncScreen(vm: GameViewModel) {
-    val progress by vm.progress.collectAsStateWithLifecycle()
-    var guestId by remember { mutableStateOf("guest-" + java.util.UUID.randomUUID().toString().take(8)) }
+    val guestId by vm.localGuestId.collectAsStateWithLifecycle()
 
     Column(
         Modifier.fillMaxSize().padding(bottom = 24.dp),
@@ -321,12 +320,13 @@ fun AccountSyncScreen(vm: GameViewModel) {
                 Text("حالة الحساب الحالي:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text("نوع الحساب: حساب ضيف محلي مستقل")
                 Text("معرّف الجهاز المحلي: $guestId", style = MaterialTheme.typography.bodySmall)
-                Text("العمليات في قائمة الانتظار للمزامنة (Outbox): محفوظة بأمان")
+                Text("تقدم الضيف محفوظ على هذا الجهاز. لم يربط بحساب سحابي بعد.")
                 Button(
-                    onClick = { /* Optional Cloud Sign In */ },
+                    onClick = {},
+                    enabled = false,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("ربط الحساب للمزامنة السحابية (اختياري)")
+                    Text("تسجيل الدخول السحابي غير مهيأ لهذا الإصدار")
                 }
             }
         }
@@ -335,7 +335,7 @@ fun AccountSyncScreen(vm: GameViewModel) {
                 Text("سياسة الخصوصية والبيانات:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text("• لا يلزم تسجيل الدخول للعب جميع الألغاز واستكشاف العوالم.")
                 Text("• لا تجمع أي بيانات شخصية غير ضرورية.")
-                Text("• يمكنك حذف جميع بياناتك المحلية بنقرة واحدة من الإعدادات.")
+                Text("• يمكنك حذف بيانات التطبيق المحلية من إعدادات Android.")
             }
         }
     }

@@ -61,7 +61,11 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   val image=p.payload.images.singleOrNull {it.id==imageId} ?: return@withContext null
   require(image.assetPath.matches(Regex("media/[A-Za-z0-9_/-]+\\.(png|webp|jpg)")) && image.assetPath.split('/').none {it==".."})
   val input=if(db.content().head(state.packId)==null) {
-   require(allowFixtures && p.fixtureOnly) {"Unverified bundled media is not production content"}
+   if (!(allowFixtures && p.fixtureOnly)) {
+    val manifest=json.decodeFromString<BundledManifest>(context.assets.open("bundled-manifest.json").bufferedReader().use {it.readText()})
+    val pinned=dao.pinnedPack(state.packId,state.packVersion)
+    require(!manifest.fixtureOnly && !p.fixtureOnly && manifest.packId==state.packId && manifest.version==state.packVersion && pinned?.sha256==manifest.sha256) {"Media must belong to the verified application bundle"}
+   }
    context.assets.open(image.assetPath)
   } else {
    val root=java.io.File(context.filesDir,"packs/versions/${state.packId}/${state.packVersion}").canonicalFile

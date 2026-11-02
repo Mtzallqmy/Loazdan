@@ -71,7 +71,16 @@ def main():
     expected_sha = hashlib.sha256(data_bytes).hexdigest()
     assert manifest["files"][0]["sha256"] == expected_sha
     assert manifest["files"][0]["bytes"] == len(data_bytes)
-    assert manifest["downloadBytes"] == len(data_bytes)
+    assert manifest["downloadBytes"] == sum(f["bytes"] for f in manifest["files"])
+    assets = ROOT / 'apps/android/app/src/main/assets'
+    for f in manifest['files']:
+        data = (assets / f['path']).read_bytes()
+        assert len(data) == f['bytes']
+        assert hashlib.sha256(data).hexdigest() == f['sha256']
+    for p in puzzles:
+        for image in p['payload'].get('images', []):
+            f = next(f for f in manifest['files'] if f['path'] == image['assetPath'])
+            assert f['sha256'] == image['sha256']
     
     print(f"Validation SUCCESS: All 120 opening puzzles verified.")
     print(f"Worlds verified (20 each): {dict(world_counts)}")

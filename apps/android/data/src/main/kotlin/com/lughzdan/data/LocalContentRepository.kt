@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class LocalContentRepository(private val context:Context,private val db:LughzdanDatabase,private val settings:SettingsStore,
- private val installer:PackInstaller,private val remote:ContentApi?):ContentRepository {
+ private val installer:PackInstaller,private val remote:ContentApi?,private val appVersion:Int=3):ContentRepository {
  private val dao=db.content()
  private val remotePacks=MutableStateFlow<List<ContentPack>>(emptyList())
  private val usage=MutableStateFlow(ContentStorage())
@@ -46,7 +46,7 @@ class LocalContentRepository(private val context:Context,private val db:Lughzdan
   installer.recover();measure()
   remote?.let {api->
    val found=mutableListOf<ContentPack>();var cursor:String?=null;val seen=mutableSetOf<String?>()
-   do {check(seen.add(cursor));val page=api.packs(cursor);found+=page.items.map {ContentPack(it.id,it.title,it.version,it.downloadBytes,it.installedBytes)};cursor=page.nextCursor;require(found.size<=10000)}while(cursor!=null)
+   do {check(seen.add(cursor));val page=api.packs(cursor,appVersion=appVersion);found+=page.items.map {ContentPack(it.id,it.title,it.version,it.downloadBytes,it.installedBytes)};cursor=page.nextCursor;require(found.size<=10000)}while(cursor!=null)
    remotePacks.value=found
    if(settings.settings.first().automaticDownloads)for(h in dao.heads().filter {it.activeVersion!=null}) {
     if(found.any {it.id==h.packId && it.version>h.highWater} && dao.download(h.packId)?.state !in activeStates)download(h.packId)

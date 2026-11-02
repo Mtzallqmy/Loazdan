@@ -39,7 +39,7 @@ import javax.inject.Singleton
   val keys=if(context.assets.list("").orEmpty().contains("pack-public-keys.json")) context.assets.open("pack-public-keys.json").bufferedReader().use { reader->Json.parseToJsonElement(reader.readText()).jsonObject.mapValues {Base64.getDecoder().decode(it.value.jsonPrimitive.content)} } else emptyMap()
   val installer=PackInstaller(db,File(context.filesDir,"packs"),ManifestVerifier(keys),BuildConfig.VERSION_CODE)
   val api=BuildConfig.CONTENT_API_URL.takeIf {it.isNotBlank() && keys.isNotEmpty()}?.let(ContentApi::create)
-  return LocalContentRepository(context,db,settings,installer,api)
+  return LocalContentRepository(context,db,settings,installer,api,BuildConfig.VERSION_CODE)
  }
  @Provides @Singleton fun repository(@ApplicationContext context:Context,db:LughzdanDatabase,content:LocalContentRepository):ProgressRepository=LocalGameRepository(context,db,BuildConfig.DEBUG,recoverContent=content::initialize)
  @Provides @Singleton fun vocabulary(db:LughzdanDatabase):VocabularyRepository=LocalVocabularyRepository(db)

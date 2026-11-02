@@ -1,6 +1,6 @@
 import { registerContentRoutes, type ContentOptions } from './routes.js';
 import { randomUUID, createHash } from 'node:crypto';
-import { createRequire } from 'node:module';
+import formats from 'ajv-formats';
 import Fastify from 'fastify';
 import rateLimit from '@fastify/rate-limit';
 import { Ajv2020, type AnySchema } from 'ajv/dist/2020.js';
@@ -9,7 +9,7 @@ import { categorySchema, gameSchema, idParamsSchema, packQuerySchema, packSchema
 import type { PageQuery, PackQuery, PuzzleQuery } from '../../../packages/contracts/catalog.js';
 import { ApiError } from './errors.js';
 import type { CatalogRepository } from './repository.js';
-const addFormats = createRequire(import.meta.url)('ajv-formats') as FormatsPlugin;
+const addFormats = formats as unknown as FormatsPlugin;
 
 export function buildApp(repository: CatalogRepository, options: ContentOptions & { logger?: boolean } = {}) {
   const app = Fastify({ logger: options.logger ?? false, trustProxy: false, disableRequestLogging: true, bodyLimit: 1024 * 1024, requestTimeout: 10_000, connectionTimeout: 10_000, genReqId: () => randomUUID(), requestIdHeader: false });
