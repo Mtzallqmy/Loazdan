@@ -1,0 +1,59 @@
+name: Publish verified Android release
+on:
+  push:
+    branches: ['release/publish-*']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'build-tools;36.0.0'
+      - name: Retrieve and verify the signed owner artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import base64, hashlib, json, os, re, subprocess
+          from pathlib import Path
+          m=json.loads(Path('.release/artifact.json').read_text())
+          repo=os.environ['GITHUB_REPOSITORY']
+          def api(path,jq):return subprocess.check_output(['gh','api',path,'--jq',jq],text=True).strip()
+          for key in ['sourceCommit','testedCommit','testedTree']:
+              assert re.fullmatch('[a-f0-9]{40}',m[key])
+          assert api(f"repos/{repo}/git/commits/{m['sourceCommit']}",'.tree.sha')==m['testedTree']
+          passed=api(f"repos/{repo}/actions/runs?head_sha={m['testedCommit']}&status=completed",'[.workflow_runs[] | select(.name=="Lughzdan verification" and .conclusion=="success")] | length')
+          assert int(passed)>0,'Release source must have successful verification'
+          name=m['filename'];assert re.fullmatch('[A-Za-z0-9_.-]+[.]apk',name)
+          with open(name,'wb') as out:
+              for c in m['chunks']:
+                  sha=c['blobSha'];assert re.fullmatch('[a-f0-9]{40}',sha)
+                  b=base64.b64decode(api(f'repos/{repo}/git/blobs/{sha}','.content'))
+                  assert len(b)==c['bytes']
+                  assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()==sha
+                  out.write(b)
+          b=Path(name).read_bytes();assert len(b)==m['bytes']
+          assert hashlib.sha256(b).hexdigest()==m['sha256']
+          Path(name+'.sha256').write_text(m['sha256']+'  '+name+'\n')
+          subprocess.run(['python','scripts/verify_release_apk.py',name],check=True)
+          subprocess.run([os.environ['ANDROID_HOME']+'/build-tools/36.0.0/apksigner','verify','--verbose','--print-certs',name],check=True)
+          PY
+      - name: Publish APK and checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,re,subprocess
+          from pathlib import Path
+          m=json.loads(Path('.release/artifact.json').read_text());tag=m['tag'];assert re.fullmatch('v[0-9]+[.][0-9]+[.][0-9]+',tag)
+          exists=subprocess.run(['gh','release','view',tag],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0
+          if not exists:
+              subprocess.run(['gh','release','create',tag,m['filename'],m['filename']+'.sha256','--target',m['sourceCommit'],'--title','لُغزدان '+tag+' — ARM64 / Android 8+','--notes-file','.release/NOTES.md'],check=True)
+          PY

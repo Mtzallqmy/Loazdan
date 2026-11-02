@@ -1,0 +1,215 @@
+{
+  "tag": "v1.0.0",
+  "filename": "Lughzdan-1.0.0-ARM64-Android8-signed.apk",
+  "bytes": 13286054,
+  "sha256": "7c9dd84a67793a804043604eb71b28bd41611f858818a678d6cc41add98be480",
+  "sourceCommit": "c95182572bf0a494be79e06f2ea3b32d2794847f",
+  "testedCommit": "d2d2bdf51f4e1acfe4fcbf21804e3a4785002181",
+  "testedTree": "082ccee2611c365433f0f364b1c95a46cca3813f",
+  "chunks": [
+    {
+      "blobSha": "5b81462cf8e1ed1c6dcd702e540ef75b06ea4384",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "4e2146b6dbebb0e9585efba7a8852fe51b349773",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "6193d186914dd7c74427bb530b12ae79f39f0639",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "c43d3bae3e057b003c86907ba6591c7d14fe9fd0",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "ec73f7438335fdc2b7676c7a767ba1b9c5c572ad",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "ee104a11a6bb0179eb8da3e427af6123bee797cd",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "a9a5e09915b16ddd5475f35635d31a1a92f5dd39",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "d99aef97c86de54893040226325ce1c81be77c30",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "2bddead4894233126b07baeb1f66e63f24770019",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "8ee2f5c5e6bda0c1af9c6ecc18c59ddf77cfa0d4",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "3a3f4dfd6a381e552f5cd8f63dae32cbb7f12125",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "eb11701042cfbcec12573cfada0c7b2b3b0490df",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "2121d0674406b852cf4cfebe96dfac32b389815a",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "e0385d4e185ee97e06da9639efe6517928d7f7d6",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "30283462684ab30a21cc67d71de17eaf2a397daa",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "367a82b122fa689704495c56251b9227af2562f4",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "8bfe3e1ac09e3733a98159571c309f09d1af1b6d",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "c30fdba8bf3c95438f002f00fedf8ee9fb569796",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "2b7564dc1577ca55b96f85d04b40d5423b32d7a0",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "0542c2c544787e5577ec0fb175126d7ad7198e9c",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "d275454613d7a3a7157b05220305c91e386ba979",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "222318137c80ce9ab8e4d226a1aaa10b32d02a29",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "b87c62767e4d2174d44667cc774ba1aa3828934a",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "c79faabf7637d0a65f5f2f14c4b3b54de29c50b2",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "5e2d012f039b488c23000753f81bc69b998583f8",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "70cf2c48aae2536338e2f49f50c95994d9776355",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "1848047fe5c48fc301ff29a7027607218744aef4",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "3dba6c15cd7d0d3c1cf964dabc72950092f92622",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "8a67cef9cc539a9b1712364ab92a8ec8a4170891",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "3e3b738e5c3cfae692ff15a04cd50fbcf6c97a55",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "ab96def578e4788d66544f912a5efb11f89e7a9f",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "5d4c52c9dd1829041543d762ab80ac0ab668a65c",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "297790779d236a5cb168da54adc1d10196297baf",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "cfb3d0a790b66668139a7d035023f72573aa1ec7",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "4c256c455dc06bba50c1ef251b9cb378b3592557",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "aedf9403f8e1d7965ff8cc370314d3385c2cb2ca",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "d9a1cca2d92e168d0a0097f79a7609b3cf3b46c7",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "12be45c9d1c779c0aa95801bf87ee3e3028215b5",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "8c90b6c885c994af250301cec2d4cb7aef2d199d",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "5d1b66fb69a74ac33c84a6fb3a9fa8415b5d5dd3",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "80f57aa1c4fa9e7e58968bba5698d2fca39346df",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "17176959fc54858093a6415346e695c03104e2e9",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "e08b3e0d1fadcc5e0c11d67b88533f531f62d2ef",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "f77cd9984a438118a44137fdc26bd0f83539966e",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "c92b0969cd8a118f0eca1d1f360d22932c835543",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "133a18dbdd5bc2e53411d8b3065b935dc152b981",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "d44d9d7b656de0906f57c3aefbaf530727841fb7",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "57e71a661bceca9badf37bd664a17e0f3696170a",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "8f05349857f814f5e760cfd5b116261cea982958",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "de4df8dfa17db0269ccb4225b50be2d08824a5ef",
+      "bytes": 262144
+    },
+    {
+      "blobSha": "af1686e07196ea1ce9cee0f2b4af9823724baa79",
+      "bytes": 178854
+    }
+  ]
+}
