@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {createHash,createPublicKey} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
+import {ManifestVerifier} from '../src/content.js';
+const origin=process.env.PUBLIC_API_URL;
+if(!origin?.startsWith('https://'))throw new Error('PUBLIC_API_URL required');
+const get=async(path:string,headers:Record<string,string>={})=>{const r=await fetch(new URL(path,origin),{headers,signal:AbortSignal.timeout(45_000)});assert.ok(r.ok,`${path}: HTTP ${r.status}`);return r;};
+const packs=await (await get('api/v1/content-packs?appVersionCode=100')).json() as any;
+assert.equal(packs.items.length,1);
+const manifest=await(await get(`api/v1/content-packs/${packs.items[0].id}/manifest`)).json() as any;
+const trust=JSON.parse(await readFile(new URL('../release/trust.json',import.meta.url),'utf8'));
+new ManifestVerifier(new Map(Object.entries(trust).map(([k,pem])=>[k,createPublicKey(pem as string)]))).verify(manifest,packs.items[0].manifestSha256);
+const hash=manifest.files[0].sha256;
+const r=await get('objects/'+hash);const raw=Buffer.from(await r.arrayBuffer());assert.equal(createHash('sha256').update(raw).digest('hex'),hash);
+const partial=await get('objects/'+hash,{'range':'bytes=100-','if-range':r.headers.get('etag')!});assert.equal(partial.status,206);assert.deepEqual(Buffer.from(await partial.arrayBuffer()),raw.subarray(100));
+assert.equal(raw.toString('utf8').trim().split('\n').length,120);
+console.log(JSON.stringify({status:'verified',packId:manifest.packId,puzzles:120,signature:true,rangeResume:true}));

@@ -29,9 +29,11 @@ class FixtureTests(unittest.TestCase):
                 thumb=record['thumbnail']
                 self.assertEqual(sha256((ROOT/'debugassets'/thumb['path']).read_bytes()).hexdigest(),thumb['sha256'])
             if puzzle['type']=='visual_logic':
-                from math import prod
                 payload=puzzle['payload']; rule=payload['logicRule']
-                correct=sum(rule['values']) if rule['kind']=='add' else prod(rule['values'])
+                step=rule['step']
+                advance=lambda value: value+step if rule['kind']=='add' else value*step
+                for a,b in zip(rule['values'],rule['values'][1:]):self.assertEqual(advance(a),b)
+                correct=advance(rule['values'][-1])
                 self.assertEqual(rule['optionValues'][payload['correctImageId']],correct)
 
 if __name__=='__main__': unittest.main()

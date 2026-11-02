@@ -27,6 +27,8 @@ jobs:
           gradle-version: '8.13'
       - run: gradle :app:assembleDebug :app:assembleRelease :core:content:test :core:database:testDebugUnitTest :core:game-engine:test :data:testDebugUnitTest :core:datastore:testDebugUnitTest :core:network:testDebugUnitTest :app:testDebugUnitTest :app:lintDebug --stacktrace
         working-directory: apps/android
+      - run: gradle :app:testReleaseUnitTest --tests com.lughzdan.app.ReleaseContentSmokeTest --stacktrace
+        working-directory: apps/android
       - run: python scripts/summarize_android_tests.py
         if: always()
       - uses: actions/upload-artifact@v4
@@ -52,6 +54,10 @@ jobs:
         working-directory: services/api
       - run: npm run typecheck && npm run build && npm test
         working-directory: services/api
+      - run: node --import tsx scripts/verify-production.ts
+        working-directory: services/api
+        env:
+          PUBLIC_API_URL: https://br-purple-frost-baw74zwb-catalog.compute.c-8.eu-central-1.aws.neon.tech/
   contracts:
     runs-on: ubuntu-latest
     steps:
