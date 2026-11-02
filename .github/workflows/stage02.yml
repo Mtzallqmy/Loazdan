@@ -1,0 +1,118 @@
+name: Lughzdan verification
+on:
+  push:
+    branches: [main, 'fix/**', 'feat/**', 'stage-03-advanced-arabic-games', 'stage-04-offline-content-sync', 'stage-05-06-visual-knowledge']
+  pull_request:
+concurrency:
+  group: lughzdan-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - run: gradle :app:assembleDebug :app:assembleRelease :core:content:test :core:database:testDebugUnitTest :core:game-engine:test :data:testDebugUnitTest :core:datastore:testDebugUnitTest :core:network:testDebugUnitTest :app:testDebugUnitTest :app:lintDebug --stacktrace
+        working-directory: apps/android
+      - run: gradle :app:testReleaseUnitTest --tests com.lughzdan.app.ReleaseContentSmokeTest --stacktrace
+        working-directory: apps/android
+      - run: python scripts/summarize_android_tests.py
+        if: always()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-test-evidence
+          path: |
+            apps/android/**/build/reports/
+            apps/android/**/build/test-results/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unsigned-release-arm64
+          path: apps/android/app/build/outputs/apk/release/*.apk
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: services/api/package-lock.json
+      - run: npm ci
+        working-directory: services/api
+      - run: npm audit --audit-level=high
+        working-directory: services/api
+      - run: npm run typecheck && npm run build && npm test
+        working-directory: services/api
+      - run: node --import tsx scripts/verify-production.ts
+        working-directory: services/api
+        env:
+          PUBLIC_API_URL: https://br-purple-frost-baw74zwb-catalog.compute.c-8.eu-central-1.aws.neon.tech/
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r tools/requirements.txt
+      - run: python tools/validate.py && python scripts/check_content.py && python scripts/check_secrets.py && python scripts/validate_opening_pack.py
+      - run: pip install -r packages/media/requirements.txt
+      - run: python -m unittest discover -s packages/media/tests -v
+      - run: python -m unittest discover -s packages/knowledge/tests -v
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci && npm audit --audit-level=high
+        working-directory: services/api
+  offline-device:
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [26, 28]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          disable-animations: true
+          script: scripts/device_acceptance.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stage03-device-evidence-${{ matrix.api }}
+          path: apps/android/artifacts/stage03/

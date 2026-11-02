@@ -1,0 +1,1 @@
+LUGHZDAN original release illustrations. Copyright project owner. All rights reserved. LicenseRef-Lughzdan-Original. Generated reproducibly by scripts/prepare_release_pack.py.

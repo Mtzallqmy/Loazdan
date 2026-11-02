@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-26",
+  "date": "2026-11-01",
   "scope": "Local blueprint validation only",
   "passed": 53,
   "failed": 0,
@@ -219,11 +219,11 @@
   ],
   "sqlTables": 42,
   "sqlStatements": 179,
-  "apiOperations": 42,
+  "apiOperations": 56,
   "toolVersions": {
-    "jsonschema": "4.26.0",
-    "openapi-spec-validator": "0.9.0",
-    "pglast": "8.7"
+    "jsonschema": "4.23.0",
+    "openapi-spec-validator": "0.6.0",
+    "pglast": "5.10"
   },
   "notRun": [
     "Android build/UI",
