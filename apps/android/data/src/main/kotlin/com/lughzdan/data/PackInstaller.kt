@@ -16,13 +16,17 @@ import android.system.OsConstants
 
 /** One lock shared by download/install/delete/recovery. Database pointer is the commit point. */
 class PackInstaller(private val db:LughzdanDatabase, val root:File, private val verifier:ManifestVerifier,
- private val appVersion:Int=3, private val checkpoint:(String)->Unit={}) {
+ private val appVersion:Int=3, private val checkpoint:(String)->Unit={},
+ private val directorySync:(File)->Unit={ file ->
+  val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY,0)
+  try {Os.fsync(fd)} finally {Os.close(fd)}
+ }) {
  val mutex=Mutex()
  private val json=Json { encodeDefaults=true }
  private val dao=db.content()
  val chunks=File(root,"chunks")
  private fun directory(id:String,version:Int)=File(root,"versions/$id/$version")
- private fun syncDirectory(file:File) { val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY,0);try {Os.fsync(fd)} finally {Os.close(fd)} }
+ private fun syncDirectory(file:File) = directorySync(file)
  suspend fun verify(bytes:ByteArray):SignedManifest {
   val preliminary=verifier.verify(bytes.inputStream(),appVersion,3)
   return verifier.verify(bytes.inputStream(),appVersion,3,dao.head(preliminary.packId)?.highWater?:0)

@@ -10,6 +10,11 @@ import org.junit.runner.RunWith
 class OfflineDeviceTest {
  @get:Rule val compose=createAndroidComposeRule<MainActivity>()
  private fun waitFor(text:String) { compose.waitUntil(20_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() } }
+ @Test fun directoryDurabilityUsesAndroidFileDescriptors() {
+  val directory=java.io.File(compose.activity.cacheDir,"durability-test").apply {mkdirs()}
+  val fd=android.system.Os.open(directory.absolutePath,android.system.OsConstants.O_RDONLY,0)
+  try {android.system.Os.fsync(fd)} finally {android.system.Os.close(fd);directory.delete()}
+ }
  @Test fun phaseOneSolve() {
   waitFor("ابدأ تحدي المفردات")
   compose.onNodeWithText("ابدأ تحدي المفردات").performScrollTo().performClick()

@@ -31,6 +31,7 @@ run_phase() {
   printf '%s\n' "$output"
   [[ "$output" == *'OK (1 test)'* ]]
 }
+run_phase directoryDurabilityUsesAndroidFileDescriptors
 run_phase phaseOneSolve
 adb shell am force-stop com.lughzdan.app
 adb shell svc wifi disable

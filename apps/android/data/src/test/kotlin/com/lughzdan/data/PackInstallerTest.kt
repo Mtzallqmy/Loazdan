@@ -32,7 +32,11 @@ class PackInstallerTest {
  private val puzzleId="5637c78f-fe7e-528c-9763-9450426f7f21"
  private val json=Json {encodeDefaults=true}
  private class Interrupted(val phase:String):RuntimeException(phase)
- private fun installer(checkpoint:(String)->Unit={})=PackInstaller(db,root,ManifestVerifier(mapOf("runtime-test" to keys.public.encoded.takeLast(32).toByteArray())),checkpoint=checkpoint)
+ private fun installer(checkpoint:(String)->Unit={})=PackInstaller(db,root,ManifestVerifier(mapOf("runtime-test" to keys.public.encoded.takeLast(32).toByteArray())),checkpoint=checkpoint,directorySync={ directory ->
+  // ShadowLinux cannot open directory FDs. Exercise real host durability instead.
+  java.nio.channels.FileChannel.open(directory.toPath(),java.nio.file.StandardOpenOption.READ).use {it.force(true)}
+ })
+ private val mediaBytes=Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j1ioAAAAASUVORK5CYII=")
  @Before fun setup(){val context=ApplicationProvider.getApplicationContext<Context>();db=Room.inMemoryDatabaseBuilder(context,LughzdanDatabase::class.java).allowMainThreadQueries().build();root=File(context.cacheDir,"pack-test-${System.nanoTime()}").apply{mkdirs()}}
  @After fun cleanup(){db.close();root.deleteRecursively()}
  private fun hash(bytes:ByteArray)=MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)}
@@ -42,7 +46,7 @@ class PackInstallerTest {
  private fun signed(version:Int,revision:Int=version,id:String=pack,status:String="published",fixture:Boolean=false,deps:List<Dependency> = emptyList(),title:String="Runtime test puzzle",visual:VisualImage?=null,minEngine:Int=1):ByteArray {
   val p=puzzle(revision,status,fixture,if(id==pack)puzzleId else other).copy(title=title).let { if(visual==null) it else it.copy(payload=it.payload.copy(images=listOf(visual))) }
   val payload=(json.encodeToString(p)+"\n").toByteArray();val rights="Test-only rights notice\n".toByteArray()
-  val entries=listOf("data/puzzles.jsonl" to payload,"rights/source.txt" to rights)+(if(visual!=null) listOf("media/test.png" to byteArrayOf(1,2,3)) else emptyList())
+  val entries=listOf("data/puzzles.jsonl" to payload,"rights/source.txt" to rights)+(if(visual!=null) listOf("media/test.png" to mediaBytes) else emptyList())
   val files=entries.map{(path,bytes)->val h=hash(bytes);File(root,"chunks/$h").apply{parentFile!!.mkdirs();writeBytes(bytes)};ManifestFile(path,if(path.startsWith("data/"))"puzzles" else if(path.startsWith("media/"))"media" else "rights",h,bytes.size.toLong(),listOf(Chunk(h,bytes.size.toLong())))}
   val manifest=SignedManifest(1,id,version,1,minEngine,"ar","2026-10-26T00:00:00Z",files,files.sumOf{it.bytes},files.sumOf{it.bytes},deps,listOf(ref),"runtime-test","",if(visual==null) emptyList() else listOf(Asset(other,"media/test.png",ref,"Test image")),listOf(SourceReference(ref,pack,"Runtime source","Test author","test locator","1","CC0","Test attribution","rights/source.txt")))
   val obj=json.parseToJsonElement(json.encodeToString(manifest)).jsonObject
@@ -58,7 +62,7 @@ class PackInstallerTest {
   assertEquals(1,db.content().head(pack)!!.activeVersion)
  }
  @Test fun rejectsImageMetadataThatDoesNotMatchSignedMedia()=runBlocking {
-  val image=VisualImage("test","media/test.png","Test image","clue",ref,"CC0",1,1,hash(byteArrayOf(1,2,3)))
+  val image=VisualImage("test","media/test.png","Test image","clue",ref,"CC0",1,1,hash(mediaBytes))
   listOf(image.copy(sha256="0".repeat(64)),image.copy(sourceRef=other),image.copy(license="Unlicensed"),image.copy(alt="Changed description"),image.copy(assetPath="media/missing.png")).forEachIndexed {index,bad ->
    rejected {installer().install(signed(index+1,visual=bad),"Unbound image")}
    assertNull(db.content().head(pack)?.activeVersion)

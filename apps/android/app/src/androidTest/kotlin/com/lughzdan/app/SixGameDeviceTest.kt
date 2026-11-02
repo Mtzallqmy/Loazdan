@@ -40,19 +40,10 @@ class SixGameDeviceTest {
  }
  private fun fixtures(): List<JSONObject> {
   val assets = compose.activity.assets
-  fun read(path: String): List<JSONObject> {
-   return assets.list(path).orEmpty().flatMap { name ->
-    val full = if (path.isEmpty()) name else "$path/$name"
-    when {
-     name.endsWith(".jsonl") -> assets.open(full).bufferedReader().useLines { lines ->
-      lines.filter { it.isNotBlank() }.map { JSONObject(it) }.toList()
-     }
-     !name.contains('.') -> read(full)
-     else -> emptyList()
-    }
-   }
+  val manifest=JSONObject(assets.open("bundled-manifest.json").bufferedReader().use {it.readText()})
+  return assets.open(manifest.getString("path")).bufferedReader().useLines { lines ->
+   lines.filter {it.isNotBlank()}.map {JSONObject(it)}.toList()
   }
-  return read("")
  }
  private fun fixture(type:String)=fixtures().first {it.getString("type")==type}
  private fun open(type:String) {val all=fixtures();val p=fixture(type);click("ابدأ تحدي المفردات");click("لغز ${all.indexOfFirst {it.getString("puzzleId")==p.getString("puzzleId")}+1} · الصعوبة ${p.getInt("difficulty")}")}
