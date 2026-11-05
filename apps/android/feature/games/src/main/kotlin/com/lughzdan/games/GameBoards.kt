@@ -1,5 +1,10 @@
 package com.lughzdan.games
 
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
@@ -35,9 +40,9 @@ val gameNames=mapOf(
  "visual_association" to "اكتشف العلاقة",
  "visual_logic" to "المنطق البصري"
 )
-@Composable private fun Grid(rows:Int,cols:Int,cell:@Composable (Int,Int)->Unit) {
+@Composable private fun Grid(rows:Int,cols:Int,modifier:Modifier=Modifier,cell:@Composable (Int,Int)->Unit) {
  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-  Column(Modifier.horizontalScroll(rememberScrollState())) { repeat(rows){r->Row {repeat(cols){c->cell(r,c)}}} }
+  Column(Modifier.horizontalScroll(rememberScrollState()).then(modifier)) { repeat(rows){r->Row {repeat(cols){c->cell(r,c)}}} }
  }
 }
 /** Boards translate gestures to intents; the engine owns all game rules. */
@@ -66,7 +71,9 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  val starts=p.payload.entries.map {Cell(it.row,it.col)}.distinct().sortedWith(compareBy<Cell> {it.row}.thenByDescending {it.col})
  fun number(item:CrosswordEntry)=starts.indexOf(Cell(item.row,item.col))+1
  Text("الكلمة النشطة: ${e.clue} · ${if(e.direction=="down")"عمودي" else "أفقي"}")
- p.payload.entries.forEach { item->TextButton(onClick={entryId=item.id;selectCell(Cell(item.row,item.col))},modifier=Modifier.heightIn(min=48.dp)){Text((if(item.id==entryId)"✓ " else "")+"${number(item)}. ${item.clue} · ${if(item.direction=="down")"عمودي" else "أفقي"}")} }
+ var showClues by rememberSaveable(s.id){mutableStateOf(false)}
+ TextButton(onClick={showClues=!showClues}){Text(if(showClues)"إخفاء قائمة الكلمات" else "اختيار كلمة أخرى")}
+ if(showClues) p.payload.entries.forEach { item->TextButton(onClick={entryId=item.id;selectCell(Cell(item.row,item.col))},modifier=Modifier.heightIn(min=48.dp)){Text((if(item.id==entryId)"✓ " else "")+"${number(item)}. ${item.clue} · ${if(item.direction=="down")"عمودي" else "أفقي"}")} }
  TextButton(onClick={p.payload.entries.firstOrNull {it.id!=entryId&&active in path(it)}?.let {entryId=it.id}},enabled=!busy&&p.payload.entries.any {it.id!=entryId&&active in path(it)}){Text("تغيير الاتجاه عند التقاطع")}
  val open=p.payload.entries.flatMap(::path).toSet()
  Grid(p.payload.rows,p.payload.cols){r,c->val pos=Cell(r,c)
@@ -76,7 +83,9 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
     Text(s.cells["$r,$c"]?:"",maxLines=1)
    }}
  }
- "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(8).forEach {line->Row(Modifier.fillMaxWidth()) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);selectCell(cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)])},enabled=!busy,modifier=Modifier.weight(1f).height(48.dp).semantics {contentDescription="مفتاح $token"},contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
+ var showKeys by rememberSaveable(s.id){mutableStateOf(true)}
+ Row {TextButton(onClick={showKeys=!showKeys}){Text(if(showKeys)"طي لوحة الحروف" else "إظهار الحروف")};TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,""))},enabled=!busy){Text("مسح الحرف")}}
+ if(showKeys) "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(6).forEach {line->Row(Modifier.fillMaxWidth()) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);selectCell(cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)])},enabled=!busy,modifier=Modifier.weight(1f).height(48.dp).semantics {contentDescription="مفتاح $token"},contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
  var keyboard by rememberSaveable {mutableStateOf(false)}
  TextButton(onClick={keyboard=!keyboard}){Text(if(keyboard)"إخفاء إدخال النظام" else "إدخال حرف مشكّل بلوحة النظام")}
  if(keyboard) {
@@ -93,9 +102,29 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  fun selectStart(cell:Cell?) {startRow=cell?.row;startCol=cell?.col}
  val foundCells=p.payload.words.filter {it.id in s.foundWordIds}.flatMap {it.path}.toSet()
  Text("الكلمات المكتشفة: ${s.foundWordIds.size} / ${p.payload.words.size}")
- Text("اختر بداية الكلمة ثم نهايتها في خط مستقيم")
- Grid(p.payload.grid.size,p.payload.grid.first().size){r,c->val pos=Cell(r,c)
-  OutlinedButton(enabled=!busy,onClick={val a=start;if(a==null)selectStart(pos) else {val dr=r-a.row;val dc=c-a.col;val n=maxOf(kotlin.math.abs(dr),kotlin.math.abs(dc));val cells=if(dr==0||dc==0||kotlin.math.abs(dr)==kotlin.math.abs(dc))(0..n).map {Cell(a.row+it*dr.compareTo(0),a.col+it*dc.compareTo(0))} else listOf(a,pos);send(PlayerAction.SelectPath(aid(),cells));selectStart(null)}},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(pos in foundCells)MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface),modifier=Modifier.size(48.dp).semantics {contentDescription="بحث $r $c";stateDescription=if(pos in foundCells)"حرف في كلمة مكتشفة" else if(pos==start||pos in s.selectedPath)"حرف محدد" else "حرف"},contentPadding=PaddingValues(0.dp)){Text((if(pos in foundCells)"✓ " else if(pos==start||pos in s.selectedPath)"•" else "")+p.payload.grid[r][c])}
+ Text("اضغط مطولًا ثم اسحب على الكلمة، أو انقر بدايتها ثم نهايتها")
+ val cellPixels=with(LocalDensity.current){48.dp.toPx()}
+ var preview by remember(s.id){mutableStateOf(emptyList<Cell>())}
+ fun cellAt(offset:Offset):Cell? {
+  val row=kotlin.math.floor(offset.y/cellPixels).toInt();val col=kotlin.math.floor(offset.x/cellPixels).toInt()
+  return if(row in p.payload.grid.indices && col in p.payload.grid.first().indices) Cell(row,col) else null
+ }
+ fun line(a:Cell,b:Cell):List<Cell> {
+  val dr=b.row-a.row;val dc=b.col-a.col
+  if(dr!=0 && dc!=0 && kotlin.math.abs(dr)!=kotlin.math.abs(dc))return emptyList()
+  return (0..maxOf(kotlin.math.abs(dr),kotlin.math.abs(dc))).map {Cell(a.row+it*dr.compareTo(0),a.col+it*dc.compareTo(0))}
+ }
+ val currentSend by rememberUpdatedState(send)
+ Grid(p.payload.grid.size,p.payload.grid.first().size,Modifier.pointerInput(s.id,busy,cellPixels) {
+  if(!busy) {var origin:Cell?=null;var cursor=Offset.Zero
+   detectDragGesturesAfterLongPress(
+    onDragStart={cursor=it;origin=cellAt(it);preview=origin?.let {listOf(it)} ?: emptyList();selectStart(null)},
+    onDrag={change,delta->change.consume();cursor+=delta;preview=origin?.let {a->cellAt(cursor)?.let {line(a,it)}} ?: emptyList()},
+    onDragEnd={if(preview.isNotEmpty())currentSend(PlayerAction.SelectPath(aid(),preview));preview=emptyList();origin=null},
+    onDragCancel={preview=emptyList();origin=null})
+  }
+ }){r,c->val pos=Cell(r,c)
+  OutlinedButton(enabled=!busy,onClick={val a=start;if(a==null)selectStart(pos) else {val dr=r-a.row;val dc=c-a.col;val n=maxOf(kotlin.math.abs(dr),kotlin.math.abs(dc));val cells=if(dr==0||dc==0||kotlin.math.abs(dr)==kotlin.math.abs(dc))(0..n).map {Cell(a.row+it*dr.compareTo(0),a.col+it*dc.compareTo(0))} else listOf(a,pos);send(PlayerAction.SelectPath(aid(),cells));selectStart(null)}},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(pos in preview)MaterialTheme.colorScheme.primaryContainer else if(pos in foundCells)MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface),modifier=Modifier.size(48.dp).semantics {contentDescription="بحث $r $c";stateDescription=if(pos in foundCells)"حرف في كلمة مكتشفة" else if(pos==start||pos in s.selectedPath)"حرف محدد" else "حرف"},contentPadding=PaddingValues(0.dp)){Text((if(pos in foundCells)"✓ " else if(pos==start||pos in s.selectedPath)"•" else "")+p.payload.grid[r][c])}
  }
  p.payload.words.forEach {Text((if(it.id in s.foundWordIds)"✓ " else "○ ")+it.label)}
  TextButton(onClick={selectStart(null)},enabled=start!=null){Text("إلغاء تحديد البداية")}
@@ -103,7 +132,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
 @Composable internal fun Builder(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  Text("اضغط الحروف لبناء الإجابة؛ اضغط حرفًا في الإجابة لإزالته")
  val fixed=p.payload.fixedSlots.associate {it.index to it.token}
- val slotCount=maxOf(s.selectedTileIndices.size+fixed.size,(fixed.keys.maxOrNull()?:-1)+1)
+ val slotCount=maxOf(p.payload.acceptedAnswers.minOfOrNull {ArabicText.comparison(it,NormalizationPolicy(removeMarks=true)).length} ?: 0,s.selectedTileIndices.size+fixed.size,(fixed.keys.maxOrNull()?:-1)+1)
  var selectedSlot=0
  val answer=(0 until slotCount).map {index->fixed[index] ?: s.selectedTileIndices.getOrNull(selectedSlot++)?.let {p.payload.tiles[it]} ?: "□"}.joinToString("")
  Text("الإجابة الحالية: $answer")
@@ -142,8 +171,47 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
 }
 @Composable private fun Ordering(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  val order=s.orderedIds.ifEmpty {p.payload.items.map {it.id}}
- Text("حرّك الكلمات لأعلى أو لأسفل")
- order.forEachIndexed {index,id->val text=p.payload.items.first {it.id==id}.text;Text("${index+1}. $text");Row {listOf(-1 to "لأعلى",1 to "لأسفل").forEach {(delta,label)->TextButton(onClick={val next=order.toMutableList();next.add(index+delta,next.removeAt(index));send(PlayerAction.Reorder(aid(),next))},enabled=!busy&&index+delta in order.indices,modifier=Modifier.heightIn(min=48.dp).semantics {contentDescription="$label $text"}){Text(label)}}}}
+ val heights=remember(s.id){mutableStateMapOf<String,Int>()}
+ var dragging by remember(s.id){mutableStateOf<String?>(null)}
+ var target by remember(s.id){mutableStateOf<Int?>(null)}
+ val currentOrder by rememberUpdatedState(order)
+ val currentSend by rememberUpdatedState(send)
+ Text("اضغط مطولًا على البطاقة واسحب لترتيبها، أو استخدم زري النقل")
+ order.forEachIndexed {index,id->
+  val label=p.payload.items.first {it.id==id}.text
+  OutlinedCard(modifier=Modifier.fillMaxWidth().onSizeChanged {heights[id]=it.height}.pointerInput(s.id,id,busy) {
+   if(!busy) {var displacement=0f
+    detectDragGesturesAfterLongPress(
+     onDragStart={dragging=id;target=currentOrder.indexOf(id);displacement=0f},
+     onDrag={change,delta->
+      change.consume();displacement+=delta.y
+      val from=currentOrder.indexOf(id);var destination=from;var remaining=kotlin.math.abs(displacement)
+      val direction=if(displacement>=0)1 else -1
+      while(destination+direction in currentOrder.indices) {
+       val threshold=(heights[currentOrder[destination+direction]] ?: 120).toFloat()
+       if(remaining<threshold/2)break
+       destination+=direction;remaining-=threshold
+      }
+      target=destination
+     },
+     onDragEnd={
+      val from=currentOrder.indexOf(id);val to=target
+      if(from>=0 && to!=null && to in currentOrder.indices && to!=from) {
+       val next=currentOrder.toMutableList();next.add(to,next.removeAt(from));currentSend(PlayerAction.Reorder(aid(),next))
+      }
+      dragging=null;target=null
+     },onDragCancel={dragging=null;target=null})
+   }
+  },colors=CardDefaults.outlinedCardColors(containerColor=if(dragging==id)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)) {
+   Column(Modifier.padding(12.dp)) {
+    Text("${index+1}. $label",style=MaterialTheme.typography.titleMedium)
+    if(dragging==id)Text("الإفلات في الموضع ${(target ?: index)+1}",style=MaterialTheme.typography.bodySmall)
+    Row {listOf(-1 to "لأعلى",1 to "لأسفل").forEach {(delta,actionLabel)->
+     TextButton(onClick={val next=order.toMutableList();next.add(index+delta,next.removeAt(index));send(PlayerAction.Reorder(aid(),next))},enabled=!busy&&index+delta in order.indices,modifier=Modifier.heightIn(min=48.dp).semantics {contentDescription="$actionLabel $label"}){Text(actionLabel)}
+    }}
+   }
+  }
+ }
 }
 
 @Composable private fun TextAnswerBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {

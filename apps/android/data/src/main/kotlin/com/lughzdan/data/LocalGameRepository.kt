@@ -46,7 +46,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   val available=mutableListOf<PlayRecord>();val unavailable=mutableListOf<UnavailableSession>()
   rows.forEach { row ->
    val cached=sessionCache[row.id]
-   val record=if(cached?.row==row) cached.record else readRecord(row).also {sessionCache[row.id]=CachedRecord(row,it)}
+   val record=if(cached!=null && cached.row==row) cached.record else readRecord(row).also {sessionCache[row.id]=CachedRecord(row,it)}
    if(record!=null) available.add(record)
    else unavailable.add(UnavailableSession(row.id,"تعذّر استعادة الجولة؛ بياناتها محفوظة دون تعديل."))
   }

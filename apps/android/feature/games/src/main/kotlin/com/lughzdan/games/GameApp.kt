@@ -38,7 +38,7 @@ import com.lughzdan.engine.*
      icon={DiscoveryIcon(destination)},label={Text(label,maxLines=1)})
    }
   } }) { padding ->
-   Column(Modifier.fillMaxSize().padding(padding).padding(horizontal=20.dp)) {
+   Column(Modifier.fillMaxSize().padding(padding).imePadding().padding(horizontal=16.dp)) {
     if(!playing) Row(Modifier.fillMaxWidth().padding(vertical=12.dp),horizontalArrangement=Arrangement.SpaceBetween) { Text("لُغْزَدان",style=MaterialTheme.typography.titleLarge);DiscoveryIcon("brand") }
     else TextButton(onClick={nav.popBackStack()}){Text("العودة · تُحفظ حركاتك تلقائيًا")}
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
@@ -83,11 +83,14 @@ import com.lughzdan.engine.*
      composable("account") { AccountSyncScreen(vm) }
      composable("catalog") {
       var filter by rememberSaveable {mutableStateOf<String?>(null)}
+      var query by rememberSaveable {mutableStateOf("")}
       val registry=remember {GameRegistry()}
-      val visible=remember(puzzles,filter){puzzles.withIndex().filter {it.value.type in registry.types && (filter==null || it.value.type==filter)}}
+      val visible=remember(puzzles,filter,query){puzzles.withIndex().filter {it.value.type in registry.types && (filter==null || it.value.type==filter) && (query.isBlank() || (it.value.title+" "+it.value.payload.prompt+" "+gameNames[it.value.type]).contains(query.trim(),ignoreCase=true))}}
       LazyColumn(verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
        item {Text("مكتبة الاكتشاف",style=MaterialTheme.typography.headlineMedium)}
        item {Row {TextButton(onClick={nav.navigate("library")}){Text("الحزم والتنزيلات")};if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}}}
+       item {OutlinedTextField(value=query,onValueChange={query=it},label={Text("ابحث عن موضوع أو نوع لعبة")},singleLine=true,modifier=Modifier.fillMaxWidth())}
+       if(visible.isEmpty()) item {Text("لا توجد نتائج مطابقة ضمن الألغاز المحمّلة. جرّب موضوعًا آخر أو اعرض المزيد.")}
        item {ScrollableTabRow(selectedTabIndex=(listOf<String?>(null)+gameNames.keys).indexOf(filter).coerceAtLeast(0),edgePadding=0.dp) {
         (listOf<String?>(null)+gameNames.keys).forEach {type->Tab(selected=filter==type,onClick={filter=type},text={Text(if(type==null)"الكل" else gameNames[type] ?: type,maxLines=1)})}
        }}
@@ -107,7 +110,8 @@ import com.lughzdan.engine.*
      composable("session/{id}") { entry->
       val id=entry.arguments?.getString("id").orEmpty()
       val sessionFlow=remember(id){vm.observeSession(id)}
-      val record by sessionFlow.collectAsStateWithLifecycle(initialValue=null)
+      val currentRecord by sessionFlow.collectAsStateWithLifecycle(initialValue=null)
+      val record=currentRecord
       if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
        var priorStatus by remember(s.id){mutableStateOf(s.status)}
