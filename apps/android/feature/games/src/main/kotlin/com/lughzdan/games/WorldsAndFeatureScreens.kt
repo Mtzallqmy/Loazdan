@@ -190,45 +190,27 @@ fun AchievementsScreen(vm: GameViewModel) {
 }
 
 @Composable
-fun DailyChallengeScreen(vm: GameViewModel, onPlayDaily: (String) -> Unit) {
-    val progress by vm.progress.collectAsStateWithLifecycle()
-    val puzzles by vm.puzzles.collectAsStateWithLifecycle()
-    val dailyPuzzle = puzzles.firstOrNull { it.difficulty <= ProgressionRules.unlockedDifficulty(progress.totalXp) }
-
-    Column(
-        Modifier.fillMaxSize().padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text("التحدي اليومي", style = MaterialTheme.typography.headlineMedium)
-        Text("لغز يومي متجدد لاختبار حصيلتك اللغوية ونيل مكافآت مضاعفة", style = MaterialTheme.typography.bodyMedium)
-        ElevatedCard(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("تحدي اليوم", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                    Text("⭐ +100 XP إضافي", color = MaterialTheme.colorScheme.primary)
-                }
-                Text("حافظ على تتابعك اليومي واستمتع برحلة المعرفة العربية دون انقطاع.")
-                if (dailyPuzzle != null) {
-                    Text("اللغز المقترح: ${dailyPuzzle.title} (${gameNames[dailyPuzzle.type] ?: dailyPuzzle.type})")
-                    Button(
-                        onClick = { onPlayDaily(dailyPuzzle.puzzleId) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("ابدأ التحدي اليومي الآن")
-                    }
-                } else {
-                    Text("أكمل تثبيت حزمة الألغاز للمشاركة في التحديات اليومية.")
+fun DailyChallengeScreen(vm: GameViewModel, onPlayDaily: () -> Unit) {
+    val busy by vm.busy.collectAsStateWithLifecycle()
+    var day by remember {mutableStateOf(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Aden")))}
+    LaunchedEffect(Unit) {while(true) {day=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Aden"));kotlinx.coroutines.delay(30_000)}}
+    val recordFlow=remember(day){vm.observeSession("daily-$day")}
+    val record by recordFlow.collectAsStateWithLifecycle(initialValue=null)
+    val completed=record?.session?.status in setOf(SessionStatus.WON,SessionStatus.LOST)
+    LazyColumn(verticalArrangement=Arrangement.spacedBy(16.dp),contentPadding=PaddingValues(bottom=24.dp)) {
+        item {Text("موعد الفضول",style=MaterialTheme.typography.headlineMedium)}
+        item {Text("$day · توقيت عدن (UTC+3) · يتجدد عند منتصف الليل")}
+        item {ElevatedCard(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                Text(if(completed) "أنجزت محاولة اليوم" else "خطوة صغيرة، معرفة جديدة",style=MaterialTheme.typography.titleLarge)
+                Text("لغز من المستوى الأول، مستقل عن مقدار خبرتك. بعد بدء التحدي تُحفظ جولته نفسها طوال اليوم.")
+                Button(onClick=onPlayDaily,enabled=!busy,modifier=Modifier.fillMaxWidth()) {
+                    Text(if(completed) "عرض النتيجة" else if(record!=null) "متابعة تحدي اليوم" else "ابدأ تحدي اليوم")
                 }
             }
-        }
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("شروط التحدي والنزاهة:", style = MaterialTheme.typography.titleSmall)
-                Text("• محاولة واحدة لكل يوم تسجل نتيجتها على الخادم.")
-                Text("• يمنع تكرار تقديم الإجابات لنفس الجولة للحصول على نقاط مكررة.")
-                Text("• يعمل التحدي أوفلاين ويتم حفظ النتيجة للمزامنة عند الاتصال.")
-            }
-        }
+        }}
+        item {Text("تُحفظ الجولة والنتيجة على هذا الجهاز. تُحتسب الخبرة وفق أفضل نتيجة للغز؛ لا توجد مكافأة مضاعفة أو نقاط إضافية عند إعادة فتح النتيجة.")}
+        item {Text("قد يختلف اللغز بين الأجهزة بحسب الحزم المثبتة. لا توجد هنا منافسة يومية موحدة أو نتيجة مؤكدة على الخادم.",style=MaterialTheme.typography.bodySmall)}
     }
 }
 

@@ -75,7 +75,7 @@ import com.lughzdan.engine.*
       WorldDetailScreen(worldId, vm, onPlay = { play(it) }, onBack = { nav.popBackStack() })
      }
      composable("achievements") { AchievementsScreen(vm) }
-     composable("daily") { DailyChallengeScreen(vm) { play(it) } }
+     composable("daily") { DailyChallengeScreen(vm) { vm.startDaily {nav.navigate("session/$it")} } }
      composable("profile") { Column(Modifier.fillMaxSize()) {
       Row {TextButton(onClick={nav.navigate("settings")},modifier=Modifier.testTag("nav-settings")){Text("الإعدادات")};TextButton(onClick={nav.navigate("achievements")}){Text("الإنجازات")};TextButton(onClick={nav.navigate("history")}){Text("السجل")}}
       Box(Modifier.weight(1f)){ProfileScreen(vm) {nav.navigate("account")}}
@@ -105,7 +105,9 @@ import com.lughzdan.engine.*
       }
      }
      composable("session/{id}") { entry->
-      val id=entry.arguments?.getString("id");val record=sessions.find { it.session.id==id }
+      val id=entry.arguments?.getString("id").orEmpty()
+      val sessionFlow=remember(id){vm.observeSession(id)}
+      val record by sessionFlow.collectAsStateWithLifecycle(initialValue=null)
       if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
        var priorStatus by remember(s.id){mutableStateOf(s.status)}
@@ -148,6 +150,7 @@ import com.lughzdan.engine.*
       Text("سجل الجولات",style=MaterialTheme.typography.headlineMedium)
       if(sessions.isEmpty())Text("ابدأ لغزًا لتظهر جولتك هنا.")
       unavailableSessions.forEach { Text(it.reason,color=MaterialTheme.colorScheme.error) }
+      TextButton(onClick=vm::moreSessions){Text("تحميل جولات أقدم")}
       sessions.forEach { record->TextButton(onClick={nav.navigate("session/${record.session.id}")}){Text("${record.puzzle.payload.prompt} · ${record.session.score} نقطة")} }
      } }
      composable("library") { ContentLibrary(vm,{nav.navigate("downloads")},{nav.navigate("storage")}) }

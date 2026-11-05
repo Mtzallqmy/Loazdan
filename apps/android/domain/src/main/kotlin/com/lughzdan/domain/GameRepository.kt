@@ -1,6 +1,7 @@
 package com.lughzdan.domain
 import com.lughzdan.engine.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 data class PlayRecord(val session:GameSession,val puzzle:PuzzleDefinition)
 data class UnavailableSession(val id:String,val reason:String)
@@ -13,6 +14,9 @@ interface ProgressRepository {
  val unavailableSessions:Flow<List<UnavailableSession>>
  val progress:Flow<Progress>
  val packs:Flow<List<InstalledPack>>
+ fun observeSession(id:String):Flow<PlayRecord?> = sessions.map { records->records.find {it.session.id==id} }
+ suspend fun loadMoreSessions() {}
+ suspend fun startDaily(day:String):String = error("Daily challenge unavailable")
  suspend fun loadMore() {}
  suspend fun initialize()
  suspend fun start(puzzleId:String):String
