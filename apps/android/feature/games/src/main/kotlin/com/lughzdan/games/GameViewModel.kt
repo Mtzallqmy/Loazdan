@@ -36,7 +36,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  fun morePuzzles() {viewModelScope.launch {repository.loadMore()}}
  fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);sessions.first { records->records.any { it.session.id==started } };onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
  fun action(id:String,action:PlayerAction) { dispatch(id,action) }
- private fun dispatch(id:String,action:PlayerAction)=viewModelScope.launch { mutex.withLock { _busy.value=true;try { val committed=repository.act(id,action);sessions.first { records->records.any { it.session==committed } };_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="لم تُحفظ الحركة. حاول مجددًا." } finally { _busy.value=false } } }
+ private fun dispatch(id:String,action:PlayerAction)=viewModelScope.launch { mutex.withLock { try { repository.act(id,action);_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="لم تُحفظ الحركة. حاول مجددًا." } finally { } } }
  fun resume(id:String)=action(id,PlayerAction.Resume(UUID.randomUUID().toString()))
  fun select(id:String,option:String)=action(id,PlayerAction.Select(UUID.randomUUID().toString(),option))
  fun submit(id:String) {

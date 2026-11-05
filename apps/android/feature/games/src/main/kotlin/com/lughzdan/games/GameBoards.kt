@@ -43,11 +43,11 @@ val gameNames=mapOf(
 /** Boards translate gestures to intents; the engine owns all game rules. */
 @Composable fun GameBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  when(p.type) {
- "choice" -> p.payload.options.forEach { o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} }
+ "choice" -> SessionPresentation.shuffled(p.payload.options,s,"options").forEach { o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} }
  "crossword" -> Crossword(p,s,busy,send)
  "wordsearch" -> Search(p,s,busy,send)
  "anagram" -> Builder(p,s,busy,send)
- "matching" -> if(p.payload.options.isNotEmpty()) { p.payload.options.forEach {o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} } } else Matching(p,s,busy,send)
+ "matching" -> if(p.payload.options.isNotEmpty()) { SessionPresentation.shuffled(p.payload.options,s,"options").forEach {o->OutlinedButton(onClick={send(PlayerAction.Select(aid(),o.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(s.selectedId==o.id)"✓ " else "")+o.text)} } } else Matching(p,s,busy,send)
  "order" -> Ordering(p,s,busy,send)
  "text_answer" -> TextAnswerBoard(p,s,busy,send)
  "sequence" -> SequenceBoard(p,s,busy,send)
@@ -131,8 +131,8 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  var selected by rememberSaveable(p.puzzleId){mutableStateOf<String?>(null)}
  Text("اختر كلمة ثم العلاقة المناسبة")
  Row(Modifier.fillMaxWidth()) {
-  Column(Modifier.weight(1f)){p.payload.left.forEach {o->OutlinedButton(onClick={selected=o.id},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(selected==o.id)"✓ " else "")+o.text)}}}
-  Column(Modifier.weight(1f)){p.payload.right.forEach {o->OutlinedButton(onClick={selected?.let {send(PlayerAction.Match(aid(),it,o.id))};selected=null},enabled=!busy&&selected!=null,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text(o.text)}}}
+  Column(Modifier.weight(1f)){SessionPresentation.shuffled(p.payload.left,s,"left").forEach {o->OutlinedButton(onClick={selected=o.id},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(selected==o.id)"✓ " else "")+o.text)}}}
+  Column(Modifier.weight(1f)){SessionPresentation.matchingRight(p,s).forEach {o->OutlinedButton(onClick={selected?.let {send(PlayerAction.Match(aid(),it,o.id))};selected=null},enabled=!busy&&selected!=null,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text(o.text)}}}
  }
  s.matchedPairs.forEach {pair->Text("${p.payload.left.first {it.id==pair.leftId}.text} ↔ ${p.payload.right.first {it.id==pair.rightId}.text}")}
 }
@@ -143,7 +143,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
 }
 
 @Composable private fun TextAnswerBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
- var input by rememberSaveable(p.puzzleId,s.answerInput){mutableStateOf(s.answerInput)}
+ var input by rememberSaveable(s.id){mutableStateOf(s.answerInput)}
  Text(p.payload.prompt,style=MaterialTheme.typography.titleMedium)
  OutlinedTextField(
   value=input,
@@ -153,12 +153,12 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
   modifier=Modifier.fillMaxWidth()
  )
  if(p.normalization=="arabic_basic_v1") {
-  Text("ملاحظة: يُقبل الجواب بتجريد الحركات والهمزات.",style=MaterialTheme.typography.bodySmall)
+  Text("ملاحظة: يُقبل الجواب بتجريد الحركات؛ تُحفظ الفروق بين الهمزات.",style=MaterialTheme.typography.bodySmall)
  }
 }
 
 @Composable private fun SequenceBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
- var input by rememberSaveable(p.puzzleId,s.answerInput){mutableStateOf(s.answerInput)}
+ var input by rememberSaveable(s.id){mutableStateOf(s.answerInput)}
  Text("أكمل المتتالية وفق النمط المنطقي:",style=MaterialTheme.typography.titleMedium)
  Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
   p.payload.terms.forEach {term->
@@ -170,7 +170,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
    Text("؟",modifier=Modifier.padding(horizontal=16.dp,vertical=10.dp),style=MaterialTheme.typography.titleLarge)
   }
  }
- if(p.payload.rule.isNotBlank()) {
+ if(s.status in setOf(SessionStatus.WON,SessionStatus.LOST) && p.payload.rule.isNotBlank()) {
   Text(p.payload.rule,style=MaterialTheme.typography.bodyMedium)
  }
  OutlinedTextField(
@@ -184,7 +184,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
 }
 
 @Composable private fun ImageGuessBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
- var input by rememberSaveable(p.puzzleId,s.answerInput){mutableStateOf(s.answerInput)}
+ var input by rememberSaveable(s.id){mutableStateOf(s.answerInput)}
  Text("تخمين الصورة — النمط: ${when(p.payload.mode){"four"->"أربع صور";"reveal"->"كشف تدريجي";"shadow"->"ظل الصورة";"symbols"->"رموز متتالية";else->p.payload.mode}}",style=MaterialTheme.typography.titleSmall)
  val steps=p.payload.revealSteps.coerceAtLeast(1)
  val total=steps*steps

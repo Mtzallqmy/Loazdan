@@ -35,7 +35,7 @@ abstract class BoardPlugin(final override val type:String):GamePlugin {
   addAll(errors(puzzle))
  })
  override fun createSession(puzzle:PuzzleDefinition,sessionId:String):GameSession {
-  require(validatePuzzle(puzzle).valid);return GameSession(sessionId,puzzle.puzzleId,puzzle.revision,stateVersion=2,tileOrder=puzzle.payload.tiles.indices.toList(),orderedIds=puzzle.payload.items.map {it.id})
+  require(validatePuzzle(puzzle).valid);return GameSession(sessionId,puzzle.puzzleId,puzzle.revision,stateVersion=2,displaySeed=sessionId.hashCode(),tileOrder=puzzle.payload.tiles.indices.shuffled(Random(sessionId.hashCode())),orderedIds=SessionPresentation.unsolved(puzzle.payload.items.map {it.id},puzzle.payload.correctOrder,sessionId.hashCode()))
  }
  protected fun verdict(p:PuzzleDefinition,s:GameSession,correct:Boolean)=if(correct) s.copy(status=SessionStatus.WON,score=ScoringEngine.score(p,s.wrongSubmissions,s.usedHintIds)) else s.copy(wrongSubmissions=s.wrongSubmissions+1,status=if(s.wrongSubmissions>=2) SessionStatus.LOST else SessionStatus.ACTIVE)
  override fun evaluate(puzzle:PuzzleDefinition,session:GameSession,action:PlayerAction):GameSession {
