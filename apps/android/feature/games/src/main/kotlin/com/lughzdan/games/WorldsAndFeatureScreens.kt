@@ -1,5 +1,7 @@
 package com.lughzdan.games
 
+import com.lughzdan.designsystem.DiscoveryIcon
+import com.lughzdan.designsystem.Experience
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -76,7 +78,7 @@ fun WorldsScreen(vm: GameViewModel, onSelectWorld: (String) -> Unit) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(world.icon, style = MaterialTheme.typography.headlineSmall)
+                        DiscoveryIcon(world.id,Modifier.size(40.dp),Experience.worldColors[allWorlds.indexOf(world)])
                         Badge { Text("$count لغز") }
                     }
                     Text(world.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -104,7 +106,7 @@ fun WorldDetailScreen(worldId: String, vm: GameViewModel, onPlay: (String) -> Un
         item {
             TextButton(onClick = onBack) { Text("← العودة للعوالم") }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(world.icon, style = MaterialTheme.typography.headlineLarge)
+                DiscoveryIcon(world.id,Modifier.size(44.dp),Experience.worldColors[allWorlds.indexOf(world)])
                 Column {
                     Text(world.title, style = MaterialTheme.typography.headlineMedium)
                     Text(world.subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
@@ -131,9 +133,9 @@ fun WorldDetailScreen(worldId: String, vm: GameViewModel, onPlay: (String) -> Un
                         Text(gameNames[p.type] ?: p.type, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
                         Text("مستوى ${p.difficulty}", style = MaterialTheme.typography.labelSmall)
                     }
-                    Text(p.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text("مرحلة ${worldPuzzles.indexOf(p)+1} · ${when(p.difficulty){1->"بداية الاكتشاف";2->"خطوة أعمق";3->"تحدي الفهم";4->"اختبار المهارة";else->"قمة المسار"}}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     if (locked) {
-                        Text("🔒 يفتح عند ${(p.difficulty - 1) * 300} XP", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                        Text("يفتح عند ${(p.difficulty - 1) * 300} XP", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -173,7 +175,7 @@ fun AchievementsScreen(vm: GameViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(if (isUnlocked) icon else "🔒", style = MaterialTheme.typography.headlineMedium)
+                    DiscoveryIcon(if(isUnlocked) "brand" else "logic",Modifier.size(32.dp))
                     Column(Modifier.weight(1f)) {
                         Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         Text(desc, style = MaterialTheme.typography.bodyMedium)

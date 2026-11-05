@@ -70,17 +70,21 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  TextButton(onClick={p.payload.entries.firstOrNull {it.id!=entryId&&active in path(it)}?.let {entryId=it.id}},enabled=!busy&&p.payload.entries.any {it.id!=entryId&&active in path(it)}){Text("تغيير الاتجاه عند التقاطع")}
  val open=p.payload.entries.flatMap(::path).toSet()
  Grid(p.payload.rows,p.payload.cols){r,c->val pos=Cell(r,c)
-  if(pos !in open)Surface(Modifier.width(56.dp).height(80.dp).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={selectCell(pos);if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy,colors=ButtonDefaults.outlinedButtonColors(containerColor=when {pos==active->MaterialTheme.colorScheme.primaryContainer;pos in path(e)->MaterialTheme.colorScheme.secondaryContainer;else->MaterialTheme.colorScheme.surface}),modifier=Modifier.width(56.dp).height(80.dp).semantics {contentDescription="خلية $r $c";stateDescription=when {pos==active->"الخلية المحددة";pos in path(e)->"ضمن الكلمة النشطة";else->"خلية"}},contentPadding=PaddingValues(0.dp)){Column(horizontalAlignment=Alignment.CenterHorizontally) {
+  if(pos !in open)Surface(Modifier.size(48.dp).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={selectCell(pos);if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy,colors=ButtonDefaults.outlinedButtonColors(containerColor=when {pos==active->MaterialTheme.colorScheme.primaryContainer;pos in path(e)->MaterialTheme.colorScheme.secondaryContainer;else->MaterialTheme.colorScheme.surface}),modifier=Modifier.size(48.dp).semantics {contentDescription="خلية $r $c";stateDescription=when {pos==active->"الخلية المحددة";pos in path(e)->"ضمن الكلمة النشطة";else->"خلية"}},contentPadding=PaddingValues(0.dp)){Column(horizontalAlignment=Alignment.CenterHorizontally) {
     val marker=if(pos==active)"▣" else if(pos in path(e))"─" else ""
     Text((if(pos in starts)"${starts.indexOf(pos)+1} " else "")+marker,style=MaterialTheme.typography.labelSmall)
     Text(s.cells["$r,$c"]?:"",maxLines=1)
    }}
  }
- "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(6).forEach {line->Row(Modifier.horizontalScroll(rememberScrollState())) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);selectCell(cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)])},enabled=!busy,modifier=Modifier.size(48.dp).semantics {contentDescription="مفتاح $token"},contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
+ "ابتثجحخدذرزسشصضطظعغفقكلمنهويأةإآىءؤئ".chunked(8).forEach {line->Row(Modifier.fillMaxWidth()) {line.forEach {token->OutlinedButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,token.toString()));val cells=path(e);selectCell(cells[(cells.indexOf(active)+1).coerceAtMost(cells.lastIndex)])},enabled=!busy,modifier=Modifier.weight(1f).height(48.dp).semantics {contentDescription="مفتاح $token"},contentPadding=PaddingValues(0.dp)){Text(token.toString())}}} }
+ var keyboard by rememberSaveable {mutableStateOf(false)}
+ TextButton(onClick={keyboard=!keyboard}){Text(if(keyboard)"إخفاء إدخال النظام" else "إدخال حرف مشكّل بلوحة النظام")}
+ if(keyboard) {
  var cellDraft by rememberSaveable(p.puzzleId){mutableStateOf("")}
  OutlinedTextField(value=cellDraft,onValueChange={cellDraft=it},label={Text("حرف الخلية")},singleLine=true,enabled=!busy,modifier=Modifier.fillMaxWidth())
  TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,cellDraft));cellDraft=""},enabled=!busy&&ArabicCellInput.isValid(cellDraft)){Text("إدخال الحرف")}
  TextButton(onClick={send(PlayerAction.InputCell(aid(),active.row,active.col,""))},enabled=!busy&&!s.cells["${active.row},${active.col}"].isNullOrEmpty()){Text("مسح الخلية")}
+ }
 }
 @Composable private fun Search(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  var startRow by rememberSaveable(p.puzzleId){mutableStateOf<Int?>(null)}
@@ -107,7 +111,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
   var removableSlot=0
   repeat(slotCount) {index->
    val token=fixed[index]
-   if(token!=null) Surface(Modifier.sizeIn(minWidth=48.dp,minHeight=48.dp),color=MaterialTheme.colorScheme.secondaryContainer) {Text("🔒 $token",Modifier.padding(12.dp))}
+   if(token!=null) Surface(Modifier.sizeIn(minWidth=48.dp,minHeight=48.dp),color=MaterialTheme.colorScheme.secondaryContainer) {Text(token,Modifier.padding(12.dp))}
    else {val slot=removableSlot++;val tile=s.selectedTileIndices.getOrNull(slot)
     OutlinedButton(onClick={send(PlayerAction.RemoveTile(aid(),slot))},enabled=!busy&&tile!=null,modifier=Modifier.sizeIn(minWidth=48.dp,minHeight=48.dp)){Text(tile?.let {p.payload.tiles[it]}?:"□")}
    }
@@ -160,6 +164,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
 @Composable private fun SequenceBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  var input by rememberSaveable(s.id){mutableStateOf(s.answerInput)}
  Text("أكمل المتتالية وفق النمط المنطقي:",style=MaterialTheme.typography.titleMedium)
+ CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
  Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
   p.payload.terms.forEach {term->
    Surface(shape=MaterialTheme.shapes.medium,color=MaterialTheme.colorScheme.primaryContainer,modifier=Modifier.padding(vertical=8.dp)) {
@@ -169,6 +174,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
   Surface(shape=MaterialTheme.shapes.medium,color=MaterialTheme.colorScheme.secondaryContainer,modifier=Modifier.padding(vertical=8.dp)) {
    Text("؟",modifier=Modifier.padding(horizontal=16.dp,vertical=10.dp),style=MaterialTheme.typography.titleLarge)
   }
+ }
  }
  if(s.status in setOf(SessionStatus.WON,SessionStatus.LOST) && p.payload.rule.isNotBlank()) {
   Text(p.payload.rule,style=MaterialTheme.typography.bodyMedium)
