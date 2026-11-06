@@ -44,8 +44,8 @@ internal val AnswerMark.label:String get()=when(this) {
  SessionPresentation.shuffled(p.payload.options,s,"options").forEach {o->
   val mark=AnswerFeedback.option(p,s,o.id)
   val prefix=when(mark){AnswerMark.CORRECT->"✓ ";AnswerMark.INCORRECT->"× ";AnswerMark.SELECTED->"● ";else->""}
-  OutlinedButton(onClick={if(!terminal)send(PlayerAction.Select(java.util.UUID.randomUUID().toString(),o.id))},enabled=!busy||terminal,
-   colors=ButtonDefaults.outlinedButtonColors(containerColor=feedbackBackground(mark),contentColor=feedbackForeground(mark)),
+  OutlinedButton(onClick={if(!terminal)send(PlayerAction.Select(java.util.UUID.randomUUID().toString(),o.id))},enabled=!busy&&!terminal,
+   colors=ButtonDefaults.outlinedButtonColors(containerColor=feedbackBackground(mark),contentColor=feedbackForeground(mark),disabledContainerColor=feedbackBackground(mark),disabledContentColor=feedbackForeground(mark)),
    modifier=Modifier.fillMaxWidth().heightIn(min=56.dp).semantics {stateDescription=mark.label}) {
    Text(prefix+o.text,style=MaterialTheme.typography.titleMedium)
   }

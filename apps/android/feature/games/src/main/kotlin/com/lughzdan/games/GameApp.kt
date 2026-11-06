@@ -156,6 +156,8 @@ import com.lughzdan.engine.*
         if(p.type!="choice")Text("إجاباتك: "+s.answerHistory.joinToString("، "))
         Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
         Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}
+        val different=remember(puzzles,s.id,progress.totalXp){puzzles.filter {it.type!=p.type && it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}.shuffled(kotlin.random.Random(s.id.hashCode())).firstOrNull()}
+        different?.let { next->OutlinedButton(onClick={play(next.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("جرّب نمطًا مختلفًا · ${gameNames[next.type] ?: next.type}")} }
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}
        }
