@@ -34,7 +34,7 @@ import com.lughzdan.engine.*
   Scaffold(bottomBar={ if(ready && !playing) NavigationBar {
    listOf("home" to "الرئيسية","worlds" to "العوالم","catalog" to "مكتبتي","profile" to "ملفي").forEach { (destination,label)->
     NavigationBarItem(modifier=Modifier.testTag("nav-$destination"),selected=route==destination,
-     onClick={nav.navigate(destination){launchSingleTop=true;restoreState=true;popUpTo("home"){saveState=true}}},
+     onClick={if(destination=="home") nav.popBackStack("home",false) else nav.navigate(destination){launchSingleTop=true;restoreState=true;popUpTo("home"){saveState=true}}},
      icon={DiscoveryIcon(destination)},label={Text(label,maxLines=1)})
    }
   } }) { padding ->

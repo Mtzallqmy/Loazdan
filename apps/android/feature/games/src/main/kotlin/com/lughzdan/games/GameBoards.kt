@@ -19,6 +19,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.lughzdan.engine.*
 import java.util.UUID
 
@@ -62,6 +64,7 @@ val gameNames=mapOf(
 }
 private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direction=="down")it else 0,e.col-if(e.direction=="across")it else 0) }
 @Composable private fun Crossword(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
+ val cellSize=(48f*LocalDensity.current.fontScale.coerceAtLeast(1f)).dp
  var entryId by rememberSaveable(p.puzzleId){mutableStateOf(p.payload.entries.first().id)}
  val e=p.payload.entries.first {it.id==entryId}
  var activeRow by rememberSaveable(p.puzzleId){mutableStateOf(e.row)}
@@ -77,10 +80,10 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  TextButton(onClick={p.payload.entries.firstOrNull {it.id!=entryId&&active in path(it)}?.let {entryId=it.id}},enabled=!busy&&p.payload.entries.any {it.id!=entryId&&active in path(it)}){Text("تغيير الاتجاه عند التقاطع")}
  val open=p.payload.entries.flatMap(::path).toSet()
  Grid(p.payload.rows,p.payload.cols){r,c->val pos=Cell(r,c)
-  if(pos !in open)Surface(Modifier.size(48.dp).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={selectCell(pos);if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy,colors=ButtonDefaults.outlinedButtonColors(containerColor=when {pos==active->MaterialTheme.colorScheme.primaryContainer;pos in path(e)->MaterialTheme.colorScheme.secondaryContainer;else->MaterialTheme.colorScheme.surface}),modifier=Modifier.size(48.dp).semantics {contentDescription="خلية $r $c";stateDescription=when {pos==active->"الخلية المحددة";pos in path(e)->"ضمن الكلمة النشطة";else->"خلية"}},contentPadding=PaddingValues(0.dp)){Column(horizontalAlignment=Alignment.CenterHorizontally) {
+  if(pos !in open)Surface(Modifier.size(cellSize).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={selectCell(pos);if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy,colors=ButtonDefaults.outlinedButtonColors(containerColor=when {pos==active->MaterialTheme.colorScheme.primaryContainer;pos in path(e)->MaterialTheme.colorScheme.secondaryContainer;else->MaterialTheme.colorScheme.surface}),shape=RoundedCornerShape(8.dp),modifier=Modifier.size(cellSize).semantics {contentDescription="خلية $r $c";stateDescription=when {pos==active->"الخلية المحددة";pos in path(e)->"ضمن الكلمة النشطة";else->"خلية"}},contentPadding=PaddingValues(0.dp)){Column(horizontalAlignment=Alignment.CenterHorizontally) {
     val marker=if(pos==active)"▣" else if(pos in path(e))"─" else ""
-    Text((if(pos in starts)"${starts.indexOf(pos)+1} " else "")+marker,style=MaterialTheme.typography.labelSmall)
-    Text(s.cells["$r,$c"]?:"",maxLines=1)
+    Text((if(pos in starts)"${starts.indexOf(pos)+1} " else "")+marker,fontSize=10.sp,lineHeight=12.sp,maxLines=1)
+    Text(s.cells["$r,$c"]?:"",fontSize=18.sp,lineHeight=20.sp,maxLines=1)
    }}
  }
  var showKeys by rememberSaveable(s.id){mutableStateOf(true)}
