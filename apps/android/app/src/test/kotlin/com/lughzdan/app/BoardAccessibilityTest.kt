@@ -30,6 +30,18 @@ class BoardAccessibilityTest {
  private val crossword=puzzle("crossword",ChoicePayload(rows=3,cols=3,entries=listOf(
   CrosswordEntry("a",0,1,"across",listOf("ب","ا"),"الأول","source"),
   CrosswordEntry("b",0,0,"down",listOf("ا","ب"),"الثاني","source"))))
+ @Test fun answersExposeDistinctSelectionWrongAndCorrectStates() {
+  val p=puzzle("choice",ChoicePayload("سؤال",listOf(Option("a","صواب"),Option("b","خطأ")),"a"))
+  val engine=ChoicePlugin();val state=mutableStateOf(engine.createSession(p,"feedback"))
+  compose.setContent {MaterialTheme {Column {GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}}}}
+  compose.onNodeWithText("خطأ").performClick()
+  compose.onNodeWithText("● خطأ").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"محددة، لم تُصحح بعد"))
+  compose.runOnIdle {state.value=engine.evaluate(p,state.value,PlayerAction.Submit("wrong"))}
+  compose.onNodeWithText("× خطأ").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"غير صحيحة"))
+  compose.onNodeWithText("صواب").performClick()
+  compose.runOnIdle {state.value=engine.evaluate(p,state.value,PlayerAction.Submit("right"))}
+  compose.onNodeWithText("✓ صواب").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"صحيحة"))
+ }
  @Test fun crossingSelectionAndDirectionSurviveRecreation() {
   val restoration=StateRestorationTester(compose)
   restoration.setContent { MaterialTheme { Column {GameBoard(crossword,GameSession("s","board",1),false){}} } }
@@ -37,7 +49,8 @@ class BoardAccessibilityTest {
   compose.onNodeWithText("تغيير الاتجاه عند التقاطع").performClick()
   restoration.emulateSavedInstanceStateRestore()
   compose.onNodeWithContentDescription("خلية 0 0").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"الخلية المحددة"))
-  compose.onNodeWithText("الكلمة النشطة: الثاني · عمودي").assertExists()
+  compose.onNodeWithText("الثاني").assertExists()
+  compose.onNodeWithText("اختيار كلمة أخرى").performClick()
   compose.onNodeWithText("1. الأول · أفقي",substring=true).assertExists()
  }
  @Test fun darkSmallScreenWithLargeTextKeepsGridReachable() { largeTextBoard(true) }
@@ -71,10 +84,25 @@ class BoardAccessibilityTest {
    GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}
    Button(onClick={state.value=engine.evaluate(p,state.value,PlayerAction.Submit("submit"))}){Text("اختبار الإرسال")}
   }}}
+  compose.onNodeWithText("إدخال حرف مشكّل بلوحة النظام").performScrollTo().performClick()
   compose.onNodeWithText("حرف الخلية").performScrollTo().performTextInput("قَ")
   compose.onNodeWithText("إدخال الحرف").performScrollTo().performClick()
   compose.onNodeWithText("اختبار الإرسال").performScrollTo().performClick()
   compose.runOnIdle {org.junit.Assert.assertEquals(SessionStatus.WON,state.value.status)}
+ }
+ @Test fun longPressDragSelectsAWordWithoutSubmittingIt() {
+  val p=puzzle("wordsearch",ChoicePayload(grid=listOf(listOf("ب","ا","س"),listOf("س","س","س"),listOf("س","س","س")),words=listOf(SearchWord("w","با",listOf(Cell(0,0),Cell(0,1))))))
+  val engine=WordsearchPlugin()
+  val state=mutableStateOf(engine.createSession(p,"drag-search"))
+  compose.setContent {MaterialTheme {Column {GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}}}}
+  compose.onNodeWithContentDescription("بحث 0 0").performTouchInput {
+   down(center);advanceEventTime(700);moveBy(androidx.compose.ui.geometry.Offset(width.toFloat(),0f));up()
+  }
+  compose.runOnIdle {
+   org.junit.Assert.assertEquals(listOf(Cell(0,0),Cell(0,1)),state.value.selectedPath)
+   org.junit.Assert.assertEquals(0,state.value.wrongSubmissions)
+   org.junit.Assert.assertTrue(state.value.foundWordIds.isEmpty())
+  }
  }
  @Test fun builderCountsOnlyDistinctAcceptedAnswersAsDiscoveries() {
   val p=puzzle("anagram",ChoicePayload(tiles=listOf("ب","ا"),acceptedAnswers=listOf("با")))

@@ -46,6 +46,8 @@ import java.text.Normalizer
     val revealedHints: Map<String, String> = emptyMap(),
     val answerInput: String = "", val revealedRegions: Set<Int> = emptySet(), val selectedImageId: String? = null,
     val imageOrder: List<String> = emptyList(), val imageMatches: List<MatchPair> = emptyList(),
+    val displaySeed: Int? = null,
+    val checkedCells: Map<String, String> = emptyMap(),
 )
 sealed interface PlayerAction {
     val id: String
@@ -95,7 +97,7 @@ class ChoicePlugin : GamePlugin {
     })
     override fun createSession(puzzle: PuzzleDefinition, sessionId: String): GameSession {
         require(validatePuzzle(puzzle).valid)
-        return GameSession(sessionId, puzzle.puzzleId, puzzle.revision)
+        return GameSession(sessionId, puzzle.puzzleId, puzzle.revision, displaySeed = sessionId.hashCode())
     }
     override fun evaluate(puzzle: PuzzleDefinition, session: GameSession, action: PlayerAction): GameSession {
         require(session.puzzleId == puzzle.puzzleId && session.revision == puzzle.revision && session.stateVersion in 1..2)

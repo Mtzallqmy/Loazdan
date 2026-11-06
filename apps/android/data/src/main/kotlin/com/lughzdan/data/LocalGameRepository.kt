@@ -16,33 +16,75 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  private val dao=db.games()
  private val json=Json { encodeDefaults=true }
  private val registry=GameRegistry()
+ private val definitions=object:LinkedHashMap<String,PuzzleDefinition>(128,0.75f,true) {
+  override fun removeEldestEntry(eldest:MutableMap.MutableEntry<String,PuzzleDefinition>?)=size>256
+ }
+ private fun definition(raw:String):PuzzleDefinition=synchronized(definitions) {
+  definitions[raw] ?: json.decodeFromString<PuzzleDefinition>(raw).also { definitions[raw]=it }
+ }
  private val initializationMutex=Mutex()
  private var initialized=false
  private val catalogLimit=MutableStateFlow(200)
  override suspend fun loadMore() {catalogLimit.value=Math.addExact(catalogLimit.value,200)}
  @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
- override val puzzles=catalogLimit.flatMapLatest {dao.observePuzzles(it)}.map { rows->rows.map { json.decodeFromString<PuzzleDefinition>(it.definition) } }
- private val loadedSessions=combine(dao.observeSessions(),dao.observePacks(),dao.observeContentCount()) { rows,installed,_ ->
+ override val puzzles=catalogLimit.flatMapLatest {dao.observePuzzles(it)}.map { rows->rows.map { definition(it.definition) } }.flowOn(Dispatchers.Default)
+ private val sessionLimit=MutableStateFlow(50)
+ override suspend fun loadMoreSessions() {sessionLimit.value=Math.addExact(sessionLimit.value,50)}
+ @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+ private val historyRows=sessionLimit.flatMapLatest {dao.observeSessions(it)}
+ private data class CachedRecord(val row:GameSessionEntity,val record:PlayRecord?)
+ private val sessionCache=object:LinkedHashMap<String,CachedRecord>(64,0.75f,true) {
+  override fun removeEldestEntry(eldest:MutableMap.MutableEntry<String,CachedRecord>?)=size>256
+ }
+ private val sessionCacheMutex=Mutex()
+ private val contentChanges=combine(dao.observeContentCount(),db.content().observeHeads()){count,heads->count to heads}
+ private var contentStamp:Pair<List<InstalledContentPackEntity>,Pair<Long,List<PackHeadEntity>>>?=null
+ private val loadedSessions=combine(historyRows,dao.observePacks(),contentChanges) { rows,installed,count ->
+  sessionCacheMutex.withLock {
+  val stamp=installed to count
+  if(contentStamp!=stamp) {sessionCache.clear();contentStamp=stamp}
   val available=mutableListOf<PlayRecord>();val unavailable=mutableListOf<UnavailableSession>()
   rows.forEach { row ->
-   val state=runCatching { decodeStored(row) }.getOrNull()
-   val puzzleRow=dao.puzzle(row.puzzleId,row.revision)
-   val puzzle=if(state!=null && puzzleRow!=null) runCatching { validateRecord(state,puzzleRow) }.getOrNull() else null
-   val pack=state?.let { saved->installed.find { it.packId==saved.packId && it.version==saved.packVersion } }
-   if(state!=null && puzzle!=null && pack!=null) available.add(PlayRecord(state,puzzle))
-   else unavailable.add(UnavailableSession(row.id,if(state==null) "حالة هذه الجولة غير مدعومة؛ بياناتها محفوظة دون تعديل." else "محتوى الجولة المثبّت غير متاح؛ بيانات التقدم محفوظة."))
+   val cached=sessionCache[row.id]
+   val record=if(cached!=null && cached.row==row) cached.record else readRecord(row).also {sessionCache[row.id]=CachedRecord(row,it)}
+   if(record!=null) available.add(record)
+   else unavailable.add(UnavailableSession(row.id,"تعذّر استعادة الجولة؛ بياناتها محفوظة دون تعديل."))
   }
   available.toList() to unavailable.toList()
- }
+  }
+ }.flowOn(Dispatchers.IO)
  override val sessions=loadedSessions.map { it.first }
  override val unavailableSessions=loadedSessions.map { it.second }
+ override fun observeSession(id:String):Flow<PlayRecord?> =
+  combine(dao.observeSession(id).distinctUntilChanged(),dao.observePacks(),contentChanges) {row,_,_->row?.let {readRecord(it)}}.flowOn(Dispatchers.IO)
+ private suspend fun readRecord(row:GameSessionEntity):PlayRecord? = try {
+  val state=decodeStored(row)
+  val puzzle=dao.puzzle(row.puzzleId,row.revision) ?: error("Missing pinned puzzle")
+  require(dao.pinnedPack(state.packId,state.packVersion)!=null)
+  PlayRecord(state,validateRecord(state,puzzle))
+ } catch(cancelled:kotlinx.coroutines.CancellationException) {throw cancelled} catch(_:Exception) {null}
+ override suspend fun startDaily(day:String):String = db.withTransaction {
+  require(java.time.LocalDate.parse(day).toString()==day)
+  val id="daily-$day"
+  val existing=dao.session(id)
+  if(existing!=null) {require(readRecord(existing)!=null);return@withTransaction id}
+  val candidates=dao.puzzles().map {definition(it.definition)}.filter {it.difficulty==1 && it.type in registry.types}.sortedBy {it.puzzleId}
+  require(candidates.isNotEmpty()) {"No introductory puzzles installed"}
+  val index=Math.floorMod(java.time.LocalDate.parse(day).toEpochDay(),candidates.size.toLong()).toInt()
+  val p=candidates[index]
+  val row=dao.latestPuzzle(p.puzzleId) ?: error("Missing puzzle")
+  val pack=dao.pack(row.packId) ?: error("Missing pack")
+  val session=registry.plugin(p.type).createSession(p,id).copy(packId=pack.packId,packVersion=pack.version)
+  dao.save(GameSessionEntity(id,p.puzzleId,p.revision,SessionCodec.encode(session),System.currentTimeMillis()))
+  id
+ }
  private fun decodeStored(row:GameSessionEntity)=SessionCodec.decode(row.state).also {
   require(it.id==row.id && it.puzzleId==row.puzzleId && it.revision==row.revision)
  }
  private suspend fun validateRecord(state:GameSession,row:LocalPuzzleEntity):PuzzleDefinition {
   require(db.content().head(state.packId)==null || db.content().membership(state.packId,state.packVersion,state.puzzleId,state.revision)==1) {"Puzzle does not belong to pinned pack version"}
   require(row.packId==state.packId && row.puzzleId==state.puzzleId && row.revision==state.revision)
-  val p=json.decodeFromString<PuzzleDefinition>(row.definition)
+  val p=definition(row.definition)
   require(p.puzzleId==row.puzzleId && p.revision==row.revision && registry.plugin(p.type).validatePuzzle(p).valid)
   require(registry.plugin(p.type).validateSession(p,state).valid)
   return p
@@ -123,7 +165,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  } }
  override suspend fun start(puzzleId:String):String = db.withTransaction {
   val row=dao.latestPuzzle(puzzleId) ?: error("Content missing")
-  val p=json.decodeFromString<PuzzleDefinition>(row.definition)
+  val p=definition(row.definition)
   require(p.difficulty<=ProgressionRules.unlockedDifficulty(dao.totalXp())) { "Difficulty is locked" }
   val pack=dao.pack(row.packId) ?: error("Pack missing")
   val session=registry.plugin(p.type).createSession(p,UUID.randomUUID().toString()).copy(packId=pack.packId,packVersion=pack.version)
@@ -133,7 +175,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  override suspend fun act(sessionId:String,action:PlayerAction):GameSession = db.withTransaction {
   val row=dao.session(sessionId) ?: error("Session missing")
   val pRow=dao.puzzle(row.puzzleId,row.revision) ?: error("Pinned content missing")
-  val p=json.decodeFromString<PuzzleDefinition>(pRow.definition)
+  val p=definition(pRow.definition)
   val old=decodeStored(row)
   validateRecord(old,pRow)
   require(pRow.packId==old.packId && dao.pinnedPack(old.packId,old.packVersion)!=null) { "Pinned pack version missing" }

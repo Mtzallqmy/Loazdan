@@ -25,7 +25,7 @@ import java.util.UUID
 val visualGameTypes=setOf("four_pictures","guess_picture","shadow","symbols","visual_association","visual_logic")
 /** Pinned-session reader supplied by the app; no network image fallback. */
 val LocalGameImageLoader=staticCompositionLocalOf<suspend (String)->ByteArray?> { { null } }
-private object BoardImages {
+internal object BoardImages {
  val cache=object:LruCache<String,Bitmap>(8*1024*1024) { override fun sizeOf(key:String,value:Bitmap)=value.allocationByteCount }
  suspend fun decode(image:VisualImage,loader:suspend (String)->ByteArray?):Bitmap=withContext(Dispatchers.IO) {
   cache.get(image.sha256)?.let {return@withContext it}
@@ -37,7 +37,7 @@ private object BoardImages {
   BitmapFactory.decodeByteArray(bytes,0,bytes.size,bounds)
   require(bounds.outWidth==image.width && bounds.outHeight==image.height && bounds.outWidth in 1..4096 && bounds.outHeight in 1..4096)
   require(bounds.outMimeType in setOf("image/png","image/jpeg","image/webp"))
-  val options=BitmapFactory.Options().apply {while(image.width/inSampleSize>768 || image.height/inSampleSize>768)inSampleSize*=2}
+  val options=BitmapFactory.Options().apply {inSampleSize=1;while(image.width/inSampleSize>768 || image.height/inSampleSize>768)inSampleSize*=2}
   val bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.size,options) ?: error("Invalid asset")
   cache.put(image.sha256,bitmap);bitmap
  }
@@ -81,7 +81,7 @@ private fun vid()=UUID.randomUUID().toString()
    p.payload.images.filter {it.role in setOf("clue","term")}.chunked(3).forEach {row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach {image->Column(Modifier.weight(1f)){Asset(image);if(image.role=="term")Text("القيمة: ${p.payload.logicRule?.values?.getOrNull(p.payload.images.filter {it.role=="term"}.indexOf(image))}")}}}}
    Text("اختر الصورة المناسبة")
    p.payload.images.filter {it.role=="option"}.chunked(2).forEach {row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach {image->
-    Column(Modifier.weight(1f)) {Asset(image);if(p.type=="visual_logic")Text("القيمة: ${p.payload.logicRule?.optionValues?.get(image.id)}");OutlinedButton(onClick={send(PlayerAction.SelectImage(vid(),image.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).semantics {contentDescription="اختيار الصورة ${image.id}"}){Text((if(s.selectedImageId==image.id)"✓ " else "")+"اختيار ${image.id}")}}
+    Column(Modifier.weight(1f)) {Asset(image);if(p.type=="visual_logic")Text("القيمة: ${p.payload.logicRule?.optionValues?.get(image.id)}");OutlinedButton(onClick={send(PlayerAction.SelectImage(vid(),image.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).semantics {contentDescription="اختيار الصورة: ${image.alt}"}){Text((if(s.selectedImageId==image.id)"● " else "")+"اختيار الصورة")}}
    }}}
   }
   "symbols" -> {
@@ -99,7 +99,7 @@ private fun vid()=UUID.randomUUID().toString()
     Text(if(role=="left")"المجموعة الأولى" else "المجموعة الثانية")
     p.payload.images.filter {it.role==role}.chunked(2).forEach {row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach {image->Column(Modifier.weight(1f)) {
      Asset(image)
-     OutlinedButton(onClick={if(role=="left")selected=image.id else selected?.let {send(PlayerAction.MatchImages(vid(),it,image.id));selected=null}},enabled=!busy&&(role=="left"||selected!=null),modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(selected==image.id)"✓ " else "")+"اختيار ${image.id}")}
+     OutlinedButton(onClick={if(role=="left")selected=image.id else selected?.let {send(PlayerAction.MatchImages(vid(),it,image.id));selected=null}},enabled=!busy&&(role=="left"||selected!=null),modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(selected==image.id)"● " else "")+"اختيار الصورة")}
     }}}}
    }
    Text("روابط حالية: ${s.imageMatches.size} / ${p.payload.visualPairs.size}")

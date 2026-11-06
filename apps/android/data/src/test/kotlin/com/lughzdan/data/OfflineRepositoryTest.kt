@@ -24,6 +24,32 @@ class OfflineRepositoryTest {
  } }
  private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build() }
  @After fun close() { db.close();context.deleteDatabase(filename) }
+ @Test fun dailyRoundSurvivesRestartAndCannotAwardTwice()=runBlocking {
+  var repository=LocalGameRepository(context,db,true)
+  val id=repository.startDaily("2026-11-06")
+  repository.act(id,PlayerAction.Select("daily-select","a"))
+  repository.act(id,PlayerAction.Submit("daily-submit"))
+  db.close();open();repository=LocalGameRepository(context,db,true)
+  assertEquals(id,repository.startDaily("2026-11-06"))
+  repository.act(id,PlayerAction.Submit("another-submit"))
+  assertEquals(1,db.games().operationCount())
+  assertEquals(100,repository.progress.first().totalXp)
+  assertEquals(SessionStatus.WON,repository.observeSession(id).first()!!.session.status)
+  assertNotEquals(id,repository.startDaily("2026-11-07"))
+ }
+ @Test fun thousandRoundHistoryIsPagedAndOldRoundCanBeOpenedDirectly()=runBlocking {
+  repeat(1000) {i->
+   val state=GameRegistry().plugin("choice").createSession(p,"history-$i").copy(packId="fixture",packVersion=7)
+   db.games().save(GameSessionEntity(state.id,"p",1,SessionCodec.encode(state),i.toLong()))
+  }
+  val repository=LocalGameRepository(context,db,true)
+  assertEquals(50,repository.sessions.first().size)
+  assertEquals("history-999",repository.sessions.first().first().session.id)
+  assertEquals("history-0",repository.observeSession("history-0").first()!!.session.id)
+  repository.loadMoreSessions()
+  assertEquals(100,repository.sessions.first().size)
+  assertEquals(1000,db.games().storedSessions().size)
+ }
  @Test fun solveCloseReopenOfflineAndDeduplicate()=runBlocking {
   var repository=LocalGameRepository(context,db,true)
   val id=repository.start("p")
