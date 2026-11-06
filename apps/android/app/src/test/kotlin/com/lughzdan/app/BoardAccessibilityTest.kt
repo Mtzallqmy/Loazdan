@@ -78,6 +78,20 @@ class BoardAccessibilityTest {
   compose.onNodeWithText("اختبار الإرسال").performScrollTo().performClick()
   compose.runOnIdle {org.junit.Assert.assertEquals(SessionStatus.WON,state.value.status)}
  }
+ @Test fun longPressDragSelectsAWordWithoutSubmittingIt() {
+  val p=puzzle("wordsearch",ChoicePayload(grid=listOf(listOf("ب","ا"),listOf("ا","ب")),words=listOf(SearchWord("w","با",listOf(Cell(0,0),Cell(0,1))))))
+  val engine=WordsearchPlugin()
+  val state=mutableStateOf(engine.createSession(p,"drag-search"))
+  compose.setContent {MaterialTheme {Column {GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}}}}
+  compose.onNodeWithContentDescription("بحث 0 0").performTouchInput {
+   down(center);advanceEventTime(700);moveBy(androidx.compose.ui.geometry.Offset(width.toFloat(),0f));up()
+  }
+  compose.runOnIdle {
+   org.junit.Assert.assertEquals(listOf(Cell(0,0),Cell(0,1)),state.value.selectedPath)
+   org.junit.Assert.assertEquals(0,state.value.wrongSubmissions)
+   org.junit.Assert.assertTrue(state.value.foundWordIds.isEmpty())
+  }
+ }
  @Test fun builderCountsOnlyDistinctAcceptedAnswersAsDiscoveries() {
   val p=puzzle("anagram",ChoicePayload(tiles=listOf("ب","ا"),acceptedAnswers=listOf("با")))
   compose.setContent {MaterialTheme {Column {
