@@ -22,9 +22,9 @@ import com.lughzdan.engine.*
  val nav=rememberNavController()
  val ready by vm.ready.collectAsStateWithLifecycle();val error by vm.error.collectAsStateWithLifecycle()
  val settings by vm.settings.collectAsStateWithLifecycle();val puzzles by vm.puzzles.collectAsStateWithLifecycle()
- val sessions by vm.sessions.collectAsStateWithLifecycle();val progress by vm.progress.collectAsStateWithLifecycle()
- val unavailableSessions by vm.unavailableSessions.collectAsStateWithLifecycle()
+ val progress by vm.progress.collectAsStateWithLifecycle()
  val packs by vm.packs.collectAsStateWithLifecycle();val busy by vm.busy.collectAsStateWithLifecycle()
+ val submitting by vm.submitting.collectAsStateWithLifecycle()
  val tone=remember { runCatching { ToneGenerator(AudioManager.STREAM_MUSIC,35) }.getOrNull() }
  DisposableEffect(Unit) { onDispose { tone?.release() } }
  fun play(id:String) { vm.start(id) { nav.navigate("session/$it") } }
@@ -44,7 +44,9 @@ import com.lughzdan.engine.*
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
     if(!ready) { CircularProgressIndicator();Text("تهيئة المكتبة المحلية…") }
     else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f)) {
-     composable("home") { Page {
+     composable("home") {
+      val sessions by vm.sessions.collectAsStateWithLifecycle()
+      Page {
       Text("فضولك بداية الرحلة",style=MaterialTheme.typography.headlineLarge)
       Text("دقائق من اللعب، ومعنى جديد تكتشفه كل يوم.",color=MaterialTheme.colorScheme.onSurfaceVariant)
       Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
@@ -54,14 +56,14 @@ import com.lughzdan.engine.*
         Button(onClick={nav.navigate("worlds")},modifier=Modifier.fillMaxWidth()){Text("ابدأ رحلة الاكتشاف")}
        }
       }
-      sessions.firstOrNull {it.session.status in setOf(SessionStatus.ACTIVE,SessionStatus.PAUSED)}?.let {record->
+      sessions.firstOrNull()?.let {record->
        OutlinedCard(onClick={nav.navigate("session/${record.session.id}")},modifier=Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp)){Text("تابع من حيث توقفت",style=MaterialTheme.typography.titleMedium);Text(gameNames[record.puzzle.type] ?: "جولتك المحفوظة")}
+        Column(Modifier.padding(16.dp)){Text("متابعة آخر نشاط",style=MaterialTheme.typography.titleMedium);Text(gameNames[record.puzzle.type] ?: "جولتك المحفوظة")}
        }
       }
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) {
        Text("المستوى ${ProgressionRules.playerLevel(progress.totalXp)}")
-       Text("${progress.completed} لغزًا · ${progress.totalXp} خبرة")
+       Text("${progress.completed} ألغاز مكتملة · ${progress.totalXp} خبرة")
       }
       LinearProgressIndicator(progress={ (progress.totalXp%250)/250f },modifier=Modifier.fillMaxWidth())
       OutlinedCard(onClick={nav.navigate("daily")},modifier=Modifier.fillMaxWidth()) {
@@ -112,14 +114,14 @@ import com.lughzdan.engine.*
       val sessionFlow=remember(id){vm.observeSession(id)}
       val currentRecord by sessionFlow.collectAsStateWithLifecycle(initialValue=null)
       val record=currentRecord
-      if(record==null)Text(unavailableSessions.find { it.id==id }?.reason ?: "جاري استعادة الجولة المحلية…") else Page {
+      if(record==null)Text("جارٍ استعادة الجولة. إن تعذر فتحها، تبقى بياناتها محفوظة في السجل.") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
        var priorStatus by remember(s.id){mutableStateOf(s.status)}
        LaunchedEffect(s.status) {if(priorStatus!=s.status && s.status==SessionStatus.WON && settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_ACK,100);priorStatus=s.status}
        Text("${if(p.fixtureOnly) "مسودة اختبار" else "محتوى الحزمة"} · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
 
        Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
-       Text(p.payload.prompt.ifBlank {p.title},style=MaterialTheme.typography.headlineSmall)
+       Text(p.payload.prompt.ifBlank {when(p.type){"anagram"->"كوّن كلمة من الحروف المتاحة";"order"->"رتّب البطاقات لتكوين النص";"crossword"->"حل الكلمات باستخدام القرائن";else->p.title}},style=MaterialTheme.typography.headlineSmall)
        if(s.status==SessionStatus.PAUSED) {
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
@@ -127,7 +129,7 @@ import com.lughzdan.engine.*
         Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
         val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }
         CompositionLocalProvider(LocalGameImageLoader provides loader) { GameBoard(p,s,busy){vm.action(s.id,it)} }
-        Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy,modifier=Modifier.fillMaxWidth()){Text(if(busy)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+        Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
 
         if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
         HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
@@ -150,7 +152,10 @@ import com.lughzdan.engine.*
       }
      }
      composable("vocabulary") { vm.vocabularyRepository?.let { vocabulary->VocabularyScreen(vocabulary) { nav.navigate("catalog") } } }
-     composable("history") { Page {
+     composable("history") {
+      val sessions by vm.sessions.collectAsStateWithLifecycle()
+      val unavailableSessions by vm.unavailableSessions.collectAsStateWithLifecycle()
+      Page {
       Text("سجل الجولات",style=MaterialTheme.typography.headlineMedium)
       if(sessions.isEmpty())Text("ابدأ لغزًا لتظهر جولتك هنا.")
       unavailableSessions.forEach { Text(it.reason,color=MaterialTheme.colorScheme.error) }

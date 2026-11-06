@@ -14,7 +14,12 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SixGameDeviceTest {
  @get:Rule val compose=createAndroidComposeRule<MainActivity>()
- private fun click(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","الألعاب","المكتبة","الإعدادات"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
+ private fun click(text:String) {
+  if(text=="الرئيسية" && compose.onAllNodesWithText("العودة · تُحفظ حركاتك تلقائيًا").fetchSemanticsNodes().isNotEmpty()) {
+   compose.onNodeWithText("العودة · تُحفظ حركاتك تلقائيًا").performClick();compose.waitForIdle()
+  }
+  if(text=="الإعدادات") {click("الرئيسية");compose.onNodeWithTag("nav-profile").performClick();compose.waitForIdle()}
+  compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي","الإعدادات"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
  private fun showCell(matcher:SemanticsMatcher) {
   val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
   val page=compose.onNode(vertical)
@@ -87,6 +92,10 @@ class SixGameDeviceTest {
 
   open("wordsearch");val words=fixture("wordsearch").getJSONObject("payload").getJSONArray("words");for(i in 0 until words.length()){val path=words.getJSONObject(i).getJSONArray("path");val first=path.getJSONObject(0);val last=path.getJSONObject(path.length()-1);cell("بحث ${first.getInt("row")} ${first.getInt("col")}");cell("بحث ${last.getInt("row")} ${last.getInt("col")}");click("تحقق من الإجابة")};won()
   click("الرئيسية");open("matching");val m=fixture("matching").getJSONObject("payload");val pairs=m.getJSONArray("pairs");fun text(side:String,id:String):String {val list=m.getJSONArray(side);return (0 until list.length()).map {list.getJSONObject(it)}.first {it.getString("id")==id}.getString("text")};for(i in 0 until pairs.length()){val pair=pairs.getJSONObject(i);click(text("left",pair.getString("leftId")));click(text("right",pair.getString("rightId")))};click("تحقق من الإجابة");won()
-  click("الرئيسية");open("order");val o=fixture("order").getJSONObject("payload");val items=o.getJSONArray("items");val current=(0 until items.length()).map {items.getJSONObject(it).getString("id")}.toMutableList();val correct=o.getJSONArray("correctOrder");for(i in 0 until correct.length()){val id=correct.getString(i);while(current.indexOf(id)>i){val index=current.indexOf(id);val label=(0 until items.length()).map {items.getJSONObject(it)}.first {it.getString("id")==id}.getString("text");cell("لأعلى $label");current.removeAt(index);current.add(index-1,id)}};click("تحقق من الإجابة");won();screenshot("stage03-order-light");click("الإعدادات");compose.onAllNodes(isToggleable()).onFirst().performClick();screenshot("stage03-settings-dark");captureResources()
+  click("الرئيسية");open("order");val o=fixture("order").getJSONObject("payload");val items=o.getJSONArray("items");val current=(0 until items.length()).map {items.getJSONObject(it)}.sortedBy {item->
+   val label=item.getString("text")
+   val nodes=compose.onAllNodes(hasText(label,substring=true)).fetchSemanticsNodes()
+   nodes.flatMap {it.config.getOrElse(SemanticsProperties.Text){emptyList()}}.mapNotNull {Regex("^(\\d+)\\. "+Regex.escape(label)+"$").find(it.text)?.groupValues?.get(1)?.toInt()}.single()
+  }.map {it.getString("id")}.toMutableList();val correct=o.getJSONArray("correctOrder");for(i in 0 until correct.length()){val id=correct.getString(i);while(current.indexOf(id)>i){val index=current.indexOf(id);val label=(0 until items.length()).map {items.getJSONObject(it)}.first {it.getString("id")==id}.getString("text");cell("لأعلى $label");current.removeAt(index);current.add(index-1,id)}};click("تحقق من الإجابة");won();screenshot("stage03-order-light");click("الإعدادات");compose.onAllNodes(isToggleable()).onFirst().performClick();screenshot("stage03-settings-dark");captureResources()
  }
 }

@@ -30,6 +30,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val _busy=MutableStateFlow(false);val busy=_busy.asStateFlow()
  private val mutex=Mutex()
  private val submissionPending=AtomicBoolean(false)
+ private val _submitting=MutableStateFlow(false);val submitting=_submitting.asStateFlow()
  init { viewModelScope.launch {settingsStore.ensureGuestId()}; initialize() }
  fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
  suspend fun readImage(sessionId:String,imageId:String)=repository.readImage(sessionId,imageId)
@@ -51,7 +52,8 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  fun select(id:String,option:String)=action(id,PlayerAction.Select(UUID.randomUUID().toString(),option))
  fun submit(id:String) {
   if(!submissionPending.compareAndSet(false,true)) return
-  dispatch(id,PlayerAction.Submit(UUID.randomUUID().toString())).invokeOnCompletion { submissionPending.set(false) }
+  _submitting.value=true
+  dispatch(id,PlayerAction.Submit(UUID.randomUUID().toString())).invokeOnCompletion { submissionPending.set(false);_submitting.value=false }
  }
  fun hint(id:String,hint:String)=action(id,PlayerAction.UseHint(UUID.randomUUID().toString(),hint))
  fun dark(value:Boolean) { viewModelScope.launch { settingsStore.dark(value) } }

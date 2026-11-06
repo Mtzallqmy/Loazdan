@@ -38,6 +38,7 @@ class BoardAccessibilityTest {
   restoration.emulateSavedInstanceStateRestore()
   compose.onNodeWithContentDescription("خلية 0 0").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription,"الخلية المحددة"))
   compose.onNodeWithText("الكلمة النشطة: الثاني · عمودي").assertExists()
+  compose.onNodeWithText("اختيار كلمة أخرى").performClick()
   compose.onNodeWithText("1. الأول · أفقي",substring=true).assertExists()
  }
  @Test fun darkSmallScreenWithLargeTextKeepsGridReachable() { largeTextBoard(true) }
@@ -71,6 +72,7 @@ class BoardAccessibilityTest {
    GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}
    Button(onClick={state.value=engine.evaluate(p,state.value,PlayerAction.Submit("submit"))}){Text("اختبار الإرسال")}
   }}}
+  compose.onNodeWithText("إدخال حرف مشكّل بلوحة النظام").performScrollTo().performClick()
   compose.onNodeWithText("حرف الخلية").performScrollTo().performTextInput("قَ")
   compose.onNodeWithText("إدخال الحرف").performScrollTo().performClick()
   compose.onNodeWithText("اختبار الإرسال").performScrollTo().performClick()
