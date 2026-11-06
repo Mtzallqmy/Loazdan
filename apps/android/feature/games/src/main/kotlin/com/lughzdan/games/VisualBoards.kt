@@ -81,7 +81,7 @@ private fun vid()=UUID.randomUUID().toString()
    p.payload.images.filter {it.role in setOf("clue","term")}.chunked(3).forEach {row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach {image->Column(Modifier.weight(1f)){Asset(image);if(image.role=="term")Text("القيمة: ${p.payload.logicRule?.values?.getOrNull(p.payload.images.filter {it.role=="term"}.indexOf(image))}")}}}}
    Text("اختر الصورة المناسبة")
    p.payload.images.filter {it.role=="option"}.chunked(2).forEach {row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach {image->
-    Column(Modifier.weight(1f)) {Asset(image);if(p.type=="visual_logic")Text("القيمة: ${p.payload.logicRule?.optionValues?.get(image.id)}");OutlinedButton(onClick={send(PlayerAction.SelectImage(vid(),image.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).semantics {contentDescription="اختيار الصورة: ${image.alt}"}){Text((if(s.selectedImageId==image.id)"✓ " else "")+"اختيار الصورة")}}
+    Column(Modifier.weight(1f)) {Asset(image);if(p.type=="visual_logic")Text("القيمة: ${p.payload.logicRule?.optionValues?.get(image.id)}");OutlinedButton(onClick={send(PlayerAction.SelectImage(vid(),image.id))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).semantics {contentDescription="اختيار الصورة: ${image.alt}"}){Text((if(s.selectedImageId==image.id)"● " else "")+"اختيار الصورة")}}
    }}}
   }
   "symbols" -> {
@@ -99,7 +99,7 @@ private fun vid()=UUID.randomUUID().toString()
     Text(if(role=="left")"المجموعة الأولى" else "المجموعة الثانية")
     p.payload.images.filter {it.role==role}.chunked(2).forEach {row->Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){row.forEach {image->Column(Modifier.weight(1f)) {
      Asset(image)
-     OutlinedButton(onClick={if(role=="left")selected=image.id else selected?.let {send(PlayerAction.MatchImages(vid(),it,image.id));selected=null}},enabled=!busy&&(role=="left"||selected!=null),modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(selected==image.id)"✓ " else "")+"اختيار الصورة")}
+     OutlinedButton(onClick={if(role=="left")selected=image.id else selected?.let {send(PlayerAction.MatchImages(vid(),it,image.id));selected=null}},enabled=!busy&&(role=="left"||selected!=null),modifier=Modifier.fillMaxWidth().heightIn(min=48.dp)){Text((if(selected==image.id)"● " else "")+"اختيار الصورة")}
     }}}}
    }
    Text("روابط حالية: ${s.imageMatches.size} / ${p.payload.visualPairs.size}")

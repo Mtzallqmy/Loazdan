@@ -116,8 +116,16 @@ import com.lughzdan.engine.*
       val record=currentRecord
       if(record==null)Text("جارٍ استعادة الجولة. إن تعذر فتحها، تبقى بياناتها محفوظة في السجل.") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
-       var priorStatus by remember(s.id){mutableStateOf(s.status)}
-       LaunchedEffect(s.status) {if(priorStatus!=s.status && s.status==SessionStatus.WON && settings.sound)tone?.startTone(ToneGenerator.TONE_PROP_ACK,100);priorStatus=s.status}
+       var priorSession by remember(s.id){mutableStateOf(s)}
+       LaunchedEffect(s) {
+        val cue=AnswerFeedback.cue(priorSession,s)
+        if(settings.sound && cue!=null)runCatching {tone?.startTone(when(cue){FeedbackCue.SUCCESS->ToneGenerator.TONE_PROP_ACK;FeedbackCue.RETRY->ToneGenerator.TONE_PROP_NACK;FeedbackCue.DISCOVERY->ToneGenerator.TONE_PROP_BEEP},if(cue==FeedbackCue.RETRY)160 else 120)}
+        priorSession=s
+       }
+       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) {
+        Text("أصوات اللعب",style=MaterialTheme.typography.labelLarge)
+        Switch(checked=settings.sound,onCheckedChange=vm::sound)
+       }
        Text("${if(p.fixtureOnly) "مسودة اختبار" else "محتوى الحزمة"} · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
 
        Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
@@ -131,11 +139,13 @@ import com.lughzdan.engine.*
         CompositionLocalProvider(LocalGameImageLoader provides loader) { GameBoard(p,s,busy){vm.action(s.id,it)} }
         Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
 
-        if(s.wrongSubmissions>0)Text("الإجابة السابقة غير صحيحة؛ حاول مرة أخرى.")
+        if(s.wrongSubmissions>0)FeedbackCard(false,"الإجابة السابقة غير صحيحة؛ راجع العلامات وحاول مرة أخرى.")
         HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
         TextButton(onClick={vm.action(s.id,PlayerAction.Pause(java.util.UUID.randomUUID().toString()))},enabled=!busy){Text("إيقاف مؤقت وحفظ")}
        } else {
-        Text(if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات",style=MaterialTheme.typography.titleLarge)
+        FeedbackCard(s.status==SessionStatus.WON,if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات؛ اكتشف الإجابة وتعلّم منها")
+        if(p.type=="choice" || (p.type=="matching" && p.payload.options.isNotEmpty())) ChoiceAnswers(p,s,false){}
+        if(p.type=="crossword")Crossword(p,s,true){}
         p.payload.options.firstOrNull {it.id==p.payload.correctId}?.let {Text("الإجابة: ${it.text}")}
         if(p.type in visualGameTypes) {
          val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }

@@ -79,7 +79,7 @@ class CrosswordPlugin:BoardPlugin("crossword") {
  override fun errors(p:PuzzleDefinition)=crosswordErrors(p.payload){normalized(p,it)}+if(p.payload.entries.any {it.sourceRef !in p.sourceRefs}) listOf("unknown_entry_source") else emptyList()
  override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession {
   val solution=p.payload.entries.flatMap {entryCells(it).zip(it.tokens)}.toMap()
-  return when(a){is PlayerAction.InputCell->{val c=Cell(a.row,a.col);if(c !in solution||(a.token.isNotEmpty()&&!validToken(a.token))) s else s.copy(cells=if(a.token.isEmpty()) s.cells-key(c) else s.cells+(key(c) to a.token))};is PlayerAction.Submit->if(solution.keys.any {s.cells[key(it)].isNullOrEmpty()}) s else verdict(p,s,solution.all {(c,t)->normalized(p,s.cells[key(c)] ?: "")==normalized(p,t)});else->s}
+  return when(a){is PlayerAction.InputCell->{val c=Cell(a.row,a.col);if(c !in solution||(a.token.isNotEmpty()&&!validToken(a.token))) s else s.copy(cells=if(a.token.isEmpty()) s.cells-key(c) else s.cells+(key(c) to a.token))};is PlayerAction.Submit->if(solution.keys.any {s.cells[key(it)].isNullOrEmpty()}) s else verdict(p,s.copy(checkedCells=s.cells),solution.all {(c,t)->normalized(p,s.cells[key(c)] ?: "")==normalized(p,t)});else->s}
  }
 }
 internal fun straight(path:List<Cell>):Boolean {

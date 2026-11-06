@@ -47,6 +47,7 @@ import java.text.Normalizer
     val answerInput: String = "", val revealedRegions: Set<Int> = emptySet(), val selectedImageId: String? = null,
     val imageOrder: List<String> = emptyList(), val imageMatches: List<MatchPair> = emptyList(),
     val displaySeed: Int? = null,
+    val checkedCells: Map<String, String> = emptyMap(),
 )
 sealed interface PlayerAction {
     val id: String

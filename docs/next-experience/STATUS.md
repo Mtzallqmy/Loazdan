@@ -37,3 +37,10 @@ The owner keystore, its password, and content-signing private key are not presen
 - Complete fixed-position gameplay actions, progression/difficulty calibration, meaningful motion with reduced-motion support, and readable source details.
 - Sign the final ARM64 APK with the original owner key, increment versionCode, verify its certificate and SHA-256, test upgrade over 1.0.0, and only then merge/release.
 - The subsequent expansion of modes and Arabic knowledge remains a separate phase after these release gates. No claim of market superiority is made.
+
+## Feedback preview 1.1.1 (102)
+- Choice selection is distinct from correctness. Submitted wrong options retain a red cross; the correct option is revealed in green only at the end.
+- Crossword clue, direction, length and previous/next question controls share a card with the square grid. Submitted cell feedback is persisted; editing a cell removes its stale mark until checked again. The result retains the grid.
+- Success, retry and discovery cues follow engine state transitions, not button presses. Restored sessions and duplicate submissions do not replay cues. Sound is enabled by default unless explicitly disabled, with a switch in the round.
+- Prior preview 101 passed Android unit/Lint and API 26/28 emulator suites in run 42271217885. Its standalone APK passed signature, minSdk, ARM64 and bundled-content checks. Owner signing remained blocked by the missing original keystore secret.
+- Preview 102 validation is pending CI. No new content pack or phone performance result is claimed.
