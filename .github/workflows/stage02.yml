@@ -116,3 +116,50 @@ jobs:
         with:
           name: stage03-device-evidence-${{ matrix.api }}
           path: apps/android/artifacts/stage03/
+  owner-signed-candidate:
+    needs: [android, backend, contracts, offline-device]
+    if: github.repository == 'Mtzallqmy/Loazdan' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Sign candidate with the original owner key
+        env:
+          OWNER_KEYSTORE_BASE64: ${{ secrets.LUGHZDAN_KEYSTORE_BASE64 || secrets.ANDROID_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
+          LUGHZDAN_STORE_PASSWORD: ${{ secrets.LUGHZDAN_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD || secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$OWNER_KEYSTORE_BASE64" || { echo 'Missing original keystore secret: LUGHZDAN_KEYSTORE_BASE64'; exit 1; }
+          test -n "$LUGHZDAN_STORE_PASSWORD" || { echo 'Missing original keystore password secret: LUGHZDAN_STORE_PASSWORD'; exit 1; }
+          export LUGHZDAN_KEYSTORE="$RUNNER_TEMP/lughzdan-owner.jks"
+          trap 'rm -f "$LUGHZDAN_KEYSTORE"' EXIT
+          printf '%s' "$OWNER_KEYSTORE_BASE64" | base64 --decode > "$LUGHZDAN_KEYSTORE"
+          chmod 600 "$LUGHZDAN_KEYSTORE"
+          unset OWNER_KEYSTORE_BASE64
+          (cd apps/android && gradle :app:assembleRelease --console=plain)
+          APK=apps/android/app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" > "$RUNNER_TEMP/certificate.txt"
+          grep -F 'Signer #1 certificate SHA-256 digest: 3dce653ad682a411d929cf5067153bff1b75d5d1944eb3a2e84d3785de76dd7c' "$RUNNER_TEMP/certificate.txt"
+          python scripts/verify_release_apk.py "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" > "$RUNNER_TEMP/apk-badging.txt"
+          grep -E "package: name='com.lughzdan.app'.*versionCode='101'" "$RUNNER_TEMP/apk-badging.txt"
+          grep -F "sdkVersion:'26'" "$RUNNER_TEMP/apk-badging.txt"
+          mkdir -p candidate
+          cp "$APK" candidate/Lughzdan-1.1.0-rc1-ARM64-owner-signed.apk
+          (cd candidate && sha256sum *.apk > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: owner-signed-candidate-arm64
+          path: candidate/
+          if-no-files-found: error

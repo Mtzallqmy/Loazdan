@@ -63,7 +63,7 @@ import com.lughzdan.engine.*
       }
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) {
        Text("المستوى ${ProgressionRules.playerLevel(progress.totalXp)}")
-       Text("${progress.completed} ألغاز مكتملة · ${progress.totalXp} خبرة")
+       Text("${progress.completed} ألغاز مكتملة · ${progress.totalXp} خبرة",modifier=Modifier.testTag("home-progress"))
       }
       LinearProgressIndicator(progress={ (progress.totalXp%250)/250f },modifier=Modifier.fillMaxWidth())
       OutlinedCard(onClick={nav.navigate("daily")},modifier=Modifier.fillMaxWidth()) {

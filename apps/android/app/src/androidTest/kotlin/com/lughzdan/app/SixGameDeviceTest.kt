@@ -60,6 +60,10 @@ class SixGameDeviceTest {
   click(label)
  }
 
+ private fun showProgress() {
+  compose.waitUntil(30_000){compose.onAllNodesWithTag("home-progress").fetchSemanticsNodes().isNotEmpty()}
+  compose.onNodeWithTag("home-progress").performScrollTo().assertIsDisplayed()
+ }
  private fun screenshot(name:String){val bitmap=InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot();File(compose.activity.getExternalFilesDir(null),"$name.png").outputStream().use {bitmap.compress(Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle()}
  private fun captureResources() {
   val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
@@ -91,11 +95,12 @@ class SixGameDeviceTest {
   click("الرئيسية");open("anagram");val p=fixture("anagram");val hint=p.getJSONArray("hints").getJSONObject(0);click("تلميح (−${hint.getInt("penalty")} نقطة)")
   val payload=p.getJSONObject("payload");val tiles=payload.getJSONArray("tiles");val remaining=payload.getJSONArray("acceptedAnswers").getString(0).toMutableList();val fixed=payload.optJSONArray("fixedSlots");val used=mutableSetOf<Int>()
   if(fixed!=null)for(i in fixed.length()-1 downTo 0){val f=fixed.getJSONObject(i);remaining.removeAt(f.getInt("index"));used+=(0 until tiles.length()).first {it !in used&&tiles.getString(it)==f.getString("token")}}
-  remaining.forEach {token->val index=(0 until tiles.length()).first {it !in used&&tiles.getString(it)==token.toString()};used+=index;cell("حرف $index ${tiles.getString(index)}")};click("تحقق من الإجابة");won();screenshot("stage03-builder-light");click("الرئيسية");compose.waitUntil(30_000){compose.onAllNodesWithText("4 ألغاز مكتملة",substring=true).fetchSemanticsNodes().isNotEmpty()};val progress=compose.onNodeWithText("ألغاز مكتملة",substring=true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString {it.text};File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").writeText(progress)
+  remaining.forEach {token->val index=(0 until tiles.length()).first {it !in used&&tiles.getString(it)==token.toString()};used+=index;cell("حرف $index ${tiles.getString(index)}")};click("تحقق من الإجابة");won();screenshot("stage03-builder-light");click("الرئيسية");showProgress();compose.waitUntil(30_000){compose.onAllNodesWithText("4 ألغاز مكتملة",substring=true).fetchSemanticsNodes().isNotEmpty()};val progress=compose.onNodeWithText("ألغاز مكتملة",substring=true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString {it.text};File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").writeText(progress)
  }
- @Test fun phaseFiveVerifyBuilderResult(){val previous=File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").readText();compose.waitUntil(30_000){compose.onAllNodesWithText(previous).fetchSemanticsNodes().isNotEmpty()};click("متابعة آخر نشاط");won();val p=fixture("anagram");val score=50+50*p.getInt("difficulty")-p.getJSONArray("hints").getJSONObject(0).getInt("penalty");compose.onNodeWithText("إجابة صحيحة! +$score نقطة").assertExists();click("الرئيسية");compose.onNodeWithText(previous).assertExists()}
+ @Test fun phaseFiveVerifyBuilderResult(){val previous=File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").readText();showProgress();compose.waitUntil(30_000){compose.onAllNodesWithText(previous).fetchSemanticsNodes().isNotEmpty()};click("متابعة آخر نشاط");won();val p=fixture("anagram");val score=50+50*p.getInt("difficulty")-p.getJSONArray("hints").getJSONObject(0).getInt("penalty");compose.onNodeWithText("إجابة صحيحة! +$score نقطة").assertExists();click("الرئيسية");showProgress();compose.onNodeWithText(previous).assertExists()}
  @Test fun phaseSixOtherBoards(){
   val previous=File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").readText()
+  showProgress()
   compose.waitUntil(30_000){compose.onAllNodesWithText(previous).fetchSemanticsNodes().isNotEmpty()}
 
   open("wordsearch");val words=fixture("wordsearch").getJSONObject("payload").getJSONArray("words");for(i in 0 until words.length()){val path=words.getJSONObject(i).getJSONArray("path");val first=path.getJSONObject(0);val last=path.getJSONObject(path.length()-1);cell("بحث ${first.getInt("row")} ${first.getInt("col")}");cell("بحث ${last.getInt("row")} ${last.getInt("col")}");click("تحقق من الإجابة")};won()
