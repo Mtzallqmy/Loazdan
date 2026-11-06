@@ -163,3 +163,38 @@ jobs:
           name: owner-signed-candidate-arm64
           path: candidate/
           if-no-files-found: error
+  independent-preview:
+    needs: [android, backend, contracts, offline-device]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Build and verify independent preview
+        run: |
+          set -euo pipefail
+          (cd apps/android && gradle :app:assemblePreview --console=plain)
+          APK=apps/android/app/build/outputs/apk/preview/app-preview.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
+          python scripts/verify_release_apk.py "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" > "$RUNNER_TEMP/preview-badging.txt"
+          grep -E "package: name='com.lughzdan.app.preview'.*versionCode='101'" "$RUNNER_TEMP/preview-badging.txt"
+          grep -F "sdkVersion:'26'" "$RUNNER_TEMP/preview-badging.txt"
+          mkdir -p preview
+          cp "$APK" preview/Lughzdan-1.1.0-Preview-ARM64.apk
+          (cd preview && sha256sum *.apk > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: independent-preview-arm64
+          path: preview/
+          if-no-files-found: error
