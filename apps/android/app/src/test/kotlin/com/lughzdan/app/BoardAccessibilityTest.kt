@@ -79,7 +79,7 @@ class BoardAccessibilityTest {
   compose.runOnIdle {org.junit.Assert.assertEquals(SessionStatus.WON,state.value.status)}
  }
  @Test fun longPressDragSelectsAWordWithoutSubmittingIt() {
-  val p=puzzle("wordsearch",ChoicePayload(grid=listOf(listOf("ب","ا"),listOf("ا","ب")),words=listOf(SearchWord("w","با",listOf(Cell(0,0),Cell(0,1))))))
+  val p=puzzle("wordsearch",ChoicePayload(grid=listOf(listOf("ب","ا","س"),listOf("س","س","س"),listOf("س","س","س")),words=listOf(SearchWord("w","با",listOf(Cell(0,0),Cell(0,1))))))
   val engine=WordsearchPlugin()
   val state=mutableStateOf(engine.createSession(p,"drag-search"))
   compose.setContent {MaterialTheme {Column {GameBoard(p,state.value,false){state.value=engine.evaluate(p,state.value,it)}}}}

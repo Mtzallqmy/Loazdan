@@ -51,7 +51,15 @@ class SixGameDeviceTest {
   }
  }
  private fun fixture(type:String)=fixtures().first {it.getString("type")==type}
- private fun open(type:String) {val all=fixtures();val p=fixture(type);click("ابدأ تحدي المفردات");click("لغز ${all.indexOfFirst {it.getString("puzzleId")==p.getString("puzzleId")}+1} · الصعوبة ${p.getInt("difficulty")}")}
+ private fun open(type:String) {
+  click("الرئيسية")
+  val all=fixtures();val p=fixture(type)
+  click("ابدأ تحدي المفردات")
+  val label="لغز ${all.indexOfFirst {it.getString("puzzleId")==p.getString("puzzleId")}+1} · الصعوبة ${p.getInt("difficulty")}"
+  compose.onNodeWithTag("catalog-list").performScrollToNode(hasText(label))
+  click(label)
+ }
+
  private fun screenshot(name:String){val bitmap=InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot();File(compose.activity.getExternalFilesDir(null),"$name.png").outputStream().use {bitmap.compress(Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle()}
  private fun captureResources() {
   val automation=InstrumentationRegistry.getInstrumentation().uiAutomation

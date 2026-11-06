@@ -88,7 +88,7 @@ import com.lughzdan.engine.*
       var query by rememberSaveable {mutableStateOf("")}
       val registry=remember {GameRegistry()}
       val visible=remember(puzzles,filter,query){puzzles.withIndex().filter {it.value.type in registry.types && (filter==null || it.value.type==filter) && (query.isBlank() || (it.value.title+" "+it.value.payload.prompt+" "+gameNames[it.value.type]).contains(query.trim(),ignoreCase=true))}}
-      LazyColumn(verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
+      LazyColumn(modifier=Modifier.testTag("catalog-list"),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
        item {Text("مكتبة الاكتشاف",style=MaterialTheme.typography.headlineMedium)}
        item {Row {TextButton(onClick={nav.navigate("library")}){Text("الحزم والتنزيلات")};if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}}}
        item {OutlinedTextField(value=query,onValueChange={query=it},label={Text("ابحث عن موضوع أو نوع لعبة")},singleLine=true,modifier=Modifier.fillMaxWidth())}
