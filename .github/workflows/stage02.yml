@@ -188,7 +188,7 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
           python scripts/verify_release_apk.py "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" > "$RUNNER_TEMP/preview-badging.txt"
-          grep -E "package: name='com.lughzdan.app.preview'.*versionCode='102'" "$RUNNER_TEMP/preview-badging.txt"
+          grep -E "package: name='com.lughzdan.app.preview.feedback'.*versionCode='102'" "$RUNNER_TEMP/preview-badging.txt"
           grep -F "sdkVersion:'26'" "$RUNNER_TEMP/preview-badging.txt"
           mkdir -p preview
           cp "$APK" preview/Lughzdan-1.1.1-Preview-ARM64.apk

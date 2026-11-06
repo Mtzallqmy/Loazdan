@@ -13,9 +13,9 @@ android { namespace = "com.lughzdan.app"; compileSdk = 36
  buildTypes {
   create("preview") {
    initWith(getByName("release"))
-   applicationIdSuffix = ".preview"
+   applicationIdSuffix = ".preview.feedback"
    versionNameSuffix = "-preview"
-   manifestPlaceholders["appLabel"] = "لُغْزَدان — تجربة"
+   manifestPlaceholders["appLabel"] = "لُغْزَدان — ألوان وأصوات"
    signingConfig = signingConfigs.getByName("debug")
    matchingFallbacks += listOf("release")
   }

@@ -44,3 +44,5 @@ The owner keystore, its password, and content-signing private key are not presen
 - Success, retry and discovery cues follow engine state transitions, not button presses. Restored sessions and duplicate submissions do not replay cues. Sound is enabled by default unless explicitly disabled, with a switch in the round.
 - Prior preview 101 passed Android unit/Lint and API 26/28 emulator suites in run 42271217885. Its standalone APK passed signature, minSdk, ARM64 and bundled-content checks. Owner signing remained blocked by the missing original keystore secret.
 - Preview 102 validation is pending CI. No new content pack or phone performance result is claimed.
+
+Preview 102 uses `com.lughzdan.app.preview.feedback` and the label «لُغْزَدان — ألوان وأصوات». The prior ephemeral test certificate was not retained; this separate package avoids uninstalling preview 101 or losing its data. Neither preview changes the production package or transfers data between installations.
