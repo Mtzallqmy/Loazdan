@@ -10,11 +10,11 @@
     {
       "path": "data/literary_words.jsonl",
       "kind": "puzzles",
-      "sha256": "c5e6348984b2e43a0f21b6ba31c238d39fc9556d902527743bcab4b853db4241",
+      "sha256": "b5a4b2266a5ebdcc0ead23405edd29bf89266f89ae5ca316115dab9d74b2fade",
       "bytes": 586985,
       "chunks": [
         {
-          "sha256": "c5e6348984b2e43a0f21b6ba31c238d39fc9556d902527743bcab4b853db4241",
+          "sha256": "b5a4b2266a5ebdcc0ead23405edd29bf89266f89ae5ca316115dab9d74b2fade",
           "bytes": 586985
         }
       ]
@@ -185,5 +185,5 @@
       "noticePath": "rights/literary.txt"
     }
   ],
-  "signature": "lq8zIk0HguM3xc7U8_s8xtgYJWBbe-32JE8bE8oq5VbjtBAsfjxsfCRPUbBzHBjuZUGEkOiJkfi3d3x2qUSXCg"
+  "signature": "RY0vO1zA-19uPDvavdrFQOWBCjfAzzyc7_Sh2bT9QfMdFr-0qhRrrbz1Vid1RyWk3Eh_8om5LHqFaOsXbuUmBg"
 }

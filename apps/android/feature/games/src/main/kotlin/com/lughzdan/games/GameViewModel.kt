@@ -93,5 +93,6 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  }
  fun hint(id:String,hint:String)=action(id,PlayerAction.UseHint(UUID.randomUUID().toString(),hint))
  fun dark(value:Boolean) { viewModelScope.launch { settingsStore.dark(value) } }
+ fun haptic(value:Boolean) {viewModelScope.launch {settingsStore.haptic(value)}}
  fun sound(value:Boolean) { viewModelScope.launch { settingsStore.sound(value) } }
 }

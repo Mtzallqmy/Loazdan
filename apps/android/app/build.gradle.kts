@@ -21,6 +21,7 @@ android { namespace = "com.lughzdan.app"; compileSdk = 36
   }
  }
  sourceSets.getByName("preview").assets.srcDir("src/release/assets")
+ if(providers.gradleProperty("atlasDevice").orNull=="true")sourceSets.getByName("debug").assets.srcDir("src/release/assets")
  testOptions { unitTests.isIncludeAndroidResources = true }
 }
 kotlin { jvmToolchain(17) }

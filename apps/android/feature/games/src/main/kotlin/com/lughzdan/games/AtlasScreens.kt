@@ -17,6 +17,17 @@ import androidx.compose.ui.unit.dp
 import com.lughzdan.designsystem.DiscoveryIcon
 import com.lughzdan.designsystem.Experience
 import com.lughzdan.engine.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+@Composable fun AtlasDestination(vm:GameViewModel,onNavigate:(String)->Unit) {
+ val puzzles by vm.atlasPuzzles.collectAsStateWithLifecycle()
+ val runs by vm.atlasRuns.collectAsStateWithLifecycle()
+ val progress by vm.progress.collectAsStateWithLifecycle()
+ AtlasScreen(puzzles,runs,progress.totalXp,onJourney={journey->
+  val prior=runs.firstOrNull {it.kind=="journey" && it.title==journey.title && !it.finished}
+  if(prior!=null)onNavigate("atlas-run/${prior.id}") else vm.createAtlasRun(AtlasRun(java.util.UUID.randomUUID().toString(),"journey",journey.title,journey.puzzles.map {it.puzzleId})){onNavigate("atlas-run/$it")}
+ },onRun={onNavigate("atlas-run/$it")},onDuel={onNavigate("duel")},onNotebook={onNavigate("notebook")})
+}
 
 @Composable fun AtlasScreen(puzzles: List<PuzzleDefinition>, runs: List<AtlasRun>, xp: Int, onJourney: (AtlasJourney) -> Unit, onRun: (String) -> Unit, onDuel: () -> Unit, onNotebook: () -> Unit) {
     var selectedWorld by rememberSaveable { mutableStateOf<String?>(null) }

@@ -16,6 +16,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
+import android.view.HapticFeedbackConstants
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.*
@@ -23,6 +28,7 @@ import com.lughzdan.designsystem.LughzdanTheme
 import com.lughzdan.engine.*
 
 @Composable fun GameApp(vm:GameViewModel) {
+ val view=LocalView.current
  val nav=rememberNavController()
  val ready by vm.ready.collectAsStateWithLifecycle();val error by vm.error.collectAsStateWithLifecycle()
  val settings by vm.settings.collectAsStateWithLifecycle();val puzzles by vm.puzzles.collectAsStateWithLifecycle()
@@ -40,7 +46,7 @@ import com.lughzdan.engine.*
   val playing=route=="session/{id}"
   Scaffold(bottomBar={ if(ready && !playing) NavigationBar {
    listOf("home" to "الرئيسية","worlds" to "العوالم","catalog" to "مكتبتي","profile" to "ملفي").forEach { (destination,label)->
-    NavigationBarItem(modifier=Modifier.testTag("nav-$destination"),selected=route==destination,
+    NavigationBarItem(modifier=Modifier.testTag("nav-$destination"),selected=route==destination || (destination=="worlds" && route in setOf("atlas","atlas-run/{id}","duel")),
      onClick={if(destination=="home") nav.popBackStack("home",false) else nav.navigate(destination){launchSingleTop=true;restoreState=true;popUpTo("home"){saveState=true}}},
      icon={DiscoveryIcon(destination)},label={Text(label,maxLines=1)})
    }
@@ -50,7 +56,7 @@ import com.lughzdan.engine.*
     else TextButton(onClick={nav.popBackStack()}){Text("العودة · تُحفظ حركاتك تلقائيًا")}
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
     if(!ready) { CircularProgressIndicator();Text("تهيئة المكتبة المحلية…") }
-    else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f)) {
+    else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f),enterTransition={fadeIn(tween(200))},exitTransition={fadeOut(tween(150))},popEnterTransition={fadeIn(tween(200))},popExitTransition={fadeOut(tween(150))}) {
      composable("home") {
       val sessions by vm.sessions.collectAsStateWithLifecycle()
       Page {
@@ -87,13 +93,7 @@ import com.lughzdan.engine.*
       Row {TextButton(onClick={nav.navigate("duel")}){Text("تحدّي صديق")};TextButton(onClick={nav.navigate("notebook")}){Text("دفتر اكتشافاتي")}}
       TextButton(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
      } }
-     composable("atlas") {
-      AtlasScreen(atlasPuzzles,atlasRuns,progress.totalXp,
-       onJourney={journey->
-        val prior=atlasRuns.firstOrNull {it.kind=="journey" && it.title==journey.title && !it.finished}
-        if(prior!=null)nav.navigate("atlas-run/${prior.id}") else vm.createAtlasRun(AtlasRun(java.util.UUID.randomUUID().toString(),"journey",journey.title,journey.puzzles.map {it.puzzleId})){nav.navigate("atlas-run/$it")}
-       },onRun={nav.navigate("atlas-run/$it")},onDuel={nav.navigate("duel")},onNotebook={nav.navigate("notebook")})
-     }
+     composable("atlas") {AtlasDestination(vm){nav.navigate(it)}}
      composable("atlas-run/{id}") {entry->
       val id=entry.arguments?.getString("id").orEmpty()
       val runFlow=remember(id){vm.observeRun(id)}
@@ -111,7 +111,7 @@ import com.lughzdan.engine.*
       val recent by vm.sessions.collectAsStateWithLifecycle()
       LiteraryWordsScreen(atlasPuzzles,recent,progress.totalXp,busy,onPlay={play(it)},onResume={nav.navigate("session/$it")})
      }
-     composable("worlds") { WorldsScreen(vm) { worldId -> nav.navigate("world/$worldId") } }
+     composable("worlds") {AtlasDestination(vm){nav.navigate(it)}}
      composable("world/{id}") { entry ->
       val worldId = entry.arguments?.getString("id") ?: "words"
       WorldDetailScreen(worldId, vm, onPlay = { play(it) }, onBack = { nav.popBackStack() })
@@ -127,7 +127,7 @@ import com.lughzdan.engine.*
       var filter by rememberSaveable {mutableStateOf<String?>(null)}
       var query by rememberSaveable {mutableStateOf("")}
       val registry=remember {GameRegistry()}
-      val visible=remember(puzzles,filter,query){puzzles.withIndex().filter {it.value.type in registry.types && (filter==null || it.value.type==filter) && (query.isBlank() || (it.value.title+" "+it.value.payload.prompt+" "+gameNames[it.value.type]).contains(query.trim(),ignoreCase=true))}}
+      val visible=remember(puzzles,atlasPuzzles,filter,query){(if(query.isBlank())puzzles else atlasPuzzles).withIndex().filter {it.value.type in registry.types && (filter==null || it.value.type==filter) && (query.isBlank() || (it.value.title+" "+it.value.payload.prompt+" "+gameNames[it.value.type]).contains(query.trim(),ignoreCase=true))}}
       LazyColumn(modifier=Modifier.testTag("catalog-list"),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
        item {Text("مكتبة الاكتشاف",style=MaterialTheme.typography.headlineMedium)}
        item {Row {TextButton(onClick={nav.navigate("library")}){Text("الحزم والتنزيلات")};if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}}}
@@ -161,6 +161,7 @@ import com.lughzdan.engine.*
        LaunchedEffect(s) {
         val cue=AnswerFeedback.cue(priorSession,s)
         if(settings.sound && cue!=null)runCatching {tone?.startTone(when(cue){FeedbackCue.SUCCESS->ToneGenerator.TONE_PROP_ACK;FeedbackCue.RETRY->ToneGenerator.TONE_PROP_NACK;FeedbackCue.DISCOVERY->ToneGenerator.TONE_PROP_BEEP},if(cue==FeedbackCue.RETRY)160 else 120)}
+        if(settings.haptic && cue!=null)view.performHapticFeedback(if(cue==FeedbackCue.RETRY)HapticFeedbackConstants.LONG_PRESS else HapticFeedbackConstants.VIRTUAL_KEY)
         priorSession=s
        }
        Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) {
@@ -239,6 +240,7 @@ import com.lughzdan.engine.*
      composable("settings") { Page {
       Text("الإعدادات",style=MaterialTheme.typography.headlineMedium)
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("الوضع الداكن");Switch(checked=settings.dark,onCheckedChange=vm::dark)}
+      Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("اهتزاز اللعب");Switch(checked=settings.haptic,onCheckedChange=vm::haptic)}
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("صوت تأكيد الإجابة");Switch(checked=settings.sound,onCheckedChange=vm::sound)}
       val contentPreferences by vm.contentPreferences.collectAsStateWithLifecycle()
       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("التنزيل عبر Wi-Fi فقط");Switch(checked=contentPreferences.wifiOnly,onCheckedChange={value->vm.contentAction { setWifiOnly(value) }})}

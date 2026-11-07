@@ -2,8 +2,12 @@ package com.lughzdan.games
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.semantics.semantics
@@ -43,10 +47,12 @@ internal val AnswerMark.label:String get()=when(this) {
  val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
  SessionPresentation.shuffled(p.payload.options,s,"options").forEach {o->
   val mark=AnswerFeedback.option(p,s,o.id)
+  val background by animateColorAsState(feedbackBackground(mark),tween(200),label="answer background")
+  val foreground by animateColorAsState(feedbackForeground(mark),tween(200),label="answer text")
   val prefix=when(mark){AnswerMark.CORRECT->"✓ ";AnswerMark.INCORRECT->"× ";AnswerMark.SELECTED->"● ";else->""}
   OutlinedButton(onClick={if(!terminal)send(PlayerAction.Select(java.util.UUID.randomUUID().toString(),o.id))},enabled=!busy&&!terminal,
-   colors=ButtonDefaults.outlinedButtonColors(containerColor=feedbackBackground(mark),contentColor=feedbackForeground(mark),disabledContainerColor=feedbackBackground(mark),disabledContentColor=feedbackForeground(mark)),
-   modifier=Modifier.fillMaxWidth().heightIn(min=56.dp).semantics {stateDescription=mark.label}) {
+   colors=ButtonDefaults.outlinedButtonColors(containerColor=background,contentColor=foreground,disabledContainerColor=feedbackBackground(mark),disabledContentColor=feedbackForeground(mark)),
+   modifier=Modifier.testTag("answer-${o.id}").fillMaxWidth().heightIn(min=56.dp).semantics {stateDescription=mark.label}) {
    Text(prefix+o.text,style=MaterialTheme.typography.titleMedium)
   }
  }

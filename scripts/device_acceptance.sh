@@ -22,6 +22,7 @@ collect_evidence() {
   for metric in artifacts/stage03/device-files/stage03-gfxinfo.txt artifacts/stage03/device-files/stage03-meminfo.txt; do
     if [[ -f "$metric" ]]; then cat "$metric"; fi
   done
+  adb pull /sdcard/atlas-gameplay.mp4 artifacts/stage03/ || true
   if [[ "$result" -ne 0 ]]; then adb logcat -d -t 1000 > artifacts/stage03/failure-logcat.txt || true; fi
 }
 trap collect_evidence EXIT
@@ -57,3 +58,20 @@ run_phase phaseFiveVerifyBuilderResult SixGameDeviceTest
 adb shell svc wifi enable
 adb shell svc data enable
 run_phase phaseSixOtherBoards SixGameDeviceTest
+
+
+# Exercise the signed Atlas bundle through real navigation after legacy acceptance.
+./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PatlasDevice=true
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am force-stop com.lughzdan.app
+adb shell screenrecord --time-limit 90 /sdcard/atlas-gameplay.mp4 >/dev/null 2>&1 &
+run_phase journeyNotebookAndDuelPersistBeforeProcessKill AtlasDeviceTest
+adb shell 'pidof screenrecord | xargs -r kill -2' || true
+adb shell am force-stop com.lughzdan.app
+adb shell svc wifi disable
+adb shell svc data disable
+run_phase duelRestoresOfflineWithoutChangingPlayerExperience AtlasDeviceTest
+adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/atlas-gfxinfo.txt
+adb shell dumpsys meminfo com.lughzdan.app > artifacts/stage03/atlas-meminfo.txt
+adb shell getprop ro.build.fingerprint > artifacts/stage03/device-build.txt

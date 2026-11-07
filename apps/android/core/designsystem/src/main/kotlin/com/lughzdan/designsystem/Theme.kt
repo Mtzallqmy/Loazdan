@@ -50,6 +50,8 @@ private val Dark=darkColorScheme(primary=Color(0xFF8DD5C7),onPrimary=Color(0xFF0
    "home"->{val p=Path().apply{moveTo(w*.12f,h*.45f);lineTo(w*.5f,h*.12f);lineTo(w*.88f,h*.45f);lineTo(w*.88f,h*.88f);lineTo(w*.12f,h*.88f);close()};drawPath(p,color,style=stroke);line(.42f,.88f,.42f,.6f);line(.58f,.6f,.58f,.88f)}
    "profile"->{drawCircle(color,w*.16f,Offset(w*.5f,h*.28f),style=stroke);drawArc(color,180f,180f,false,Offset(w*.17f,h*.5f),androidx.compose.ui.geometry.Size(w*.66f,h*.65f),style=stroke)}
    "catalog","words","quran"->{line(.12f,.18f,.12f,.85f);line(.5f,.25f,.5f,.92f);line(.88f,.18f,.88f,.85f);line(.12f,.18f,.5f,.25f);line(.5f,.25f,.88f,.18f);line(.12f,.85f,.5f,.92f);line(.5f,.92f,.88f,.85f)}
+   "heritage"->{drawRect(color,Offset(w*.22f,h*.12f),androidx.compose.ui.geometry.Size(w*.56f,h*.78f),style=stroke);for(y in listOf(.3f,.5f,.7f)){line(.35f,y,.42f,y);line(.58f,y,.65f,y)};line(.16f,.9f,.84f,.9f)}
+   "science"->{line(.38f,.12f,.62f,.12f);line(.42f,.12f,.42f,.4f);line(.58f,.12f,.58f,.4f);val p=Path().apply{moveTo(w*.42f,h*.4f);lineTo(w*.18f,h*.83f);quadraticBezierTo(w*.5f,h,w*.82f,h*.83f);lineTo(w*.58f,h*.4f)};drawPath(p,color,style=stroke);line(.28f,.66f,.72f,.66f)}
    "logic"->{for(i in 0..2){drawCircle(color,w*.085f,Offset(w*(.2f+.3f*i),h*(if(i==1).25f else .75f)),style=stroke)};line(.25f,.67f,.45f,.33f);line(.55f,.33f,.75f,.67f)}
    "poetry"->{line(.25f,.85f,.78f,.15f);line(.78f,.15f,.85f,.4f);line(.85f,.4f,.25f,.85f);line(.18f,.92f,.82f,.92f)}
    "rhetoric"->{drawCircle(color,w*.28f,Offset(w*.38f,h*.4f),style=stroke);drawCircle(color,w*.28f,Offset(w*.62f,h*.6f),style=stroke)}
