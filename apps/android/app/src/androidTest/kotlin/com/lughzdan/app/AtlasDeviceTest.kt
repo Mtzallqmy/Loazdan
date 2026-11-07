@@ -29,7 +29,14 @@ class AtlasDeviceTest {
         File(compose.activity.getExternalFilesDir(null), "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         bitmap.recycle()
     }
-    private fun currentRun(): AtlasRun = runBlocking { compose.activity.repository.atlasRuns.first().first { !it.finished } }
+    private fun currentRun(): AtlasRun {
+        var result:AtlasRun?=null
+        compose.waitUntil(30_000) {
+            result=runBlocking {compose.activity.repository.atlasRuns.first().firstOrNull {!it.finished && it.activeSessionId!=null}}
+            result!=null
+        }
+        return result!!
+    }
     private fun solve() {
         val run = currentRun()
         val record = runBlocking { compose.activity.repository.observeSession(run.activeSessionId!!).first()!! }
