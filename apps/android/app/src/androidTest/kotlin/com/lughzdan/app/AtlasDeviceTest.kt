@@ -65,7 +65,7 @@ class AtlasDeviceTest {
                 LiteraryWords.supports(p) -> compose.onNodeWithTag("literary-answer").performScrollTo().performTextReplacement(p.payload.acceptedAnswers.first())
                 else -> compose.onNodeWithText("اكتب إجابتك بالعربية").performScrollTo().performTextReplacement(p.payload.acceptedAnswers.first())
             }
-            "anagram" -> {
+            "anagram","four_pictures" -> {
                 val used = mutableSetOf<Int>()
                 p.payload.acceptedAnswers.first().forEach { token ->
                     val index = p.payload.tiles.indices.first { it !in used && p.payload.tiles[it] == token.toString() }
@@ -123,6 +123,37 @@ class AtlasDeviceTest {
         val xp = runBlocking { compose.activity.repository.progress.first().totalXp }
         File(compose.activity.filesDir, "atlas-duel.txt").writeText("${run.id}\n$xp\n${SessionCodec.encode(partial)}")
         shot("atlas-duel-handoff")
+    }
+
+    @Test fun signedVisualCluesDecodeAndDrawOffline() {
+        click("الرئيسية")
+        val puzzles=runBlocking {compose.activity.repository.atlasCatalog.first().filter {it.type=="four_pictures" && it.tags.any {tag->tag.startsWith("supersedes:")}}}
+        assertEquals(4,puzzles.size)
+        val run=AtlasRun("visual-device-${System.nanoTime()}","journey","رحلة القرائن البصرية",puzzles.map {it.puzzleId})
+        runBlocking {compose.activity.repository.createRun(run)}
+        click("ابدأ رحلة الاكتشاف");click("متابعة ${run.title} · 0/4")
+        val evidence=StringBuilder()
+        repeat(4) {stage->
+            click("ابدأ المحطة ${stage+1}")
+            val current=currentRun()
+            val record=runBlocking {compose.activity.repository.observeSession(current.activeSessionId!!).first()!!}
+            for(image in record.puzzle.payload.images) {
+                val bytes=runBlocking {compose.activity.repository.readImage(record.session.id,image.id)!!}
+                val bitmap=android.graphics.BitmapFactory.decodeByteArray(bytes,0,bytes.size)!!
+                assertEquals(image.width,bitmap.width);assertEquals(image.height,bitmap.height)
+                val canvas=Bitmap.createBitmap(192,192,Bitmap.Config.ARGB_8888)
+                android.graphics.Canvas(canvas).drawBitmap(bitmap,null,android.graphics.Rect(0,0,192,192),null)
+                val pixels=IntArray(192*192);canvas.getPixels(pixels,0,192,0,0,192,192)
+                assertTrue("Expected real colored scene",pixels.toSet().size>8)
+                evidence.append("${image.id} ${bitmap.width}x${bitmap.height} colors=${pixels.toSet().size}\n")
+                bitmap.recycle();canvas.recycle()
+            }
+            compose.waitUntil(30_000){compose.onAllNodesWithContentDescription(record.puzzle.payload.images.first().alt).fetchSemanticsNodes().isNotEmpty()}
+            compose.onNodeWithContentDescription(record.puzzle.payload.images.first().alt).performScrollTo().assertIsDisplayed()
+            if(stage==0)shot("atlas-four-pictures")
+            solve();click("متابعة الرحلة أو المواجهة")
+        }
+        File(compose.activity.getExternalFilesDir(null),"atlas-image-render.txt").writeText(evidence.toString())
     }
 
     @Test fun scaledAtlasLayoutKeepsSubmissionVisible() {

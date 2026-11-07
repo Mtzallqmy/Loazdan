@@ -175,8 +175,8 @@ import com.lughzdan.engine.*
        Text("${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]} · ${if(terminal) "النتيجة" else "المحاولات المتبقية: ${3-s.wrongSubmissions}"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.secondary)
 
        if(s.atlasRunId.isNotBlank())atlasRuns.firstOrNull {it.id==s.atlasRunId}?.let {run->Text(if(run.kind=="duel") "جولة ${run.playerNames[(run.step-(if(terminal)1 else 0)).coerceAtLeast(0)%2]}" else run.title,color=MaterialTheme.colorScheme.primary)}
-       Text(if(p.payload.variant in setOf("language_detective","who_am_i",WordBridge.VARIANT))AtlasCatalog.name(p) else if(LiteraryWords.supports(p))"ديوان الألغاز · "+if(p.payload.variant==LiteraryWords.COMPLETE)"أكمل الحروف" else "خمن الكلمة" else gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
-       Text(p.payload.prompt.ifBlank {when(p.type){"anagram"->"كوّن كلمة من الحروف المتاحة";"order"->"رتّب البطاقات لتكوين النص";"crossword"->"حل الكلمات باستخدام القرائن";else->p.title}},style=MaterialTheme.typography.headlineSmall)
+       Text(if(p.payload.variant in setOf("language_detective","who_am_i",WordBridge.VARIANT))AtlasCatalog.name(p) else if(LiteraryWords.supports(p))"ديوان الألغاز · "+if(p.payload.variant==LiteraryWords.COMPLETE)"أكمل الحروف" else "خمن الكلمة" else AtlasCatalog.name(p),style=MaterialTheme.typography.labelLarge)
+       Text(p.payload.prompt.ifBlank {when(p.type){"anagram"->"كوّن كلمة من الحروف المتاحة";"order"->"رتّب البطاقات لتكوين النص";"crossword"->"حل الكلمات باستخدام القرائن";else->p.title}},style=MaterialTheme.typography.titleMedium)
        if(s.status==SessionStatus.PAUSED) {
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}

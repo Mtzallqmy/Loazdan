@@ -96,11 +96,12 @@ for number in indexes:
  if number==120:
   ref=refs['logic'];p['explanation']='المعروض ثلاث خطوات: المقدمة الكبرى، ثم المقدمة الصغرى، ثم استخلاص النتيجة. الحد الأوسط يربط المقدمتين، ولا يمثل مقدمة رابعة مستقلة.'
  p['sourceRefs']=[ref];a['sourceLabel']=source_map[ref]['name'];a['sourceUrl']=source_map[ref]['url'];rows.append(p)
-assert len(rows)==28
+rows.extend(json.loads(l) for l in (ROOT/'packs/atlas-600/visual-puzzles.jsonl').read_text().splitlines())
+assert len(rows)==32
 
 folder=ROOT/'packs/atlas-600'
 (folder/'corrected-puzzles.jsonl').write_text(''.join(json.dumps(p,ensure_ascii=False,separators=(',',':'))+'\n' for p in rows))
 (folder/'correction-sources.json').write_text(json.dumps(new_sources,ensure_ascii=False,indent=2)+'\n')
 base=(ROOT/'packs/literary-words-48/puzzles.jsonl').read_text()+(folder/'new-puzzles.jsonl').read_text()
 (folder/'puzzles.jsonl').write_text(base+(folder/'corrected-puzzles.jsonl').read_text())
-print('28 corrected replacement revisions, 508 signed rows, 600 active challenges')
+print('32 corrected replacement revisions, 512 signed rows, 600 active challenges')

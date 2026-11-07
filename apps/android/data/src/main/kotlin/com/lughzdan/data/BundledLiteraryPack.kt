@@ -10,14 +10,15 @@ import java.io.FileOutputStream
 
 /** Uses the normal signature, chunk, revision and transactional installation path offline. */
 object BundledLiteraryPack {
+ const val VERSION=7
  const val ID="4b260af1-d41e-5759-bf8b-cc4867948a36"
  suspend fun install(context:Context,db:LughzdanDatabase,installer:PackInstaller)=withContext(Dispatchers.IO) {
   if(!context.assets.list("literary").orEmpty().contains("manifest.json"))return@withContext
   val head=db.content().head(ID)
-  if((head?.activeVersion ?: 0)>=5 || (head?.highWater ?: 0)>5 || db.content().journal(ID,5)?.phase=="DELETED")return@withContext
+  if((head?.activeVersion ?: 0)>=VERSION || (head?.highWater ?: 0)>VERSION || db.content().journal(ID,VERSION)?.phase=="DELETED")return@withContext
   val raw=context.assets.open("literary/manifest.json").use {it.readBytes()}
   val manifest=installer.verify(raw)
-  require(manifest.packId==ID && manifest.version==5)
+  require(manifest.packId==ID && manifest.version==VERSION)
   installer.mutex.lock()
   try {
    installer.chunks.mkdirs()
@@ -33,6 +34,6 @@ object BundledLiteraryPack {
     } finally {staging.delete()}
    }
   } finally {installer.mutex.unlock()}
-  installer.install(raw,"أطلس المعرفة — ٤٩٤ تحديًا")
+  installer.install(raw,"أطلس المعرفة العربية")
  }
 }
