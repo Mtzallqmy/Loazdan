@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
  @Query("SELECT * FROM installed_packs WHERE packId=:id AND version=:version") suspend fun pinnedPack(id:String,version:Int):InstalledContentPackEntity?
  @Query("SELECT * FROM achievements ORDER BY awardedAt,id") fun observeAchievements():Flow<List<AchievementEntity>>
  @Query("SELECT * FROM sessions ORDER BY updatedAt DESC,id DESC LIMIT :limit") fun observeSessions(limit:Int=50):Flow<List<GameSessionEntity>>
+ @Query("SELECT * FROM sessions WHERE state LIKE '%\"status\":\"ACTIVE\"%' OR state LIKE '%\"status\": \"ACTIVE\"%'") suspend fun activeSessions():List<GameSessionEntity>
  @Query("SELECT * FROM sessions") suspend fun storedSessions():List<GameSessionEntity>
  @Query("SELECT * FROM sessions WHERE id=:id") fun observeSession(id:String):Flow<GameSessionEntity?>
  @Query("SELECT * FROM sessions WHERE id=:id") suspend fun session(id:String):GameSessionEntity?

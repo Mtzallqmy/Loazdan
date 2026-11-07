@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 class AtlasDeviceTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
     private fun click(text: String) {
-        try {compose.waitUntil(30_000) { compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }} catch(error:Throwable) {shot("atlas-failure");println("Waiting for: $text");println(compose.onRoot().printToString());throw error}
+        try {compose.waitUntil(30_000) { compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }} catch(error:Throwable) {shot("atlas-failure");println("Waiting for: $text");println(compose.onRoot().printToString());runBlocking {compose.activity.repository.initialize()};throw error}
         val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst()
         if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي"))node.performScrollTo()
         node.performClick()

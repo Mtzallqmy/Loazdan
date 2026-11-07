@@ -34,13 +34,15 @@ object AtlasCatalog {
     }
 
     fun journeys(all: List<PuzzleDefinition>): List<AtlasJourney> = worlds.flatMap { world ->
+        val usedIds=mutableSetOf<String>()
         (0..4).mapNotNull { chapter ->
-            val candidates = all.filter { "atlas:${world.id}" in it.tags && (chapter == 4 || "topic:$chapter" in it.tags) }
+            val candidates = all.filter { "atlas:${world.id}" in it.tags && (chapter == 4 || "topic:$chapter" in it.tags) && it.puzzleId !in usedIds }
             val concepts = candidates.groupBy { it.tags.firstOrNull { tag -> tag.startsWith("concept:") } ?: it.puzzleId }.toSortedMap()
             var previous = ""
             val stages = concepts.values.take(5).map { options ->
                 val selected = options.sortedBy { it.puzzleId }.firstOrNull { it.type != previous } ?: options.first()
                 previous = selected.type
+                usedIds.add(selected.puzzleId)
                 selected
             }
             if (stages.size != 5) null else AtlasJourney("${world.id}-$chapter", if(chapter==4) "حصاد ${world.title}" else world.topics[chapter], world, stages)

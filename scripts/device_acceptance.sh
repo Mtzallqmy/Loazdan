@@ -22,6 +22,7 @@ collect_evidence() {
     wait "$record_pid" || true
   fi
   mkdir -p artifacts/stage03
+  adb shell df -k /data > artifacts/stage03/device-storage.txt || true
   adb pull /sdcard/Android/data/com.lughzdan.app/files/ artifacts/stage03/device-files || true
   for metric in artifacts/stage03/device-files/stage03-gfxinfo.txt artifacts/stage03/device-files/stage03-meminfo.txt; do
     if [[ -f "$metric" ]]; then cat "$metric"; fi

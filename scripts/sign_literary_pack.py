@@ -27,6 +27,12 @@ sources=json.loads((ROOT/'packs/literary-words-48/sources.json').read_text())+js
 refs=[dict(referenceId=s['referenceId'],sourceId=s['referenceId'],sourceName=s['name'],author={'mutanabbi':'أبو الطيب المتنبي','shawqi':'أحمد شوقي','academy':'مجمع اللغة العربية بالقاهرة','original':'إعداد للتطبيق بمساعدة آلية'}.get(s['key'],s['name']),locator=s['url'] or 'packs/literary-words-48/puzzles.jsonl',sourceVersion='2026-11-06',licenseCode='LicenseRef-Lughzdan-Literary',attribution=s['name'],noticePath='rights/literary.txt') for s in sources]
 m=dict(schemaVersion=1,packId=uid('pack'),version=5,minAppVersionCode=104,minEngineVersion=3,locale='ar',publishedAt='2026-11-07T14:00:00Z',files=files,downloadBytes=sum(f['bytes'] for f in files),installedBytes=sum(f['bytes'] for f in files),dependencies=[],sourceRefs=[s['referenceId'] for s in sources],keyId='literary2026',assets=[],references=refs)
 canonical=json.dumps(m,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+previous_path=ROOT/'packs/atlas-600/manifest.json'
+if previous_path.exists():
+ previous=json.loads(previous_path.read_text())
+ if previous['version']>m['version']:raise ValueError('Pack version cannot move backwards')
+ if previous['version']==m['version'] and {k:v for k,v in previous.items() if k!='signature'}!=m:
+  raise ValueError('Published manifest is immutable; increment the pack version')
 m['signature']=base64.urlsafe_b64encode(key.sign(canonical)).decode().rstrip('=')
 for path in [assets/'manifest.json',ROOT/'packs/atlas-600/manifest.json']:path.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
 p=ROOT/'apps/android/app/src/main/assets/pack-public-keys.json';keys=json.loads(p.read_text());keys['literary2026']=base64.b64encode(key.public_key().public_bytes(serialization.Encoding.Raw,serialization.PublicFormat.Raw)).decode();p.write_text(json.dumps(keys,indent=2)+'\n')

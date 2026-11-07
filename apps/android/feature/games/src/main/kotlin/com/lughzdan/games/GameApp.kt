@@ -55,7 +55,7 @@ import com.lughzdan.engine.*
     if(!playing) Row(Modifier.fillMaxWidth().padding(vertical=12.dp),horizontalArrangement=Arrangement.SpaceBetween) { Text("لُغْزَدان",style=MaterialTheme.typography.titleLarge);DiscoveryIcon("brand") }
     else TextButton(onClick={nav.popBackStack()}){Text("العودة · تُحفظ حركاتك تلقائيًا")}
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
-    if(!ready) { CircularProgressIndicator();Text("تهيئة المكتبة المحلية…") }
+    if(!ready) {if(error==null) {CircularProgressIndicator();Text("تهيئة المكتبة المحلية…")}}
     else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f),enterTransition={fadeIn(tween(200))},exitTransition={fadeOut(tween(150))},popEnterTransition={fadeIn(tween(200))},popExitTransition={fadeOut(tween(150))}) {
      composable("home") {
       val sessions by vm.sessions.collectAsStateWithLifecycle()

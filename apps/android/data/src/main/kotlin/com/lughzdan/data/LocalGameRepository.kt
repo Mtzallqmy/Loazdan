@@ -155,7 +155,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   }
   // Recover once per repository lifetime; collecting a Flow must never pause live play.
   db.withTransaction {
-   dao.storedSessions().forEach { row ->
+   dao.activeSessions().forEach { row ->
     val state=runCatching { decodeStored(row).also { saved->
      require(dao.pinnedPack(saved.packId,saved.packVersion)!=null) { "Missing pinned pack" }
      validateRecord(saved,dao.puzzle(row.puzzleId,row.revision) ?: error("Missing pinned puzzle")) } }.getOrNull()

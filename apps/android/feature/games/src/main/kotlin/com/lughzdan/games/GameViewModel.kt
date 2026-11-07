@@ -36,7 +36,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val submissionPending=AtomicBoolean(false)
  private val _submitting=MutableStateFlow(false);val submitting=_submitting.asStateFlow()
  init { viewModelScope.launch {settingsStore.ensureGuestId()}; initialize() }
- fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
+ fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(error:Exception) {android.util.Log.e("Lughzdan","Local content initialization failed",error);_error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
  suspend fun readImage(sessionId:String,imageId:String)=repository.readImage(sessionId,imageId)
  fun observeRun(id:String)=repository.observeRun(id)
  fun observeSession(id:String)=repository.observeSession(id)
@@ -76,8 +76,16 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
   viewModelScope.launch {
    try {
     val answer=p.payload.options.firstOrNull {it.id==p.payload.correctId}?.text
-      ?: p.payload.acceptedAnswers.firstOrNull() ?: p.payload.rule.ifBlank {p.payload.prompt}
-    vocabulary.save(VocabularySnapshot("${p.puzzleId}:${p.revision}",answer,p.explanation,
+      ?: p.payload.acceptedAnswers.firstOrNull() ?: when(p.type) {
+       "sequence"->p.payload.terms.joinToString("، ")+"، ؟"
+       "crossword"->p.payload.entries.joinToString("، "){it.tokens.joinToString("")}
+       "wordsearch"->p.payload.words.joinToString("، "){it.label}
+       "matching"->p.payload.left.joinToString("، "){it.text}
+       "order"->p.payload.prompt+" "+p.payload.items.joinToString("، "){it.text}
+       else->p.payload.prompt.ifBlank {p.title}
+      }
+    val meaning=if(p.type=="sequence")"الإجابة: ${p.payload.answer}. ${p.explanation}" else p.explanation
+    vocabulary.save(VocabularySnapshot("${p.puzzleId}:${p.revision}",answer,meaning,
       p.payload.sourceLabel.ifBlank {"حزمة لُغْزَدان"},p.payload.sourceUrl.ifBlank {p.puzzleId},
       category=AtlasCatalog.world(p),linkedGameIds=listOf(p.puzzleId),contentStatus=p.status,fixtureOnly=p.fixtureOnly))
    } catch(cancelled:CancellationException){throw cancelled}

@@ -108,3 +108,7 @@ original=(ROOT/'packs/literary-words-48/puzzles.jsonl').read_text()
 (folder/'puzzles.jsonl').write_text(original+(folder/'new-puzzles.jsonl').read_text())
 (folder/'sources.json').write_text(json.dumps(sourceRows,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(dict(newChallenges=len(puzzles),concepts=144,totalWithExisting=600,perWorld=dict(collections.Counter(p['world'] for p in puzzles)))))
+
+# The complete bundle also includes immutable correction replacements.
+import runpy
+runpy.run_path(str(ROOT/'scripts/build_atlas_corrections.py'),run_name='__main__')

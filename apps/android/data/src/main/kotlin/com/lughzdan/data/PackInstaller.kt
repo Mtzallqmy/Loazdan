@@ -23,6 +23,7 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
  }) {
  val mutex=Mutex()
  private val json=Json { encodeDefaults=true }
+ private val registry=GameRegistry()
  private val dao=db.content()
  val chunks=File(root,"chunks")
  private fun directory(id:String,version:Int)=File(root,"versions/$id/$version")
@@ -95,7 +96,7 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
      require(line.isNotBlank() && line.length<=262144)
      val p=json.decodeFromString<PuzzleDefinition>(line)
      require(p.status=="published" && !p.fixtureOnly && p.sourceRefs.all {ref->ref in m.sourceRefs}) {"Only referenced published puzzles can be installed"}
-     require(GameRegistry().plugin(p.type).validatePuzzle(p).valid)
+     require(registry.plugin(p.type).validatePuzzle(p).valid)
      p.payload.images.forEach { image ->
       val asset=m.assets.singleOrNull {it.path==image.assetPath}
        ?: error("Visual image must reference a signed asset")

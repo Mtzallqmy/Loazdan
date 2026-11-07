@@ -52,6 +52,7 @@ class AtlasContentTest {
         }
         val journeys = AtlasCatalog.journeys(all)
         assertEquals(30, journeys.size)
+        assertEquals(150,journeys.flatMap {it.puzzles}.map {it.puzzleId}.distinct().size)
         for (journey in journeys) {
             assertEquals(5, journey.puzzles.size)
             assertEquals(5, journey.puzzles.map { it.tags.first { tag -> tag.startsWith("concept:") } }.distinct().size)
