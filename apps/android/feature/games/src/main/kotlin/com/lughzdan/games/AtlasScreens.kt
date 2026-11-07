@@ -1,5 +1,8 @@
 package com.lughzdan.games
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +25,7 @@ import com.lughzdan.engine.*
         item {
             Surface(shape = MaterialTheme.shapes.large) {
                 Column(Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.surface))).padding(22.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Image(painterResource(R.drawable.atlas_cover),contentDescription=null,contentScale=ContentScale.Crop,modifier=Modifier.fillMaxWidth().height(150.dp))
                     Text("أطلس المعرفة العربية", style = MaterialTheme.typography.headlineMedium)
                     Text("اختر عالمًا، واكتشفه عبر خمس محطات من اللعب.", style = MaterialTheme.typography.bodyLarge)
                     Text("${journeys.size} رحلة · ${puzzles.size} تحديًا مثبتًا", style = MaterialTheme.typography.labelLarge)
@@ -107,7 +111,7 @@ import com.lughzdan.engine.*
     Text("من ${WordBridge.start(p)} إلى ${WordBridge.goal(p)}", style = MaterialTheme.typography.titleLarge)
     Text("غيّر حرفًا واحدًا في كل خطوة، واختر كلمة من الكلمات المتاحة. لا تكرر كلمة سابقة.")
     Text(s.answerHistory.joinToString(" ← "), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-    p.payload.items.chunked(3).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { row.forEach { item ->
+    SessionPresentation.shuffled(p.payload.items,s,"bridge-bank").chunked(3).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { row.forEach { item ->
         FilterChip(selected = s.answerInput == item.text, onClick = { send(PlayerAction.InputAnswer(java.util.UUID.randomUUID().toString(), item.text)) }, enabled = !busy && item.text !in s.answerHistory, label = { Text(item.text) }, modifier = Modifier.weight(1f))
     } } }
 }

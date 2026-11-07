@@ -46,7 +46,9 @@
         "poetry",
         "rhetoric",
         "quran",
-        "logic"
+        "logic",
+        "heritage",
+        "science"
       ]
     },
     "difficulty": {
@@ -257,6 +259,14 @@
                 },
                 "minItems": 2,
                 "maxItems": 60
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -347,6 +357,14 @@
                 },
                 "minItems": 1,
                 "maxItems": 30
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -429,6 +447,14 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 2000
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -501,6 +527,14 @@
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 10
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -719,6 +753,14 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 2000
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "oneOf": [
@@ -858,6 +900,14 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 2000
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -912,7 +962,10 @@
                   "rhetoric",
                   "classical",
                   "modern",
-                  "riddles"
+                  "riddles",
+                  "heritage",
+                  "science",
+                  "logic"
                 ]
               },
               "sourceLabel": {
@@ -1010,6 +1063,14 @@
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 2000
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -1043,6 +1104,14 @@
               "assets": {
                 "minItems": 4,
                 "maxItems": 4
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             }
           }
@@ -1197,6 +1266,14 @@
                 },
                 "minItems": 1,
                 "maxItems": 10
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -1317,6 +1394,14 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 100
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -1419,6 +1504,14 @@
               "correctImageId": {
                 "type": "string",
                 "minLength": 1,
+                "maxLength": 2000
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
                 "maxLength": 2000
               }
             },
@@ -1535,6 +1628,14 @@
                 "minItems": 2,
                 "maxItems": 12,
                 "uniqueItems": true
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -1655,6 +1756,14 @@
                 },
                 "minItems": 2,
                 "maxItems": 12
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [
@@ -1798,6 +1907,14 @@
                   "optionValues",
                   "step"
                 ]
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
               }
             },
             "required": [

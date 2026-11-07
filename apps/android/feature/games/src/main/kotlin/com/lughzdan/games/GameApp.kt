@@ -2,6 +2,9 @@ package com.lughzdan.games
 import android.media.AudioManager
 import android.media.ToneGenerator
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -55,6 +58,7 @@ import com.lughzdan.engine.*
       Text("دقائق من اللعب، ومعنى جديد تكتشفه كل يوم.",color=MaterialTheme.colorScheme.onSurfaceVariant)
       Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
        Column(Modifier.fillMaxWidth().padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+        Image(painterResource(R.drawable.atlas_cover),contentDescription=null,contentScale=ContentScale.Crop,modifier=Modifier.fillMaxWidth().height(160.dp))
         Text("إلى أين يأخذك فضولك؟",style=MaterialTheme.typography.titleLarge)
         Text("ستة عوالم من اللغة والأدب والبيان واليمن والعلوم والمنطق.")
         Button(onClick={nav.navigate("atlas")},modifier=Modifier.fillMaxWidth()){Text("ابدأ رحلة الاكتشاف")}
@@ -105,7 +109,7 @@ import com.lughzdan.engine.*
      composable("review") {vm.vocabularyRepository?.let {DiscoveryReviewScreen(discoveries,it){nav.navigate("notebook"){launchSingleTop=true}}}}
      composable("literary") {
       val recent by vm.sessions.collectAsStateWithLifecycle()
-      LiteraryWordsScreen(puzzles,recent,progress.totalXp,busy,onPlay={play(it)},onResume={nav.navigate("session/$it")})
+      LiteraryWordsScreen(atlasPuzzles,recent,progress.totalXp,busy,onPlay={play(it)},onResume={nav.navigate("session/$it")})
      }
      composable("worlds") { WorldsScreen(vm) { worldId -> nav.navigate("world/$worldId") } }
      composable("world/{id}") { entry ->
@@ -197,7 +201,7 @@ import com.lughzdan.engine.*
          Text("${LiteraryWords.categories[p.payload.mode]} · معنى تستبقيه",style=MaterialTheme.typography.labelLarge)
         }
         Text(p.explanation)
-        if(LiteraryWords.supports(p)) {
+        if(p.payload.sourceLabel.isNotBlank()) {
          Text(p.payload.sourceLabel,style=MaterialTheme.typography.bodySmall)
          val uri=LocalUriHandler.current
          if(p.payload.sourceUrl.isNotBlank())TextButton(onClick={runCatching {uri.openUri(p.payload.sourceUrl)}}){Text("قراءة المصدر") }

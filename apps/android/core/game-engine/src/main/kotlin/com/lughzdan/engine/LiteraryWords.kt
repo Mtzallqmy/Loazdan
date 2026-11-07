@@ -4,7 +4,7 @@ package com.lughzdan.engine
 object LiteraryWords {
  const val COMPLETE="literary_complete"
  const val RIDDLE="literary_riddle"
- val categories=linkedMapOf("language" to "مفردات ومعانٍ","literature" to "فنون الأدب","rhetoric" to "بلاغة وبيان","classical" to "شعر تراثي","modern" to "شعر حديث","riddles" to "ألغاز وصفية")
+ val categories=linkedMapOf("language" to "مفردات ومعانٍ","literature" to "فنون الأدب","rhetoric" to "بلاغة وبيان","classical" to "شعر تراثي","modern" to "شعر حديث","riddles" to "ألغاز وصفية","heritage" to "اليمن والتراث","science" to "العلوم والحياة","logic" to "المنطق")
  fun supports(p:PuzzleDefinition)=p.type=="text_answer" && p.payload.variant in setOf(COMPLETE,RIDDLE)
  fun answer(p:PuzzleDefinition)=normalized(p,p.payload.acceptedAnswers.firstOrNull() ?: "")
  fun revealed(p:PuzzleDefinition,s:GameSession):Map<Int,String> {

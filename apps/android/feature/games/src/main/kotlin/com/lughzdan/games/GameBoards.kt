@@ -231,7 +231,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
 
 @Composable private fun TextAnswerBoard(p:PuzzleDefinition,s:GameSession,busy:Boolean,send:(PlayerAction)->Unit) {
  var input by rememberSaveable(s.id){mutableStateOf(s.answerInput)}
- Text(p.payload.prompt,style=MaterialTheme.typography.titleMedium)
+ if(p.payload.variant=="who_am_i")Text("اكشف القرائن تدريجيًا. المحاولة بثلاث فرص، وتقل النقاط مع التلميحات.",style=MaterialTheme.typography.bodySmall)
  OutlinedTextField(
   value=input,
   onValueChange={if(it.length<=2000){input=it;send(PlayerAction.InputAnswer(aid(),it))}},

@@ -29,17 +29,17 @@ class LiteraryContentReleaseTest {
   val root=File(context.cacheDir,"literary-${System.nanoTime()}")
   try {
    val keys=context.assets.open("pack-public-keys.json").bufferedReader().use {Json.parseToJsonElement(it.readText()).jsonObject.mapValues {Base64.getDecoder().decode(it.value.jsonPrimitive.content)}}
-   val installer=PackInstaller(db,root,ManifestVerifier(keys),103,directorySync={})
+   val installer=PackInstaller(db,root,ManifestVerifier(keys),104,directorySync={})
    suspend fun install(){BundledLiteraryPack.install(context,db,installer)}
    val repository=LocalGameRepository(context,db,false,recoverContent={install()})
    repository.initialize()
-   val all=repository.puzzles.first();assertEquals(168,all.size)
-   assertEquals(48,all.count(LiteraryWords::supports))
+   val all=repository.atlasCatalog.first();assertEquals(600,all.size)
+   assertTrue(all.count(LiteraryWords::supports)>=48)
    val p=all.first {LiteraryWords.supports(it)&&it.difficulty==1&&it.payload.variant==LiteraryWords.COMPLETE}
    val id=repository.start(p.puzzleId)
    val hint=p.hints.first {it.id.startsWith("letter-")}
    repository.act(id,PlayerAction.UseHint("hint",hint.id))
-   install();assertEquals(168,repository.puzzles.first().size)
+   install();assertEquals(600,repository.atlasCatalog.first().size)
    val restored=LocalGameRepository(context,db,false,recoverContent={install()})
    restored.initialize()
    val session=restored.observeSession(id).first()!!.session

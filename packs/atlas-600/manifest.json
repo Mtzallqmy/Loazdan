@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "packId": "4b260af1-d41e-5759-bf8b-cc4867948a36",
+  "version": 3,
+  "minAppVersionCode": 104,
+  "minEngineVersion": 3,
+  "locale": "ar",
+  "publishedAt": "2026-11-07T14:00:00Z",
+  "files": [
+    {
+      "path": "data/literary_words.jsonl",
+      "kind": "puzzles",
+      "sha256": "c5e6348984b2e43a0f21b6ba31c238d39fc9556d902527743bcab4b853db4241",
+      "bytes": 586985,
+      "chunks": [
+        {
+          "sha256": "c5e6348984b2e43a0f21b6ba31c238d39fc9556d902527743bcab4b853db4241",
+          "bytes": 586985
+        }
+      ]
+    },
+    {
+      "path": "rights/literary.txt",
+      "kind": "rights",
+      "sha256": "6f89fa8f7bc42f5fa20ae4d82e5c994b35e042d45cb61a6800a48b0c806f0057",
+      "bytes": 595,
+      "chunks": [
+        {
+          "sha256": "6f89fa8f7bc42f5fa20ae4d82e5c994b35e042d45cb61a6800a48b0c806f0057",
+          "bytes": 595
+        }
+      ]
+    }
+  ],
+  "downloadBytes": 587580,
+  "installedBytes": 587580,
+  "dependencies": [],
+  "sourceRefs": [
+    "296da3ef-15d3-56fa-b231-c3145ee785b6",
+    "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+    "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+    "32845550-c622-50c1-95e5-d50942e11f3d",
+    "30cd78e9-d168-55b2-98dd-c723586d887c",
+    "2a244336-2ece-504e-bb82-a2655235a178",
+    "451118a1-265e-5870-9947-ce03cf067d6f",
+    "1edbee69-975e-5c70-b3b8-56e44ff8fcd7",
+    "150aeae8-efe4-57b0-8917-35b09f8a90d8",
+    "576fafd9-27f3-5379-b93a-fc416945c20d",
+    "f71076fb-3abf-5d9e-ab1b-455e75d26f8d",
+    "1b5feb72-5eec-5351-a202-c7473aadf35c"
+  ],
+  "keyId": "literary2026",
+  "assets": [],
+  "references": [
+    {
+      "referenceId": "296da3ef-15d3-56fa-b231-c3145ee785b6",
+      "sourceId": "296da3ef-15d3-56fa-b231-c3145ee785b6",
+      "sourceName": "صياغة أصلية للُغْزَدان بمساعدة آلية؛ أمثلة تعليمية غير منسوبة إلى شاعر",
+      "author": "إعداد للتطبيق بمساعدة آلية",
+      "locator": "packs/literary-words-48/puzzles.jsonl",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "صياغة أصلية للُغْزَدان بمساعدة آلية؛ أمثلة تعليمية غير منسوبة إلى شاعر",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+      "sourceId": "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+      "sourceName": "الموسوعة الشعرية — المتنبي: على قدر أهل العزم",
+      "author": "أبو الطيب المتنبي",
+      "locator": "https://poetry.dct.gov.ae/diwan/poem/141007",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "الموسوعة الشعرية — المتنبي: على قدر أهل العزم",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+      "sourceId": "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+      "sourceName": "الموسوعة الشعرية — أحمد شوقي: قم للمعلم",
+      "author": "أحمد شوقي",
+      "locator": "https://poetry.dct.gov.ae/poems/19050-قم-للمعلم-وفه-التبجيلا",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "الموسوعة الشعرية — أحمد شوقي: قم للمعلم",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "32845550-c622-50c1-95e5-d50942e11f3d",
+      "sourceId": "32845550-c622-50c1-95e5-d50942e11f3d",
+      "sourceName": "مجمع اللغة العربية بالقاهرة — معجم الأدب: الشعر المرسل والتفعيلة",
+      "author": "مجمع اللغة العربية بالقاهرة",
+      "locator": "https://www.arabicacademy.gov.eg/ar/محرك-البحث/معجم/dic-383/الشعر-المرسل-و-التفعيلة",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "مجمع اللغة العربية بالقاهرة — معجم الأدب: الشعر المرسل والتفعيلة",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "30cd78e9-d168-55b2-98dd-c723586d887c",
+      "sourceId": "30cd78e9-d168-55b2-98dd-c723586d887c",
+      "sourceName": "صياغة تعليمية أصلية للُغْزَدان بمساعدة آلية",
+      "author": "إعداد للتطبيق بمساعدة آلية",
+      "locator": "packs/literary-words-48/puzzles.jsonl",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "صياغة تعليمية أصلية للُغْزَدان بمساعدة آلية",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "2a244336-2ece-504e-bb82-a2655235a178",
+      "sourceId": "2a244336-2ece-504e-bb82-a2655235a178",
+      "sourceName": "جواهر البلاغة — أحمد الهاشمي، أبواب البيان والمعاني والبديع",
+      "author": "جواهر البلاغة — أحمد الهاشمي، أبواب البيان والمعاني والبديع",
+      "locator": "https://www.hindawi.org/books/85925824/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جواهر البلاغة — أحمد الهاشمي، أبواب البيان والمعاني والبديع",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "451118a1-265e-5870-9947-ce03cf067d6f",
+      "sourceId": "451118a1-265e-5870-9947-ce03cf067d6f",
+      "sourceName": "اليونسكو — مواقع اليمن المسجلة في التراث العالمي",
+      "author": "اليونسكو — مواقع اليمن المسجلة في التراث العالمي",
+      "locator": "https://whc.unesco.org/en/statesparties/ye/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "اليونسكو — مواقع اليمن المسجلة في التراث العالمي",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "1edbee69-975e-5c70-b3b8-56e44ff8fcd7",
+      "sourceId": "1edbee69-975e-5c70-b3b8-56e44ff8fcd7",
+      "sourceName": "NASA — دورة الماء",
+      "author": "NASA — دورة الماء",
+      "locator": "https://science.nasa.gov/kids/earth/what-is-the-water-cycle/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "NASA — دورة الماء",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "150aeae8-efe4-57b0-8917-35b09f8a90d8",
+      "sourceId": "150aeae8-efe4-57b0-8917-35b09f8a90d8",
+      "sourceName": "NASA Space Place — معجم مصطلحات الفضاء",
+      "author": "NASA Space Place — معجم مصطلحات الفضاء",
+      "locator": "https://spaceplace.nasa.gov/glossary/en/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "NASA Space Place — معجم مصطلحات الفضاء",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "576fafd9-27f3-5379-b93a-fc416945c20d",
+      "sourceId": "576fafd9-27f3-5379-b93a-fc416945c20d",
+      "sourceName": "OpenStax — Concepts of Biology",
+      "author": "OpenStax — Concepts of Biology",
+      "locator": "https://openstax.org/books/concepts-biology/pages/1-introduction",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "OpenStax — Concepts of Biology",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "f71076fb-3abf-5d9e-ab1b-455e75d26f8d",
+      "sourceId": "f71076fb-3abf-5d9e-ab1b-455e75d26f8d",
+      "sourceName": "OpenStax — College Physics 2e",
+      "author": "OpenStax — College Physics 2e",
+      "locator": "https://openstax.org/books/college-physics-2e/pages/1-introduction-to-science-and-the-realm-of-physics-physical-quantities-and-units",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "OpenStax — College Physics 2e",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "1b5feb72-5eec-5351-a202-c7473aadf35c",
+      "sourceId": "1b5feb72-5eec-5351-a202-c7473aadf35c",
+      "sourceName": "مجمع اللغة العربية بالقاهرة — التفعيلة وشعر التفعيلة",
+      "author": "مجمع اللغة العربية بالقاهرة — التفعيلة وشعر التفعيلة",
+      "locator": "https://www.arabicacademy.gov.eg/ar/محرك-البحث/معجم/dic-383/الشعر-المرسل-و-التفعيلة",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "مجمع اللغة العربية بالقاهرة — التفعيلة وشعر التفعيلة",
+      "noticePath": "rights/literary.txt"
+    }
+  ],
+  "signature": "lq8zIk0HguM3xc7U8_s8xtgYJWBbe-32JE8bE8oq5VbjtBAsfjxsfCRPUbBzHBjuZUGEkOiJkfi3d3x2qUSXCg"
+}
