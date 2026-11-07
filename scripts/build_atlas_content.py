@@ -29,7 +29,7 @@ def base(world,topic,concept,index,kind,payload,explanation,hints,source='origin
  name,url=refs[source]
  payload.update(sourceLabel=name,sourceUrl=url)
  if topic>=2 or payload.get('variant')=='word_bridge':difficulty=max(difficulty,2)
- return dict(schemaVersion=1,puzzleId=uid(f'{world}/{concept}/{index}'),revision=1,gameId=uid('game/'+kind),type=kind,world=world,difficulty=difficulty,rulesVersion=1,normalization='arabic_basic_v1',title=worldNames[world]+' · تحدي معرفة',status='published',fixtureOnly=False,sourceRefs=[refIds[source]],explanation=explanation,hints=hints,payload=payload,tags=['atlas:'+world,'topic:'+str(topic),'concept:'+world+'/'+str(concept)])
+ return dict(schemaVersion=1,puzzleId=uid(f'{world}/{concept}/{index}'),revision=2 if difficulty>=2 else 1,gameId=uid('game/'+kind),type=kind,world=world,difficulty=difficulty,rulesVersion=1,normalization='arabic_basic_v1',title=worldNames[world]+' · تحدي معرفة',status='published',fixtureOnly=False,sourceRefs=[refIds[source]],explanation=explanation,hints=hints,payload=payload,tags=['atlas:'+world,'topic:'+str(topic),'concept:'+world+'/'+str(concept)])
 
 def hints_for(answer,example,fixed=()):
  hidden=[i for i in range(len(answer)) if i not in fixed]
