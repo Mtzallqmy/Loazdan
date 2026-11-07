@@ -24,5 +24,5 @@ with zipfile.ZipFile(sys.argv[1]) as apk:
   data=apk.read('assets/literary/'+f['path']);assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
  words=apk.read('assets/literary/data/literary_words.jsonl')
  assert words==(ROOT/'packs/atlas-600/puzzles.jsonl').read_bytes()
- assert len(words.splitlines())==494
- print(json.dumps(dict(atlasPackRows=494,activeChallenges=600,puzzles=len(ps),media=len(media),nativeLibraries=libs,contentSha256=b['sha256'])))
+ assert len(words.splitlines())==508
+ print(json.dumps(dict(atlasPackRows=508,activeChallenges=600,puzzles=len(ps),media=len(media),nativeLibraries=libs,contentSha256=b['sha256'])))

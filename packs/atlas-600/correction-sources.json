@@ -16,5 +16,53 @@
     "referenceId": "77f85cd7-bdc6-5337-8078-f6c1466b8432",
     "name": "جامعة الملك سعود — تفسير البغوي، سورة الفيل، الآية 3",
     "url": "https://quran.ksu.edu.sa/tafseer/baghawy/sura105-aya3.html"
+  },
+  {
+    "key": "simile",
+    "referenceId": "0413af84-094a-5930-b628-38eb099ab620",
+    "name": "جواهر البلاغة — أقسام التشبيه",
+    "url": "https://www.hindawi.org/books/85925824/2.1/"
+  },
+  {
+    "key": "metonymy",
+    "referenceId": "66f62a43-c061-5e42-aa89-3a9393c43ec3",
+    "name": "جواهر البلاغة — المجاز المرسل وعلاقاته",
+    "url": "https://www.hindawi.org/books/85925824/2.2/"
+  },
+  {
+    "key": "rhetoric",
+    "referenceId": "27eda0ff-a575-514f-a40a-5ee4bfe810a3",
+    "name": "جواهر البلاغة — المعاني والبيان والبديع",
+    "url": "https://www.hindawi.org/books/85925824/"
+  },
+  {
+    "key": "year",
+    "referenceId": "f0bc2795-cdb7-593a-ac01-eb274b9c0b08",
+    "name": "جامعة الملك سعود — تفسير الطبري، يوسف 49",
+    "url": "https://quran.ksu.edu.sa/tafseer/tabary/sura12-aya49.html"
+  },
+  {
+    "key": "night",
+    "referenceId": "c8f585ed-5450-5f5f-b654-903b0e054948",
+    "name": "جامعة الملك سعود — تفسير الطبري، التكوير 17",
+    "url": "https://quran.ksu.edu.sa/tafseer/tabary/sura81-aya17.html"
+  },
+  {
+    "key": "kawthar",
+    "referenceId": "7e242393-06cf-5136-a966-b7af096a1e0b",
+    "name": "جامعة الملك سعود — تفسير الطبري، الكوثر 1",
+    "url": "https://quran.ksu.edu.sa/tafseer/tabary/sura108-aya1.html"
+  },
+  {
+    "key": "samad",
+    "referenceId": "48cfd12a-767d-5cb6-8e5a-87a98aa85486",
+    "name": "جامعة الملك سعود — تفسير السعدي، الإخلاص 2",
+    "url": "https://quran.ksu.edu.sa/tafseer/saadi/sura112-aya2.html"
+  },
+  {
+    "key": "logic",
+    "referenceId": "e4e5352e-d82a-530d-ad90-e670c29b34d6",
+    "name": "مؤسسة هنداوي — المنطق الصوري القديم بين الأصالة والتبعية",
+    "url": "https://downloads.hindawi.org/books/35841973.pdf"
   }
 ]

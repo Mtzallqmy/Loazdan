@@ -39,6 +39,8 @@ class TextAnswerPlugin : GamePlugin {
                     revealedHints = session.revealedHints + (h.id to HintProvider.reveal(puzzle, session, h))
                 ).let {if(LiteraryWords.supports(puzzle))it.copy(answerInput=LiteraryWords.input(puzzle,it,it.answerInput)) else it}
             }
+            is PlayerAction.Undo -> if(WordBridge.supports(puzzle) && session.answerHistory.size>1)
+                session.copy(answerHistory=session.answerHistory.dropLast(1),answerInput="") else session
             is PlayerAction.InputAnswer -> if (answerTextValid(action.answer)) session.copy(answerInput = if(LiteraryWords.supports(puzzle))LiteraryWords.input(puzzle,session,action.answer) else action.answer) else session
             is PlayerAction.Submit -> if(WordBridge.supports(puzzle)) WordBridge.submit(puzzle,session) else {
                 if (session.answerInput.isBlank() || (LiteraryWords.supports(puzzle) && !LiteraryWords.complete(puzzle,session))) session

@@ -124,6 +124,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
     Text("من ${WordBridge.start(p)} إلى ${WordBridge.goal(p)}", style = MaterialTheme.typography.titleLarge)
     Text("غيّر حرفًا واحدًا في كل خطوة، واختر كلمة من الكلمات المتاحة. لا تكرر كلمة سابقة.")
     Text(s.answerHistory.joinToString(" ← "), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+    OutlinedButton(onClick={send(PlayerAction.Undo(java.util.UUID.randomUUID().toString()))},enabled=!busy && s.answerHistory.size>1) {Text("تراجع خطوة")}
+
     SessionPresentation.shuffled(p.payload.items,s,"bridge-bank").chunked(3).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { row.forEach { item ->
         FilterChip(selected = s.answerInput == item.text, onClick = { send(PlayerAction.InputAnswer(java.util.UUID.randomUUID().toString(), item.text)) }, enabled = !busy && item.text !in s.answerHistory, label = { Text(item.text) }, modifier = Modifier.weight(1f))
     } } }

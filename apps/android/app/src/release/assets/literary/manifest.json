@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packId": "4b260af1-d41e-5759-bf8b-cc4867948a36",
-  "version": 5,
+  "version": 6,
   "minAppVersionCode": 104,
   "minEngineVersion": 3,
   "locale": "ar",
@@ -10,12 +10,12 @@
     {
       "path": "data/literary_words.jsonl",
       "kind": "puzzles",
-      "sha256": "87c4e29ba3bc4f7a41458f6d5466843ac0890b7895b069fdac722f922d2f50ca",
-      "bytes": 601963,
+      "sha256": "d35298a7f6d2d6728b420fbdccb03bbef8ca143fe55fff6212eb0724c015b51e",
+      "bytes": 620417,
       "chunks": [
         {
-          "sha256": "87c4e29ba3bc4f7a41458f6d5466843ac0890b7895b069fdac722f922d2f50ca",
-          "bytes": 601963
+          "sha256": "d35298a7f6d2d6728b420fbdccb03bbef8ca143fe55fff6212eb0724c015b51e",
+          "bytes": 620417
         }
       ]
     },
@@ -32,8 +32,8 @@
       ]
     }
   ],
-  "downloadBytes": 602558,
-  "installedBytes": 602558,
+  "downloadBytes": 621012,
+  "installedBytes": 621012,
   "dependencies": [],
   "sourceRefs": [
     "296da3ef-15d3-56fa-b231-c3145ee785b6",
@@ -50,7 +50,15 @@
     "1b5feb72-5eec-5351-a202-c7473aadf35c",
     "d045c9e7-c64b-58be-b8dc-7507731ca13d",
     "c68c8562-bf03-59c1-a3f9-18d2148f7441",
-    "77f85cd7-bdc6-5337-8078-f6c1466b8432"
+    "77f85cd7-bdc6-5337-8078-f6c1466b8432",
+    "0413af84-094a-5930-b628-38eb099ab620",
+    "66f62a43-c061-5e42-aa89-3a9393c43ec3",
+    "27eda0ff-a575-514f-a40a-5ee4bfe810a3",
+    "f0bc2795-cdb7-593a-ac01-eb274b9c0b08",
+    "c8f585ed-5450-5f5f-b654-903b0e054948",
+    "7e242393-06cf-5136-a966-b7af096a1e0b",
+    "48cfd12a-767d-5cb6-8e5a-87a98aa85486",
+    "e4e5352e-d82a-530d-ad90-e670c29b34d6"
   ],
   "keyId": "literary2026",
   "assets": [],
@@ -219,7 +227,95 @@
       "licenseCode": "LicenseRef-Lughzdan-Literary",
       "attribution": "جامعة الملك سعود — تفسير البغوي، سورة الفيل، الآية 3",
       "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "0413af84-094a-5930-b628-38eb099ab620",
+      "sourceId": "0413af84-094a-5930-b628-38eb099ab620",
+      "sourceName": "جواهر البلاغة — أقسام التشبيه",
+      "author": "جواهر البلاغة — أقسام التشبيه",
+      "locator": "https://www.hindawi.org/books/85925824/2.1/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جواهر البلاغة — أقسام التشبيه",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "66f62a43-c061-5e42-aa89-3a9393c43ec3",
+      "sourceId": "66f62a43-c061-5e42-aa89-3a9393c43ec3",
+      "sourceName": "جواهر البلاغة — المجاز المرسل وعلاقاته",
+      "author": "جواهر البلاغة — المجاز المرسل وعلاقاته",
+      "locator": "https://www.hindawi.org/books/85925824/2.2/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جواهر البلاغة — المجاز المرسل وعلاقاته",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "27eda0ff-a575-514f-a40a-5ee4bfe810a3",
+      "sourceId": "27eda0ff-a575-514f-a40a-5ee4bfe810a3",
+      "sourceName": "جواهر البلاغة — المعاني والبيان والبديع",
+      "author": "جواهر البلاغة — المعاني والبيان والبديع",
+      "locator": "https://www.hindawi.org/books/85925824/",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جواهر البلاغة — المعاني والبيان والبديع",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "f0bc2795-cdb7-593a-ac01-eb274b9c0b08",
+      "sourceId": "f0bc2795-cdb7-593a-ac01-eb274b9c0b08",
+      "sourceName": "جامعة الملك سعود — تفسير الطبري، يوسف 49",
+      "author": "جامعة الملك سعود — تفسير الطبري، يوسف 49",
+      "locator": "https://quran.ksu.edu.sa/tafseer/tabary/sura12-aya49.html",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جامعة الملك سعود — تفسير الطبري، يوسف 49",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "c8f585ed-5450-5f5f-b654-903b0e054948",
+      "sourceId": "c8f585ed-5450-5f5f-b654-903b0e054948",
+      "sourceName": "جامعة الملك سعود — تفسير الطبري، التكوير 17",
+      "author": "جامعة الملك سعود — تفسير الطبري، التكوير 17",
+      "locator": "https://quran.ksu.edu.sa/tafseer/tabary/sura81-aya17.html",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جامعة الملك سعود — تفسير الطبري، التكوير 17",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "7e242393-06cf-5136-a966-b7af096a1e0b",
+      "sourceId": "7e242393-06cf-5136-a966-b7af096a1e0b",
+      "sourceName": "جامعة الملك سعود — تفسير الطبري، الكوثر 1",
+      "author": "جامعة الملك سعود — تفسير الطبري، الكوثر 1",
+      "locator": "https://quran.ksu.edu.sa/tafseer/tabary/sura108-aya1.html",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جامعة الملك سعود — تفسير الطبري، الكوثر 1",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "48cfd12a-767d-5cb6-8e5a-87a98aa85486",
+      "sourceId": "48cfd12a-767d-5cb6-8e5a-87a98aa85486",
+      "sourceName": "جامعة الملك سعود — تفسير السعدي، الإخلاص 2",
+      "author": "جامعة الملك سعود — تفسير السعدي، الإخلاص 2",
+      "locator": "https://quran.ksu.edu.sa/tafseer/saadi/sura112-aya2.html",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جامعة الملك سعود — تفسير السعدي، الإخلاص 2",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "e4e5352e-d82a-530d-ad90-e670c29b34d6",
+      "sourceId": "e4e5352e-d82a-530d-ad90-e670c29b34d6",
+      "sourceName": "مؤسسة هنداوي — المنطق الصوري القديم بين الأصالة والتبعية",
+      "author": "مؤسسة هنداوي — المنطق الصوري القديم بين الأصالة والتبعية",
+      "locator": "https://downloads.hindawi.org/books/35841973.pdf",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "مؤسسة هنداوي — المنطق الصوري القديم بين الأصالة والتبعية",
+      "noticePath": "rights/literary.txt"
     }
   ],
-  "signature": "OtmDcygHRrOJy6PgMfiO-5LC1FLDBvUXfS7cCHVAjdC61_RJM-XxY-P8ComWY-3yH1o2V9rHlj_lDnSGj2ALDw"
+  "signature": "yDgxIwgC0dOri3rlNBIaTpWADad61jrfBWJDFMsV7mspOvFgYSeTEY1sLKGC8wClJxrM2NLNvMxtVXBj-m5VDg"
 }

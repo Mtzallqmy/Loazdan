@@ -11,7 +11,7 @@ class AtlasCorrectionsTest {
         fun load(path:String)=File(root,path).readLines().filter {it.isNotBlank()}.map {Json.decodeFromString<PuzzleDefinition>(it)}
         val corrected=load("packs/atlas-600/corrected-puzzles.jsonl")
         val all=load("packs/opening-pack-120/data/puzzles.jsonl")+load("packs/atlas-600/puzzles.jsonl")
-        assertEquals(14,corrected.size)
+        assertEquals(28,corrected.size)
         val active=AtlasCatalog.active(all)
         assertEquals(600,active.size)
         assertTrue(corrected.all {it in active})
@@ -29,6 +29,8 @@ class AtlasCorrectionsTest {
                 "anagram"->{val used=mutableSetOf<Int>();p.payload.acceptedAnswers.first().forEach {token->val index=p.payload.tiles.indices.first {it !in used&&p.payload.tiles[it]==token.toString()};used.add(index);send(PlayerAction.AddTile(id(),index))}}
                 "text_answer"->send(PlayerAction.InputAnswer(id(),p.payload.acceptedAnswers.first()))
                 "choice"->send(PlayerAction.Select(id(),p.payload.correctId))
+                "matching"->p.payload.pairs.forEach {pair->send(PlayerAction.Match(id(),pair.leftId,pair.rightId))}
+                "order"->send(PlayerAction.Reorder(id(),p.payload.correctOrder))
             }
             send(PlayerAction.Submit(id()))
             assertEquals(p.title,SessionStatus.WON,s.status)
