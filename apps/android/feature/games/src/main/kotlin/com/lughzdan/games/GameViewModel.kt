@@ -32,6 +32,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _busy=MutableStateFlow(false);val busy=_busy.asStateFlow()
  private val mutex=Mutex()
+ private val runStartPending=AtomicBoolean(false)
  private val submissionPending=AtomicBoolean(false)
  private val _submitting=MutableStateFlow(false);val submitting=_submitting.asStateFlow()
  init { viewModelScope.launch {settingsStore.ensureGuestId()}; initialize() }
@@ -52,12 +53,13 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
 
  fun createAtlasRun(run:AtlasRun,onCreated:(String)->Unit) {
+  if(!runStartPending.compareAndSet(false,true))return
   viewModelScope.launch { mutex.withLock {
    _busy.value=true
    try {onCreated(repository.createRun(run))}
    catch(cancelled:CancellationException){throw cancelled}
    catch(_:Exception){_error.value="تعذّر بدء الرحلة. تحقق من تثبيت الحزمة ومستوى الخبرة."}
-   finally {_busy.value=false}
+   finally {_busy.value=false;runStartPending.set(false)}
   } }
  }
  fun continueAtlasRun(id:String,onSession:(String)->Unit) {

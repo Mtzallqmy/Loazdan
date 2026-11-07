@@ -17,6 +17,10 @@ prepare_emulator_shell
 adb shell pm clear com.lughzdan.app
 collect_evidence() {
   local result=$?
+  if [[ -n "${record_pid:-}" ]]; then
+    adb shell 'pidof screenrecord | xargs -r kill -2' || true
+    wait "$record_pid" || true
+  fi
   mkdir -p artifacts/stage03
   adb pull /sdcard/Android/data/com.lughzdan.app/files/ artifacts/stage03/device-files || true
   for metric in artifacts/stage03/device-files/stage03-gfxinfo.txt artifacts/stage03/device-files/stage03-meminfo.txt; do
@@ -66,8 +70,11 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 adb shell am force-stop com.lughzdan.app
 adb shell screenrecord --time-limit 90 /sdcard/atlas-gameplay.mp4 >/dev/null 2>&1 &
+record_pid=$!
 run_phase journeyNotebookAndDuelPersistBeforeProcessKill AtlasDeviceTest
 adb shell 'pidof screenrecord | xargs -r kill -2' || true
+wait "$record_pid" || true
+unset record_pid
 adb shell am force-stop com.lughzdan.app
 adb shell svc wifi disable
 adb shell svc data disable

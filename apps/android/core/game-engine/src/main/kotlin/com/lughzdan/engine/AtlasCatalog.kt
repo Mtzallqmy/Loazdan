@@ -45,7 +45,7 @@ object AtlasCatalog {
     /** Two distinct questions per game and difficulty give both players comparable turns. */
     fun duelPool(all: List<PuzzleDefinition>, world: String, maxDifficulty: Int): List<String> {
         val groups = all.filter { AtlasCatalog.world(it) == world && it.difficulty <= maxDifficulty && it.type in setOf("choice", "text_answer", "sequence") }
-            .groupBy { it.type to it.difficulty }.values
+            .groupBy { Triple(it.type,it.payload.variant,it.difficulty) }.values
         return groups.filter { it.size >= 2 }.sortedBy { it.first().difficulty }.take(3).flatMap { group -> group.shuffled().take(2).map { it.puzzleId } }
     }
 }

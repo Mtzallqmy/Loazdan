@@ -60,7 +60,7 @@ class AtlasContentTest {
         for (world in AtlasCatalog.worlds) {
             val duel = AtlasCatalog.duelPool(all, world.id, 5).map { id -> all.first { it.puzzleId == id } }
             assertTrue(duel.size >= 2)
-            duel.chunked(2).forEach { pair -> assertEquals(pair[0].type, pair[1].type); assertEquals(pair[0].difficulty, pair[1].difficulty) }
+            duel.chunked(2).forEach { pair -> assertEquals(pair[0].type, pair[1].type); assertEquals(pair[0].payload.variant,pair[1].payload.variant); assertEquals(pair[0].difficulty, pair[1].difficulty) }
         }
     }
 
