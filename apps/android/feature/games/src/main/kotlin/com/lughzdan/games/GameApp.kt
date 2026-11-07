@@ -153,7 +153,10 @@ import com.lughzdan.engine.*
         Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&(!LiteraryWords.supports(p)||LiteraryWords.complete(p,s))&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
 
         if(s.wrongSubmissions>0)FeedbackCard(false,"الإجابة السابقة غير صحيحة؛ راجع العلامات وحاول مرة أخرى.")
-        HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
+        if(LiteraryWords.supports(p)) {
+         p.hints.firstOrNull {it.id=="clue" && it.id !in s.usedHintIds}?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("قرينة إضافية (−${hint.penalty} نقاط)")}}
+         p.hints.firstOrNull {it.id.startsWith("letter-") && it.id !in s.usedHintIds}?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("اكشف حرفًا (−${hint.penalty} نقاط)")}}
+        } else HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
         TextButton(onClick={vm.action(s.id,PlayerAction.Pause(java.util.UUID.randomUUID().toString()))},enabled=!busy){Text("إيقاف مؤقت وحفظ")}
        } else {
         FeedbackCard(s.status==SessionStatus.WON,if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات؛ اكتشف الإجابة وتعلّم منها")
@@ -176,7 +179,8 @@ import com.lughzdan.engine.*
         } else Text(if(p.fixtureOnly) "المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق." else "المصدر: الحزمة العربية الأصلية · تفاصيل المراجع في المكتبة",style=MaterialTheme.typography.bodySmall)
         if(s.answerHistory.isNotEmpty())Text("إجاباتك: "+s.answerHistory.joinToString("، "))
         if(s.submittedIds.isNotEmpty())Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
-        Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp) && (!LiteraryWords.supports(p) || LiteraryWords.supports(it))};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}
+        val nextPool=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp) && (!LiteraryWords.supports(p) || LiteraryWords.supports(it))}
+        if(nextPool.isNotEmpty())Button(onClick={play(nextPool[(nextPool.indexOfFirst {it.puzzleId==p.puzzleId}+1)%nextPool.size].puzzleId)},enabled=!busy){Text("اللغز التالي")}
         val different=remember(puzzles,s.id,progress.totalXp){puzzles.filter {it.type!=p.type && it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}.shuffled(kotlin.random.Random(s.id.hashCode())).firstOrNull()}
         different?.let { next->OutlinedButton(onClick={play(next.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("جرّب نمطًا مختلفًا · ${gameNames[next.type] ?: next.type}")} }
         if(LiteraryWords.supports(p))TextButton(onClick={nav.navigate("literary"){launchSingleTop=true}}){Text("اختر فئة أخرى من الديوان")}

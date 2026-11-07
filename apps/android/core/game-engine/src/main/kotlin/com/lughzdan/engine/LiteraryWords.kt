@@ -18,7 +18,7 @@ object LiteraryWords {
   revealed(p,s).forEach {(i,t)->clean[i]=t.single()}
   return clean.concatToString()
  }
- fun complete(p:PuzzleDefinition,s:GameSession)=p.payload.variant!=COMPLETE || (s.answerInput.length==answer(p).length && s.answerInput.none {it.isWhitespace()})
+ fun complete(p:PuzzleDefinition,s:GameSession)=if(p.payload.variant==COMPLETE) s.answerInput.length==answer(p).length && s.answerInput.none {it.isWhitespace()} else s.answerInput.isNotBlank()
  fun errors(p:PuzzleDefinition):List<String> = buildList {
   if(!supports(p))return@buildList
   if(p.payload.mode !in categories || p.payload.sourceLabel.isBlank())add("missing_literary_metadata")

@@ -13,10 +13,11 @@ object BundledLiteraryPack {
  const val ID="4b260af1-d41e-5759-bf8b-cc4867948a36"
  suspend fun install(context:Context,db:LughzdanDatabase,installer:PackInstaller)=withContext(Dispatchers.IO) {
   if(!context.assets.list("literary").orEmpty().contains("manifest.json"))return@withContext
-  if(db.content().head(ID)?.activeVersion!=null || db.content().journal(ID,1)?.phase=="DELETED")return@withContext
+  val head=db.content().head(ID)
+  if((head?.activeVersion ?: 0)>=2 || (head?.highWater ?: 0)>2 || db.content().journal(ID,2)?.phase=="DELETED")return@withContext
   val raw=context.assets.open("literary/manifest.json").use {it.readBytes()}
   val manifest=installer.verify(raw)
-  require(manifest.packId==ID && manifest.version==1)
+  require(manifest.packId==ID && manifest.version==2)
   installer.mutex.lock()
   try {
    installer.chunks.mkdirs()

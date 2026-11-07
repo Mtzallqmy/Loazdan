@@ -21,7 +21,7 @@ import java.util.UUID
 @Serializable data class SignedManifest(val schemaVersion:Int,val packId:String,val version:Int,val minAppVersionCode:Int,val minEngineVersion:Int,val locale:String,val publishedAt:String,val files:List<ManifestFile>,val downloadBytes:Long,val installedBytes:Long,val dependencies:List<Dependency>,val sourceRefs:List<String>,val keyId:String,val signature:String,val assets:List<Asset>,val references:List<SourceReference>)
 
 /** Caller must run verification and all filesystem/network methods on a worker thread. */
-class ManifestVerifier(trustedKeys:Map<String,ByteArray>) {
+class ManifestVerifier(trustedKeys:Map<String,ByteArray>, private val keyPackScope:Map<String,String> = emptyMap()) {
  private val keys=trustedKeys.mapValues { (_,v)->v.copyOf().also { require(it.size==32) } }
  fun verify(input:InputStream,appVersion:Int,engineVersion:Int,highWaterMark:Int=0):SignedManifest {
   val bytes=input.readNBytesCompat(16*1024*1024)
@@ -35,6 +35,7 @@ class ManifestVerifier(trustedKeys:Map<String,ByteArray>) {
   checkNumbers(obj)
   val m=Json.decodeFromString<SignedManifest>(text)
   ManifestPolicy.validate(m,appVersion,engineVersion,highWaterMark)
+  keyPackScope[m.keyId]?.let {require(m.packId==it) { "Signing key is restricted to another pack" }}
   val raw=keys[m.keyId] ?: error("Unknown signing key")
   require(m.signature.matches(Regex("[A-Za-z0-9_-]{86}")))
   val signature=Base64.getUrlDecoder().decode(m.signature)

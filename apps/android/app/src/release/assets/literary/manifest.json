@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
   "packId": "4b260af1-d41e-5759-bf8b-cc4867948a36",
-  "version": 1,
+  "version": 2,
   "minAppVersionCode": 103,
   "minEngineVersion": 3,
   "locale": "ar",
-  "publishedAt": "2026-11-06T20:00:00Z",
+  "publishedAt": "2026-11-07T14:00:00Z",
   "files": [
     {
       "path": "data/literary_words.jsonl",
       "kind": "puzzles",
-      "sha256": "98ff80d80fda1b394849ca165a51a36919151e5d2a27bef1152796a370fda214",
-      "bytes": 55329,
+      "sha256": "f2d0619fb2d1bbc92ab2b0688ba653cd235ecd3d4509e14d3db753ec5f81740a",
+      "bytes": 56013,
       "chunks": [
         {
-          "sha256": "98ff80d80fda1b394849ca165a51a36919151e5d2a27bef1152796a370fda214",
-          "bytes": 55329
+          "sha256": "f2d0619fb2d1bbc92ab2b0688ba653cd235ecd3d4509e14d3db753ec5f81740a",
+          "bytes": 56013
         }
       ]
     },
@@ -32,8 +32,8 @@
       ]
     }
   ],
-  "downloadBytes": 55924,
-  "installedBytes": 55924,
+  "downloadBytes": 56608,
+  "installedBytes": 56608,
   "dependencies": [],
   "sourceRefs": [
     "296da3ef-15d3-56fa-b231-c3145ee785b6",
@@ -89,5 +89,5 @@
       "noticePath": "rights/literary.txt"
     }
   ],
-  "signature": "IfMCduJivkuBnkvCD0gJKR0eONvtUPB_PM57MNTjuOTwILMFCmPtdcs7kOvgksc9X-bP_JPjC3z11p1m5WdHBw"
+  "signature": "pQFZnidYDaUNDfdKXY8zz4eH3mfPD5omnYtkZ9wAQ9H28YHgA7P5E1CGBjr6Iq6AUN4otquYKkKa-OkWRQ5TAg"
 }
