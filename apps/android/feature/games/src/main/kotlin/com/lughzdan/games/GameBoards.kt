@@ -56,7 +56,7 @@ val gameNames=mapOf(
  "anagram" -> Builder(p,s,busy,send)
  "matching" -> if(p.payload.options.isNotEmpty()) ChoiceAnswers(p,s,busy,send) else Matching(p,s,busy,send)
  "order" -> Ordering(p,s,busy,send)
- "text_answer" -> if(LiteraryWords.supports(p))LiteraryWordBoard(p,s,busy,send) else TextAnswerBoard(p,s,busy,send)
+ "text_answer" -> if(WordBridge.supports(p))WordBridgeBoard(p,s,busy,send) else if(LiteraryWords.supports(p))LiteraryWordBoard(p,s,busy,send) else TextAnswerBoard(p,s,busy,send)
  "sequence" -> SequenceBoard(p,s,busy,send)
  "image_guess" -> ImageGuessBoard(p,s,busy,send)
  in visualGameTypes -> VisualBoard(p,s,busy,send)
@@ -73,6 +73,8 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  fun selectCell(cell:Cell) { activeRow=cell.row;activeCol=cell.col }
  val starts=p.payload.entries.map {Cell(it.row,it.col)}.distinct().sortedWith(compareBy<Cell> {it.row}.thenByDescending {it.col})
  fun number(item:CrosswordEntry)=starts.indexOf(Cell(item.row,item.col))+1
+ var questionMode by rememberSaveable(s.id){mutableStateOf(false)}
+ Row {FilterChip(selected=!questionMode,onClick={questionMode=false},label={Text("الشبكة")});Spacer(Modifier.width(8.dp));FilterChip(selected=questionMode,onClick={questionMode=true},label={Text("سؤال وكلمة")})}
  val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
  OutlinedCard(Modifier.fillMaxWidth()) { Column(Modifier.padding(8.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
  Text("سؤال ${number(e)} · ${if(e.direction=="down")"عمودي" else "أفقي"} · ${e.tokens.size} حروف",style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.primary)
@@ -87,7 +89,7 @@ private fun path(e:CrosswordEntry)=e.tokens.indices.map { Cell(e.row+if(e.direct
  if(showClues) p.payload.entries.forEach { item->TextButton(onClick={entryId=item.id;selectCell(Cell(item.row,item.col))},modifier=Modifier.heightIn(min=48.dp)){Text((if(item.id==entryId)"✓ " else "")+"${number(item)}. ${item.clue} · ${if(item.direction=="down")"عمودي" else "أفقي"}")} }
  TextButton(onClick={p.payload.entries.firstOrNull {it.id!=entryId&&active in path(it)}?.let {entryId=it.id}},enabled=!busy&&p.payload.entries.any {it.id!=entryId&&active in path(it)}){Text("تغيير الاتجاه عند التقاطع")}
  val open=p.payload.entries.flatMap(::path).toSet()
- Grid(p.payload.rows,p.payload.cols){r,c->val pos=Cell(r,c);val mark=AnswerFeedback.cell(p,s,r,c)
+ Grid(if(questionMode)1 else p.payload.rows,if(questionMode)e.tokens.size else p.payload.cols){row,col->val pos=if(questionMode)path(e)[e.tokens.lastIndex-col] else Cell(row,col);val r=pos.row;val c=pos.col;val mark=AnswerFeedback.cell(p,s,r,c)
   if(pos !in open)Surface(Modifier.size(cellSize).padding(2.dp),color=MaterialTheme.colorScheme.surfaceVariant){} else OutlinedButton(onClick={selectCell(pos);if(pos !in path(e))entryId=p.payload.entries.first {pos in path(it)}.id},enabled=!busy||terminal,colors=ButtonDefaults.outlinedButtonColors(contentColor=feedbackForeground(mark),containerColor=when {mark!=AnswerMark.NEUTRAL->feedbackBackground(mark);pos==active->MaterialTheme.colorScheme.primaryContainer;pos in path(e)->MaterialTheme.colorScheme.secondaryContainer;else->MaterialTheme.colorScheme.surface}),shape=RoundedCornerShape(8.dp),modifier=Modifier.size(cellSize).semantics {contentDescription="خلية $r $c";stateDescription=when {mark!=AnswerMark.NEUTRAL->mark.label;pos==active->"الخلية المحددة";pos in path(e)->"ضمن الكلمة النشطة";else->"خلية"}},contentPadding=PaddingValues(0.dp)){Column(horizontalAlignment=Alignment.CenterHorizontally) {
     val marker=if(mark==AnswerMark.CORRECT)"✓" else if(mark==AnswerMark.INCORRECT)"×" else if(pos==active)"▣" else if(pos in path(e))"─" else ""
     Text((if(pos in starts)"${starts.indexOf(pos)+1} " else "")+marker,fontSize=10.sp,lineHeight=12.sp,maxLines=1)

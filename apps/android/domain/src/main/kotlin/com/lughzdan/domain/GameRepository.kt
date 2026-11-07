@@ -9,7 +9,9 @@ data class GameProgress(val gameType:String,val totalScore:Int,val completed:Int
 data class Progress(val totalScore:Int,val completed:Int,val totalXp:Int=totalScore,val perGame:List<GameProgress> = emptyList(),val achievements:List<String> = emptyList())
 data class InstalledPack(val id:String,val version:Int,val bytes:Long,val fixtureOnly:Boolean)
 interface ProgressRepository {
+ val atlasCatalog:Flow<List<PuzzleDefinition>> get()=puzzles
  val atlasRuns:Flow<List<AtlasRun>> get()=kotlinx.coroutines.flow.flowOf(emptyList())
+ fun observeRun(id:String):Flow<AtlasRun?> = atlasRuns.map {runs->runs.firstOrNull {it.id==id}}
  suspend fun createRun(run:AtlasRun):String=error("Atlas unavailable")
  suspend fun nextInRun(id:String):String?=error("Atlas unavailable")
  val puzzles:Flow<List<PuzzleDefinition>>

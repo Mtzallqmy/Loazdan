@@ -28,6 +28,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  override suspend fun loadMore() {catalogLimit.value=Math.addExact(catalogLimit.value,200)}
  @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
  override val puzzles=catalogLimit.flatMapLatest {dao.observePuzzles(it)}.map { rows->rows.map { definition(it.definition) } }.flowOn(Dispatchers.Default)
+ override val atlasCatalog=dao.observePuzzles(1000).map {rows->rows.map {definition(it.definition)}}.flowOn(Dispatchers.Default)
  private val sessionLimit=MutableStateFlow(50)
  override suspend fun loadMoreSessions() {sessionLimit.value=Math.addExact(sessionLimit.value,50)}
  @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -164,6 +165,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   initialized=true
  } }
 
+ override fun observeRun(id:String)=db.atlas().observeOne(id).map {row->row?.let {json.decodeFromString<AtlasRun>(it.state)}}.flowOn(Dispatchers.Default)
  override val atlasRuns=db.atlas().observe().map {rows->rows.map {json.decodeFromString<AtlasRun>(it.state)}}.flowOn(Dispatchers.Default)
 
  override suspend fun createRun(run:AtlasRun):String = db.withTransaction {

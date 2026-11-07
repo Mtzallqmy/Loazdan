@@ -23,7 +23,7 @@ class OfflineRepositoryTest {
   db.games().install(InstalledContentPackEntity("fixture",7,"fixture-digest",1,true))
   db.games().insertPuzzles(listOf(LocalPuzzleEntity("p",1,"fixture",SessionCodec.json.encodeToString(p),0)))
  } }
- private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build() }
+ private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4,LughzdanDatabase.MIGRATION_4_5).allowMainThreadQueries().build() }
  @After fun close() { db.close();context.deleteDatabase(filename) }
 
  @Test fun atlasRunAndPracticeScoresCommitExactlyOnceAcrossRestart()=runBlocking {

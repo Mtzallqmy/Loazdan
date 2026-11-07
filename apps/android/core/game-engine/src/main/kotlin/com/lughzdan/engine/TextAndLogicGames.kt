@@ -5,6 +5,7 @@ class TextAnswerPlugin : GamePlugin {
 
     override fun validatePuzzle(puzzle: PuzzleDefinition) = ValidationResult(buildList {
         addAll(LiteraryWords.errors(puzzle))
+        addAll(WordBridge.errors(puzzle))
         if (puzzle.type != type || puzzle.schemaVersion != 1 || puzzle.rulesVersion != 1) add("unsupported_version")
         if (puzzle.revision < 1 || puzzle.difficulty !in 1..5) add("invalid_revision_or_difficulty")
         if (puzzle.payload.prompt.isBlank() || puzzle.payload.prompt.length > 2000) add("invalid_prompt")
@@ -19,6 +20,7 @@ class TextAnswerPlugin : GamePlugin {
     override fun createSession(puzzle: PuzzleDefinition, sessionId: String): GameSession {
         require(validatePuzzle(puzzle).valid)
         val s=GameSession(sessionId, puzzle.puzzleId, puzzle.revision, stateVersion = 2,displaySeed=sessionId.hashCode())
+        if(WordBridge.supports(puzzle))return s.copy(answerHistory=listOf(WordBridge.start(puzzle)))
         return if(LiteraryWords.supports(puzzle))s.copy(answerInput=LiteraryWords.input(puzzle,s,"")) else s
     }
 
@@ -38,7 +40,7 @@ class TextAnswerPlugin : GamePlugin {
                 ).let {if(LiteraryWords.supports(puzzle))it.copy(answerInput=LiteraryWords.input(puzzle,it,it.answerInput)) else it}
             }
             is PlayerAction.InputAnswer -> if (answerTextValid(action.answer)) session.copy(answerInput = if(LiteraryWords.supports(puzzle))LiteraryWords.input(puzzle,session,action.answer) else action.answer) else session
-            is PlayerAction.Submit -> {
+            is PlayerAction.Submit -> if(WordBridge.supports(puzzle)) WordBridge.submit(puzzle,session) else {
                 if (session.answerInput.isBlank() || (LiteraryWords.supports(puzzle) && !LiteraryWords.complete(puzzle,session))) session
                 else {
                     val candidate = normalized(puzzle, session.answerInput)

@@ -23,6 +23,9 @@ import com.lughzdan.engine.*
  val nav=rememberNavController()
  val ready by vm.ready.collectAsStateWithLifecycle();val error by vm.error.collectAsStateWithLifecycle()
  val settings by vm.settings.collectAsStateWithLifecycle();val puzzles by vm.puzzles.collectAsStateWithLifecycle()
+ val atlasPuzzles by vm.atlasPuzzles.collectAsStateWithLifecycle()
+ val atlasRuns by vm.atlasRuns.collectAsStateWithLifecycle()
+ val discoveries by vm.discoveries.collectAsStateWithLifecycle()
  val progress by vm.progress.collectAsStateWithLifecycle()
  val packs by vm.packs.collectAsStateWithLifecycle();val busy by vm.busy.collectAsStateWithLifecycle()
  val submitting by vm.submitting.collectAsStateWithLifecycle()
@@ -53,8 +56,8 @@ import com.lughzdan.engine.*
       Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
        Column(Modifier.fillMaxWidth().padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
         Text("إلى أين يأخذك فضولك؟",style=MaterialTheme.typography.titleLarge)
-        Text("ستة عوالم من الكلمات والصور والمنطق. العب دون إنترنت.")
-        Button(onClick={nav.navigate("worlds")},modifier=Modifier.fillMaxWidth()){Text("ابدأ رحلة الاكتشاف")}
+        Text("ستة عوالم من اللغة والأدب والبيان واليمن والعلوم والمنطق.")
+        Button(onClick={nav.navigate("atlas")},modifier=Modifier.fillMaxWidth()){Text("ابدأ رحلة الاكتشاف")}
        }
       }
       if(puzzles.any(LiteraryWords::supports)) OutlinedCard(onClick={nav.navigate("literary")},modifier=Modifier.fillMaxWidth()) {
@@ -77,8 +80,29 @@ import com.lughzdan.engine.*
       OutlinedCard(onClick={nav.navigate("daily")},modifier=Modifier.fillMaxWidth()) {
        Column(Modifier.padding(16.dp)){Text("موعدك مع تحدي اليوم",style=MaterialTheme.typography.titleMedium);Text("لغز ثابت طوال اليوم · تقدم محفوظ محليًا")}
       }
+      Row {TextButton(onClick={nav.navigate("duel")}){Text("تحدّي صديق")};TextButton(onClick={nav.navigate("notebook")}){Text("دفتر اكتشافاتي")}}
       TextButton(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
      } }
+     composable("atlas") {
+      AtlasScreen(atlasPuzzles,atlasRuns,progress.totalXp,
+       onJourney={journey->
+        val prior=atlasRuns.firstOrNull {it.kind=="journey" && it.title==journey.title && !it.finished}
+        if(prior!=null)nav.navigate("atlas-run/${prior.id}") else vm.createAtlasRun(AtlasRun(java.util.UUID.randomUUID().toString(),"journey",journey.title,journey.puzzles.map {it.puzzleId})){nav.navigate("atlas-run/$it")}
+       },onRun={nav.navigate("atlas-run/$it")},onDuel={nav.navigate("duel")},onNotebook={nav.navigate("notebook")})
+     }
+     composable("atlas-run/{id}") {entry->
+      val id=entry.arguments?.getString("id").orEmpty()
+      val runFlow=remember(id){vm.observeRun(id)}
+      val run by runFlow.collectAsStateWithLifecycle(initialValue=null)
+      AtlasRunScreen(run,busy,onContinue={vm.continueAtlasRun(id){nav.navigate("session/$it")}},onAtlas={nav.navigate("atlas"){launchSingleTop=true}})
+     }
+     composable("duel") {
+      DuelSetupScreen(atlasPuzzles,progress.totalXp,busy){first,second,pool->
+       vm.createAtlasRun(AtlasRun(java.util.UUID.randomUUID().toString(),"duel","مواجهة $first و$second",pool,playerNames=listOf(first,second))){nav.navigate("atlas-run/$it")}
+      }
+     }
+     composable("notebook") {NotebookScreen(discoveries,onReview={nav.navigate("review")},onLibrary={nav.navigate("vocabulary")})}
+     composable("review") {vm.vocabularyRepository?.let {DiscoveryReviewScreen(discoveries,it){nav.navigate("notebook"){launchSingleTop=true}}}}
      composable("literary") {
       val recent by vm.sessions.collectAsStateWithLifecycle()
       LiteraryWordsScreen(puzzles,recent,progress.totalXp,busy,onPlay={play(it)},onResume={nav.navigate("session/$it")})
@@ -141,7 +165,8 @@ import com.lughzdan.engine.*
        }
        Text("${if(p.fixtureOnly) "مسودة اختبار" else "محتوى الحزمة"} · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
 
-       Text(if(LiteraryWords.supports(p))"ديوان الألغاز · "+if(p.payload.variant==LiteraryWords.COMPLETE)"أكمل الحروف" else "خمن الكلمة" else gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
+       if(s.atlasRunId.isNotBlank())atlasRuns.firstOrNull {it.id==s.atlasRunId}?.let {run->Text(if(run.kind=="duel") "جولة ${run.playerNames[(run.step-(if(terminal)1 else 0)).coerceAtLeast(0)%2]}" else run.title,color=MaterialTheme.colorScheme.primary)}
+       Text(if(p.payload.variant in setOf("language_detective","who_am_i",WordBridge.VARIANT))AtlasCatalog.name(p) else if(LiteraryWords.supports(p))"ديوان الألغاز · "+if(p.payload.variant==LiteraryWords.COMPLETE)"أكمل الحروف" else "خمن الكلمة" else gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
        Text(p.payload.prompt.ifBlank {when(p.type){"anagram"->"كوّن كلمة من الحروف المتاحة";"order"->"رتّب البطاقات لتكوين النص";"crossword"->"حل الكلمات باستخدام القرائن";else->p.title}},style=MaterialTheme.typography.headlineSmall)
        if(s.status==SessionStatus.PAUSED) {
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
@@ -179,12 +204,16 @@ import com.lughzdan.engine.*
         } else Text(if(p.fixtureOnly) "المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق." else "المصدر: الحزمة العربية الأصلية · تفاصيل المراجع في المكتبة",style=MaterialTheme.typography.bodySmall)
         if(s.answerHistory.isNotEmpty())Text("إجاباتك: "+s.answerHistory.joinToString("، "))
         if(s.submittedIds.isNotEmpty())Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
+        if(s.atlasRunId.isNotBlank())Button(onClick={nav.navigate("atlas-run/${s.atlasRunId}")},modifier=Modifier.fillMaxWidth()){Text("متابعة الرحلة أو المواجهة")}
+        if(s.atlasRunId.isBlank()) {
         val nextPool=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp) && (!LiteraryWords.supports(p) || LiteraryWords.supports(it))}
         if(nextPool.isNotEmpty())Button(onClick={play(nextPool[(nextPool.indexOfFirst {it.puzzleId==p.puzzleId}+1)%nextPool.size].puzzleId)},enabled=!busy){Text("اللغز التالي")}
         val different=remember(puzzles,s.id,progress.totalXp){puzzles.filter {it.type!=p.type && it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}.shuffled(kotlin.random.Random(s.id.hashCode())).firstOrNull()}
         different?.let { next->OutlinedButton(onClick={play(next.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("جرّب نمطًا مختلفًا · ${gameNames[next.type] ?: next.type}")} }
         if(LiteraryWords.supports(p))TextButton(onClick={nav.navigate("literary"){launchSingleTop=true}}){Text("اختر فئة أخرى من الديوان")}
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}
+        }
+        if(vm.vocabularyRepository!=null)OutlinedButton(onClick={vm.saveDiscovery(p)},enabled=discoveries.none {it.snapshot.id=="${p.puzzleId}:${p.revision}"},modifier=Modifier.fillMaxWidth()){Text(if(discoveries.any {it.snapshot.id=="${p.puzzleId}:${p.revision}"})"محفوظ في دفتر اكتشافاتي" else "احفظ هذا الاكتشاف")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}
        }
       }
@@ -218,4 +247,4 @@ import com.lughzdan.engine.*
   }
  }
 }
-@Composable private fun Page(content:@Composable ColumnScope.()->Unit) { Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom=24.dp),verticalArrangement=Arrangement.spacedBy(16.dp),content=content) }
+@Composable internal fun Page(content:@Composable ColumnScope.()->Unit) { Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom=24.dp),verticalArrangement=Arrangement.spacedBy(16.dp),content=content) }

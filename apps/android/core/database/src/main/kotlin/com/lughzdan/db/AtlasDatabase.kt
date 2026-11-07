@@ -14,6 +14,9 @@ interface AtlasDao {
     @Query("SELECT * FROM atlas_runs WHERE id=:id")
     suspend fun get(id: String): AtlasRunEntity?
 
+    @Query("SELECT * FROM atlas_runs WHERE id=:id")
+    fun observeOne(id: String): Flow<AtlasRunEntity?>
+
     @Upsert
     suspend fun save(run: AtlasRunEntity)
 }

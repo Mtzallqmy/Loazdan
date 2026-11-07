@@ -13,6 +13,9 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore,val contentRepository:ContentRepository?=null,val vocabularyRepository:VocabularyRepository?=null):ViewModel() {
  val localGuestId=settingsStore.localGuestId.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),"")
+ val atlasPuzzles=repository.atlasCatalog.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val atlasRuns=repository.atlasRuns.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val discoveries=(vocabularyRepository?.entries ?: flowOf(emptyList())).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val puzzles=repository.puzzles.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val sessions=repository.sessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val unavailableSessions=repository.unavailableSessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
@@ -34,6 +37,7 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  init { viewModelScope.launch {settingsStore.ensureGuestId()}; initialize() }
  fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
  suspend fun readImage(sessionId:String,imageId:String)=repository.readImage(sessionId,imageId)
+ fun observeRun(id:String)=repository.observeRun(id)
  fun observeSession(id:String)=repository.observeSession(id)
  fun moreSessions() {viewModelScope.launch {repository.loadMoreSessions()}}
  fun startDaily(onStarted:(String)->Unit) { viewModelScope.launch {
@@ -46,6 +50,38 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  } }
  fun morePuzzles() {viewModelScope.launch {repository.loadMore()}}
  fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
+
+ fun createAtlasRun(run:AtlasRun,onCreated:(String)->Unit) {
+  viewModelScope.launch { mutex.withLock {
+   _busy.value=true
+   try {onCreated(repository.createRun(run))}
+   catch(cancelled:CancellationException){throw cancelled}
+   catch(_:Exception){_error.value="تعذّر بدء الرحلة. تحقق من تثبيت الحزمة ومستوى الخبرة."}
+   finally {_busy.value=false}
+  } }
+ }
+ fun continueAtlasRun(id:String,onSession:(String)->Unit) {
+  viewModelScope.launch { mutex.withLock {
+   _busy.value=true
+   try {repository.nextInRun(id)?.let(onSession)}
+   catch(cancelled:CancellationException){throw cancelled}
+   catch(_:Exception){_error.value="تعذّر فتح المحطة. تقدمك محفوظ ويمكنك المحاولة مجددًا."}
+   finally {_busy.value=false}
+  } }
+ }
+ fun saveDiscovery(p:PuzzleDefinition) {
+  val vocabulary=vocabularyRepository ?: return
+  viewModelScope.launch {
+   try {
+    val answer=p.payload.options.firstOrNull {it.id==p.payload.correctId}?.text
+      ?: p.payload.acceptedAnswers.firstOrNull() ?: p.payload.rule.ifBlank {p.payload.prompt}
+    vocabulary.save(VocabularySnapshot("${p.puzzleId}:${p.revision}",answer,p.explanation,
+      p.payload.sourceLabel.ifBlank {"حزمة لُغْزَدان"},p.payload.sourceUrl.ifBlank {p.puzzleId},
+      category=AtlasCatalog.world(p),linkedGameIds=listOf(p.puzzleId),contentStatus=p.status,fixtureOnly=p.fixtureOnly))
+   } catch(cancelled:CancellationException){throw cancelled}
+   catch(_:Exception){_error.value="تعذّر حفظ الاكتشاف. أعد المحاولة."}
+  }
+ }
  fun action(id:String,action:PlayerAction) { dispatch(id,action) }
  private fun dispatch(id:String,action:PlayerAction)=viewModelScope.launch { mutex.withLock { try { repository.act(id,action);_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="لم تُحفظ الحركة. حاول مجددًا." } finally { } } }
  fun resume(id:String)=action(id,PlayerAction.Resume(UUID.randomUUID().toString()))

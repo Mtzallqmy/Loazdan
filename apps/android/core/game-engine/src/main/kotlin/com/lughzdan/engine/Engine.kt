@@ -31,7 +31,7 @@ import java.text.Normalizer
     val schemaVersion: Int, val puzzleId: String, val revision: Int, val gameId: String,
     val type: String, val world: String, val difficulty: Int, val rulesVersion: Int,
     val normalization: String, val title: String, val status: String, val fixtureOnly: Boolean,
-    val sourceRefs: List<String>, val explanation: String, val hints: List<Hint>, val payload: ChoicePayload,
+    val sourceRefs: List<String>, val explanation: String, val hints: List<Hint>, val payload: ChoicePayload, val tags: List<String> = emptyList(),
 )
 @Serializable enum class SessionStatus { ACTIVE, PAUSED, WON, LOST }
 @Serializable data class GameSession(

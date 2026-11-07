@@ -6015,6 +6015,14 @@
           },
           "payload": {
             "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "maxLength": 150
+            }
           }
         },
         "required": [
@@ -6425,6 +6433,19 @@
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 2000
+                    },
+                    "variant": {
+                      "enum": [
+                        "language_detective"
+                      ]
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6751,7 +6772,9 @@
                     "variant": {
                       "enum": [
                         "literary_complete",
-                        "literary_riddle"
+                        "literary_riddle",
+                        "word_bridge",
+                        "who_am_i"
                       ]
                     },
                     "mode": {
@@ -6792,6 +6815,27 @@
                             "type": "string",
                             "minLength": 1,
                             "maxLength": 1
+                          }
+                        }
+                      }
+                    },
+                    "items": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 64,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "text"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
                           }
                         }
                       }

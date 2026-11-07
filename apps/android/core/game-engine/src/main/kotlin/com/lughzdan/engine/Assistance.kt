@@ -15,6 +15,7 @@ object HintProvider {
    } else null
    "order"->p.payload.items.firstOrNull {it.id==suggestion.relatedIds.firstOrNull()}?.text?.let {"البداية: $it"}
    "anagram", "four_pictures"->suggestion.token?.let {"الحرف الأول: $it"}
+   "text_answer"->if(WordBridge.supports(p))WordBridge.route(p,s.answerHistory.last(),s.answerHistory.dropLast(1).toSet())?.getOrNull(1)?.let {"الكلمة التالية: $it"} else null
    else->null
   }
   return (if(detail==null) h.text else "${h.text} — $detail").take(4096)
