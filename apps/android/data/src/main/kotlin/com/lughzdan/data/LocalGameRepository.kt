@@ -163,6 +163,40 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   }
   initialized=true
  } }
+
+ override val atlasRuns=db.atlas().observe().map {rows->rows.map {json.decodeFromString<AtlasRun>(it.state)}}.flowOn(Dispatchers.Default)
+
+ override suspend fun createRun(run:AtlasRun):String = db.withTransaction {
+  require(run.kind in setOf("journey","duel"))
+  require(run.puzzleIds.size in 1..20 && run.puzzleIds.distinct().size==run.puzzleIds.size)
+  require(run.step==0 && run.activeSessionId==null && run.scores==listOf(0,0))
+  require(run.playerNames.size==if(run.kind=="duel")2 else 0)
+  require(run.playerNames.all {it.isNotBlank() && it.length<=30})
+  require(db.atlas().get(run.id)==null)
+  for(id in run.puzzleIds) {
+   val p=definition((dao.latestPuzzle(id) ?: error("Missing stage")).definition)
+   require(p.difficulty<=ProgressionRules.unlockedDifficulty(dao.totalXp()))
+  }
+  val saved=run.copy(updatedAt=System.currentTimeMillis())
+  db.atlas().save(AtlasRunEntity(saved.id,json.encodeToString(saved),saved.updatedAt))
+  saved.id
+ }
+
+ override suspend fun nextInRun(id:String):String? = db.withTransaction {
+  val row=db.atlas().get(id) ?: error("Missing run")
+  val run=json.decodeFromString<AtlasRun>(row.state)
+  if(run.finished)return@withTransaction null
+  run.activeSessionId?.let {require(readRecord(dao.session(it) ?: error("Missing stage session"))!=null);return@withTransaction it}
+  val puzzleRow=dao.latestPuzzle(run.puzzleIds[run.step]) ?: error("Missing stage")
+  val p=definition(puzzleRow.definition)
+  val pack=dao.pack(puzzleRow.packId) ?: error("Missing stage pack")
+  val session=registry.plugin(p.type).createSession(p,UUID.randomUUID().toString()).copy(packId=pack.packId,packVersion=pack.version,atlasRunId=run.id,practice=run.kind=="duel")
+  val now=System.currentTimeMillis()
+  dao.save(GameSessionEntity(session.id,p.puzzleId,p.revision,SessionCodec.encode(session),now))
+  val next=run.copy(activeSessionId=session.id,updatedAt=now)
+  db.atlas().save(AtlasRunEntity(next.id,json.encodeToString(next),now))
+  session.id
+ }
  override suspend fun start(puzzleId:String):String = db.withTransaction {
   val row=dao.latestPuzzle(puzzleId) ?: error("Content missing")
   val p=definition(row.definition)
@@ -183,7 +217,16 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   require(registry.plugin(p.type).validateSession(p,next).valid)
   if(next==old) return@withTransaction old
   dao.save(row.copy(state=SessionCodec.encode(next),updatedAt=System.currentTimeMillis()))
-  if(next.status in setOf(SessionStatus.WON,SessionStatus.LOST)) {
+  if(next.status in setOf(SessionStatus.WON,SessionStatus.LOST) && old.status !in setOf(SessionStatus.WON,SessionStatus.LOST) && next.atlasRunId.isNotBlank()) {
+   val runRow=db.atlas().get(next.atlasRunId) ?: error("Missing run")
+   val run=json.decodeFromString<AtlasRun>(runRow.state)
+   require(run.activeSessionId==next.id && !run.finished)
+   val scores=run.scores.toMutableList()
+   scores[if(run.kind=="duel")run.playerIndex else 0]+=next.score
+   val updated=run.copy(step=run.step+1,scores=scores,activeSessionId=null,updatedAt=System.currentTimeMillis())
+   db.atlas().save(AtlasRunEntity(updated.id,json.encodeToString(updated),updated.updatedAt))
+  }
+  if(!next.practice && next.status in setOf(SessionStatus.WON,SessionStatus.LOST)) {
    val receipt=dao.enqueue(SyncOperationEntity(UUID.randomUUID().toString(),sessionId,"complete_session",SessionCodec.encode(next)))
    if(receipt!=-1L) {
     val prior=dao.progress(p.puzzleId)

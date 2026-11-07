@@ -49,6 +49,8 @@ import java.text.Normalizer
     val imageOrder: List<String> = emptyList(), val imageMatches: List<MatchPair> = emptyList(),
     val displaySeed: Int? = null,
     val checkedCells: Map<String, String> = emptyMap(),
+    val atlasRunId: String = "",
+    val practice: Boolean = false,
 )
 sealed interface PlayerAction {
     val id: String

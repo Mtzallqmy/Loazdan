@@ -34,7 +34,7 @@ import javax.inject.Singleton
  override val contentRuntime get()=runtime
 }
 @Module @InstallIn(SingletonComponent::class) object AppModule {
- @Provides @Singleton fun database(@ApplicationContext context:Context)=Room.databaseBuilder(context,LughzdanDatabase::class.java,"lughzdan.db").addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).build()
+ @Provides @Singleton fun database(@ApplicationContext context:Context)=Room.databaseBuilder(context,LughzdanDatabase::class.java,"lughzdan.db").addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4,LughzdanDatabase.MIGRATION_4_5).build()
  @Provides @Singleton fun content(@ApplicationContext context:Context,db:LughzdanDatabase,settings:SettingsStore):LocalContentRepository {
   val keys=if(context.assets.list("").orEmpty().contains("pack-public-keys.json")) context.assets.open("pack-public-keys.json").bufferedReader().use { reader->Json.parseToJsonElement(reader.readText()).jsonObject.mapValues {Base64.getDecoder().decode(it.value.jsonPrimitive.content)} } else emptyMap()
   val installer=PackInstaller(db,File(context.filesDir,"packs"),ManifestVerifier(keys,mapOf("literary2026" to BundledLiteraryPack.ID)),BuildConfig.VERSION_CODE)

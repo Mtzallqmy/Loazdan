@@ -37,12 +37,16 @@ import kotlinx.coroutines.flow.Flow
  @Query("SELECT COUNT(*) FROM sync_operations") suspend fun operationCount():Int
  @Query("DELETE FROM puzzles WHERE packId=:packId") suspend fun removeContent(packId:String)
 }
-@Database(entities=[InstalledContentPackEntity::class,LocalPuzzleEntity::class,GameSessionEntity::class,PlayerProgressEntity::class,AchievementEntity::class,SyncOperationEntity::class,PackHeadEntity::class,PackMemberEntity::class,InstallJournalEntity::class,DownloadEntity::class,SyncDeliveryEntity::class,SyncAccountEntity::class,SyncReplicaEntity::class,VocabularyEntity::class],version=4,exportSchema=true)
+@Database(entities=[InstalledContentPackEntity::class,LocalPuzzleEntity::class,GameSessionEntity::class,PlayerProgressEntity::class,AchievementEntity::class,SyncOperationEntity::class,PackHeadEntity::class,PackMemberEntity::class,InstallJournalEntity::class,DownloadEntity::class,SyncDeliveryEntity::class,SyncAccountEntity::class,SyncReplicaEntity::class,VocabularyEntity::class,AtlasRunEntity::class],version=5,exportSchema=true)
 abstract class LughzdanDatabase:RoomDatabase(){
  abstract fun games():GameDao
  abstract fun content():ContentDao
  abstract fun vocabulary():VocabularyDao
+ abstract fun atlas():AtlasDao
  companion object {
+  val MIGRATION_4_5:Migration=object:Migration(4,5) {
+   override fun migrate(db:SupportSQLiteDatabase) {db.execSQL("CREATE TABLE IF NOT EXISTS atlas_runs (id TEXT NOT NULL, state TEXT NOT NULL, updatedAt INTEGER NOT NULL, PRIMARY KEY(id))")}
+  }
   val MIGRATION_3_4:Migration=object:Migration(3,4) {
    override fun migrate(db:SupportSQLiteDatabase) { db.execSQL(VocabularySchema.CREATE) }
   }

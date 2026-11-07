@@ -4,6 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.lughzdan.db.*
 import com.lughzdan.engine.*
+import com.lughzdan.domain.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.first
 import org.junit.*
@@ -24,6 +25,24 @@ class OfflineRepositoryTest {
  } }
  private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build() }
  @After fun close() { db.close();context.deleteDatabase(filename) }
+
+ @Test fun atlasRunAndPracticeScoresCommitExactlyOnceAcrossRestart()=runBlocking {
+  val repo=LocalGameRepository(context,db,true)
+  val id=repo.createRun(AtlasRun("duel","duel","Test duel",listOf("p"),playerNames=listOf("أ","ب")))
+  val stage=repo.nextInRun(id)!!
+  assertEquals(stage,repo.nextInRun(id))
+  repo.act(stage,PlayerAction.Select("select","a"))
+  repo.act(stage,PlayerAction.Submit("submit"))
+  repo.act(stage,PlayerAction.Submit("repeat"))
+  assertEquals(0,repo.progress.first().totalXp)
+  val result=repo.atlasRuns.first().first()
+  assertTrue(result.finished);assertEquals(listOf(100,0),result.scores)
+  assertNull(repo.nextInRun(id))
+  db.close();open()
+  val restored=LocalGameRepository(context,db,true)
+  assertEquals(result,restored.atlasRuns.first().first())
+  assertNull(restored.nextInRun(id))
+ }
  @Test fun dailyRoundSurvivesRestartAndCannotAwardTwice()=runBlocking {
   var repository=LocalGameRepository(context,db,true)
   val id=repository.startDaily("2026-11-06")
