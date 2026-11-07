@@ -1,6 +1,4 @@
 package com.lughzdan.games
-import android.media.AudioManager
-import android.media.ToneGenerator
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
@@ -17,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.core.tween
@@ -38,8 +37,9 @@ import com.lughzdan.engine.*
  val progress by vm.progress.collectAsStateWithLifecycle()
  val packs by vm.packs.collectAsStateWithLifecycle();val busy by vm.busy.collectAsStateWithLifecycle()
  val submitting by vm.submitting.collectAsStateWithLifecycle()
- val tone=remember { runCatching { ToneGenerator(AudioManager.STREAM_MUSIC,35) }.getOrNull() }
- DisposableEffect(Unit) { onDispose { tone?.release() } }
+ val context=LocalContext.current
+ val audio=remember(context){GameAudio(context)}
+ DisposableEffect(audio) {onDispose {audio.close()}}
  fun play(id:String) { vm.start(id) { nav.navigate("session/$it") } }
  LughzdanTheme(settings.dark) {
   val route=nav.currentBackStackEntryAsState().value?.destination?.route
@@ -161,7 +161,7 @@ import com.lughzdan.engine.*
        var priorSession by remember(s.id){mutableStateOf(s)}
        LaunchedEffect(s) {
         val cue=AnswerFeedback.cue(priorSession,s)
-        if(settings.sound && cue!=null)runCatching {tone?.startTone(when(cue){FeedbackCue.SUCCESS->ToneGenerator.TONE_PROP_ACK;FeedbackCue.RETRY->ToneGenerator.TONE_PROP_NACK;FeedbackCue.DISCOVERY->ToneGenerator.TONE_PROP_BEEP},if(cue==FeedbackCue.RETRY)160 else 120)}
+        if(settings.sound && cue!=null)runCatching {audio.play(cue)}
         if(settings.haptic && cue!=null)view.performHapticFeedback(if(cue==FeedbackCue.RETRY)HapticFeedbackConstants.LONG_PRESS else HapticFeedbackConstants.VIRTUAL_KEY)
         priorSession=s
        }

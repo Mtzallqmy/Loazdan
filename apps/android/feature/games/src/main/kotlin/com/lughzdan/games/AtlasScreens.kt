@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -30,15 +31,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 }
 
 @Composable fun AtlasScreen(puzzles: List<PuzzleDefinition>, runs: List<AtlasRun>, xp: Int, onJourney: (AtlasJourney) -> Unit, onRun: (String) -> Unit, onDuel: () -> Unit, onNotebook: () -> Unit) {
+    val compact=LocalConfiguration.current.screenWidthDp<360
     var selectedWorld by rememberSaveable { mutableStateOf<String?>(null) }
     val journeys = remember(puzzles) { AtlasCatalog.journeys(puzzles) }
     LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Surface(shape = MaterialTheme.shapes.large) {
-                Column(Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.surface))).padding(22.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Image(painterResource(R.drawable.atlas_cover),contentDescription=null,contentScale=ContentScale.Crop,modifier=Modifier.fillMaxWidth().height(150.dp))
-                    Text("أطلس المعرفة العربية", style = MaterialTheme.typography.headlineMedium)
-                    Text("اختر عالمًا، واكتشفه عبر خمس محطات من اللعب.", style = MaterialTheme.typography.bodyLarge)
+                Column(Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.surface))).padding(if(compact)16.dp else 22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Image(painterResource(R.drawable.atlas_cover),contentDescription=null,contentScale=ContentScale.Crop,modifier=Modifier.fillMaxWidth().height(if(compact)90.dp else 130.dp))
+                    Text("أطلس المعرفة العربية", style = if(compact)MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium)
+                    Text("اختر عالمًا، واكتشفه عبر خمس محطات من اللعب.", style = MaterialTheme.typography.bodyMedium)
                     Text("${journeys.size} رحلة · ${puzzles.size} تحديًا مثبتًا", style = MaterialTheme.typography.labelLarge)
                 }
             }
