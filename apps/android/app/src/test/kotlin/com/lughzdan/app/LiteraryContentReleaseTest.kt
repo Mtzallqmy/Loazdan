@@ -30,20 +30,35 @@ class LiteraryContentReleaseTest {
   try {
    val keys=context.assets.open("pack-public-keys.json").bufferedReader().use {Json.parseToJsonElement(it.readText()).jsonObject.mapValues {Base64.getDecoder().decode(it.value.jsonPrimitive.content)}}
    val installer=PackInstaller(db,root,ManifestVerifier(keys),104,directorySync={})
-   suspend fun install(){BundledLiteraryPack.install(context,db,installer)}
-   val repository=LocalGameRepository(context,db,false,recoverContent={install()})
-   repository.initialize()
-   val all=repository.atlasCatalog.first();assertEquals(600,all.size)
-   assertTrue(all.count(LiteraryWords::supports)>=48)
-   val p=all.first {LiteraryWords.supports(it)&&it.difficulty==1&&it.payload.variant==LiteraryWords.COMPLETE}
-   val id=repository.start(p.puzzleId)
+   val sourceRoot=generateSequence(File(".").canonicalFile){it.parentFile}.first {File(it,"packs/literary-words-48/manifest.json").exists()}
+   val oldRaw=File(sourceRoot,"packs/literary-words-48/manifest.json").readBytes()
+   val oldManifest=installer.verify(oldRaw)
+   installer.chunks.mkdirs()
+   oldManifest.files.forEach {file->
+    val bytes=if(file.kind=="puzzles")File(sourceRoot,"packs/literary-words-48/puzzles.jsonl").readBytes()
+      else context.assets.open("literary/"+file.path).use {it.readBytes()}
+    File(installer.chunks,file.sha256).writeBytes(bytes)
+   }
+   installer.install(oldRaw,"ديوان الألغاز")
+   val before=LocalGameRepository(context,db,false)
+   before.initialize()
+   assertEquals(168,before.atlasCatalog.first().size)
+   val p=before.atlasCatalog.first().first {LiteraryWords.supports(it)&&it.difficulty==1&&it.payload.variant==LiteraryWords.COMPLETE}
+   val id=before.start(p.puzzleId)
    val hint=p.hints.first {it.id.startsWith("letter-")}
-   repository.act(id,PlayerAction.UseHint("hint",hint.id))
-   install();assertEquals(600,repository.atlasCatalog.first().size)
+   before.act(id,PlayerAction.UseHint("hint",hint.id))
+   val oldSession=before.observeSession(id).first()!!.session
+   assertEquals(2,oldSession.packVersion)
+   suspend fun install(){BundledLiteraryPack.install(context,db,installer)}
    val restored=LocalGameRepository(context,db,false,recoverContent={install()})
    restored.initialize()
+   val all=restored.atlasCatalog.first();assertEquals(600,all.size)
+   assertTrue(all.count(LiteraryWords::supports)>=48)
+   install();assertEquals(600,restored.atlasCatalog.first().size)
    val session=restored.observeSession(id).first()!!.session
    assertEquals(SessionStatus.PAUSED,session.status);assertTrue(hint.id in session.usedHintIds)
+   assertEquals(oldSession.copy(status=SessionStatus.PAUSED),session)
+   assertEquals(p,restored.observeSession(id).first()!!.puzzle)
    restored.act(id,PlayerAction.Resume("resume"))
    restored.act(id,PlayerAction.InputAnswer("input",p.payload.acceptedAnswers.first()))
    val won=restored.act(id,PlayerAction.Submit("submit"));assertEquals(SessionStatus.WON,won.status)

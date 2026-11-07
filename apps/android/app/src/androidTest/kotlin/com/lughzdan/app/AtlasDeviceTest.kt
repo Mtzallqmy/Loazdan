@@ -51,8 +51,8 @@ class AtlasDeviceTest {
                         }
                     }
                 }
-                LiteraryWords.supports(p) -> compose.onNodeWithTag("literary-answer").performScrollTo().performTextInput(p.payload.acceptedAnswers.first())
-                else -> compose.onNodeWithText("اكتب إجابتك بالعربية").performScrollTo().performTextInput(p.payload.acceptedAnswers.first())
+                LiteraryWords.supports(p) -> compose.onNodeWithTag("literary-answer").performScrollTo().performTextReplacement(p.payload.acceptedAnswers.first())
+                else -> compose.onNodeWithText("اكتب إجابتك بالعربية").performScrollTo().performTextReplacement(p.payload.acceptedAnswers.first())
             }
             "anagram" -> {
                 val used = mutableSetOf<Int>()
@@ -62,7 +62,7 @@ class AtlasDeviceTest {
                     compose.onNodeWithContentDescription("حرف $index $token").performScrollTo().performClick()
                 }
             }
-            "sequence" -> compose.onNodeWithText("العدد التالي (أرقام عربية أو لاتينية)").performScrollTo().performTextInput(p.payload.answer.toString())
+            "sequence" -> compose.onNodeWithText("العدد التالي (أرقام عربية أو لاتينية)").performScrollTo().performTextReplacement(p.payload.answer.toString())
             else -> error("Unexpected journey board ${p.type}")
         }
         click("تحقق من الإجابة")
@@ -95,9 +95,22 @@ class AtlasDeviceTest {
         click("تحدّي صديق")
         click("ابدأ المواجهة")
         repeat(2) { stage -> click("ابدأ المحطة ${stage + 1}"); solve(); click("متابعة الرحلة أو المواجهة") }
+        click("ابدأ المحطة 3")
         val run = currentRun()
+        val active=runBlocking {compose.activity.repository.observeSession(run.activeSessionId!!).first()!!}
+        if(active.puzzle.type=="choice")compose.onNodeWithTag("answer-${active.puzzle.payload.correctId}").performScrollTo().performClick()
+        else if(active.puzzle.payload.variant==LiteraryWords.COMPLETE) {
+            val slot=active.puzzle.payload.acceptedAnswers.first().indices.first {i->active.puzzle.payload.fixedSlots.none {it.index==i}}
+            compose.onNodeWithContentDescription("خانة ${slot+1}").performScrollTo().performClick()
+            compose.onNodeWithContentDescription("حرف الديوان ${active.puzzle.payload.acceptedAnswers.first()[slot]}").performScrollTo().performClick()
+        } else if(WordBridge.supports(active.puzzle))click(WordBridge.route(active.puzzle,WordBridge.start(active.puzzle))!![1])
+        else if(active.puzzle.type=="sequence")compose.onNodeWithText("العدد التالي (أرقام عربية أو لاتينية)").performScrollTo().performTextReplacement("1")
+        else if(LiteraryWords.supports(active.puzzle))compose.onNodeWithTag("literary-answer").performScrollTo().performTextReplacement("ق")
+        else compose.onNodeWithText("اكتب إجابتك بالعربية").performScrollTo().performTextReplacement("ق")
+        compose.waitUntil(30_000){runBlocking {compose.activity.repository.observeSession(run.activeSessionId!!).first()!!.session.processedActions.isNotEmpty()}}
+        val partial=runBlocking {compose.activity.repository.observeSession(run.activeSessionId!!).first()!!.session}
         val xp = runBlocking { compose.activity.repository.progress.first().totalXp }
-        File(compose.activity.filesDir, "atlas-duel.txt").writeText("${run.id}\n$xp")
+        File(compose.activity.filesDir, "atlas-duel.txt").writeText("${run.id}\n$xp\n${SessionCodec.encode(partial)}")
         shot("atlas-duel-handoff")
     }
 
@@ -108,8 +121,14 @@ class AtlasDeviceTest {
         val run = currentRun()
         assertEquals(saved[0], run.id)
         assertEquals(2, run.step)
+        val before=SessionCodec.decode(saved[2])
+        val restored=runBlocking {compose.activity.repository.observeSession(run.activeSessionId!!).first()!!.session}
+        assertEquals(before.copy(status=SessionStatus.PAUSED),restored)
         click("متابعة ${run.title} · ${run.step}/${run.puzzleIds.size}")
-        for (stage in run.step until run.puzzleIds.size) { click("ابدأ المحطة ${stage + 1}"); solve(); click("متابعة الرحلة أو المواجهة") }
+        for (stage in run.step until run.puzzleIds.size) {
+            if(stage==run.step) {click("استأنف المحطة");click("استئناف الجولة")} else click("ابدأ المحطة ${stage+1}")
+            solve();click("متابعة الرحلة أو المواجهة")
+        }
         val result = runBlocking { compose.activity.repository.observeRun(run.id).first()!! }
         assertTrue(result.finished)
         assertEquals(saved[1].toInt(), runBlocking { compose.activity.repository.progress.first().totalXp })
