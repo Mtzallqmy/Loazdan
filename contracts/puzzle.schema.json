@@ -875,6 +875,54 @@
                 },
                 "minItems": 1,
                 "maxItems": 20
+              },
+              "variant": {
+                "enum": [
+                  "literary_complete",
+                  "literary_riddle"
+                ]
+              },
+              "mode": {
+                "enum": [
+                  "language",
+                  "literature",
+                  "rhetoric",
+                  "classical",
+                  "modern",
+                  "riddles"
+                ]
+              },
+              "sourceLabel": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "sourceUrl": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "fixedSlots": {
+                "type": "array",
+                "maxItems": 11,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "index",
+                    "token"
+                  ],
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 11
+                    },
+                    "token": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1
+                    }
+                  }
+                }
               }
             },
             "required": [

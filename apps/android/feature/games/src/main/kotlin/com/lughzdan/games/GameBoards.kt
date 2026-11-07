@@ -56,7 +56,7 @@ val gameNames=mapOf(
  "anagram" -> Builder(p,s,busy,send)
  "matching" -> if(p.payload.options.isNotEmpty()) ChoiceAnswers(p,s,busy,send) else Matching(p,s,busy,send)
  "order" -> Ordering(p,s,busy,send)
- "text_answer" -> TextAnswerBoard(p,s,busy,send)
+ "text_answer" -> if(LiteraryWords.supports(p))LiteraryWordBoard(p,s,busy,send) else TextAnswerBoard(p,s,busy,send)
  "sequence" -> SequenceBoard(p,s,busy,send)
  "image_guess" -> ImageGuessBoard(p,s,busy,send)
  in visualGameTypes -> VisualBoard(p,s,busy,send)

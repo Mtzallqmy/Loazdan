@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.*
@@ -56,6 +57,13 @@ import com.lughzdan.engine.*
         Button(onClick={nav.navigate("worlds")},modifier=Modifier.fillMaxWidth()){Text("ابدأ رحلة الاكتشاف")}
        }
       }
+      if(puzzles.any(LiteraryWords::supports)) OutlinedCard(onClick={nav.navigate("literary")},modifier=Modifier.fillMaxWidth()) {
+       Column(Modifier.padding(20.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+        Text("جديد · ديوان الألغاز",style=MaterialTheme.typography.titleLarge,color=MaterialTheme.colorScheme.primary)
+        Text("أكمل الحروف أو خمن الكلمة · لغة وأدب وشعر وبلاغة")
+        Text("اكتشف ${puzzles.count(LiteraryWords::supports)} تحديًا",style=MaterialTheme.typography.labelLarge)
+       }
+      }
       sessions.firstOrNull()?.let {record->
        OutlinedCard(onClick={nav.navigate("session/${record.session.id}")},modifier=Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)){Text("متابعة آخر نشاط",style=MaterialTheme.typography.titleMedium);Text(gameNames[record.puzzle.type] ?: "جولتك المحفوظة")}
@@ -71,6 +79,10 @@ import com.lughzdan.engine.*
       }
       TextButton(onClick={nav.navigate("catalog")}){Text("ابدأ تحدي المفردات")}
      } }
+     composable("literary") {
+      val recent by vm.sessions.collectAsStateWithLifecycle()
+      LiteraryWordsScreen(puzzles,recent,progress.totalXp,busy,onPlay={play(it)},onResume={nav.navigate("session/$it")})
+     }
      composable("worlds") { WorldsScreen(vm) { worldId -> nav.navigate("world/$worldId") } }
      composable("world/{id}") { entry ->
       val worldId = entry.arguments?.getString("id") ?: "words"
@@ -91,6 +103,7 @@ import com.lughzdan.engine.*
       LazyColumn(modifier=Modifier.testTag("catalog-list"),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
        item {Text("مكتبة الاكتشاف",style=MaterialTheme.typography.headlineMedium)}
        item {Row {TextButton(onClick={nav.navigate("library")}){Text("الحزم والتنزيلات")};if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}}}
+       if(puzzles.any(LiteraryWords::supports))item {OutlinedButton(onClick={nav.navigate("literary")},modifier=Modifier.fillMaxWidth()){Text("ديوان الألغاز · الحروف والمعاني")}}
        item {OutlinedTextField(value=query,onValueChange={query=it},label={Text("ابحث عن موضوع أو نوع لعبة")},singleLine=true,modifier=Modifier.fillMaxWidth())}
        if(visible.isEmpty()) item {Text("لا توجد نتائج مطابقة ضمن الألغاز المحمّلة. جرّب موضوعًا آخر أو اعرض المزيد.")}
        item {ScrollableTabRow(selectedTabIndex=(listOf<String?>(null)+gameNames.keys).indexOf(filter).coerceAtLeast(0),edgePadding=0.dp) {
@@ -128,7 +141,7 @@ import com.lughzdan.engine.*
        }
        Text("${if(p.fixtureOnly) "مسودة اختبار" else "محتوى الحزمة"} · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
 
-       Text(gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
+       Text(if(LiteraryWords.supports(p))"ديوان الألغاز · "+if(p.payload.variant==LiteraryWords.COMPLETE)"أكمل الحروف" else "خمن الكلمة" else gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
        Text(p.payload.prompt.ifBlank {when(p.type){"anagram"->"كوّن كلمة من الحروف المتاحة";"order"->"رتّب البطاقات لتكوين النص";"crossword"->"حل الكلمات باستخدام القرائن";else->p.title}},style=MaterialTheme.typography.headlineSmall)
        if(s.status==SessionStatus.PAUSED) {
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
@@ -137,7 +150,7 @@ import com.lughzdan.engine.*
         Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
         val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }
         CompositionLocalProvider(LocalGameImageLoader provides loader) { GameBoard(p,s,busy){vm.action(s.id,it)} }
-        Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+        Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&(!LiteraryWords.supports(p)||LiteraryWords.complete(p,s))&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
 
         if(s.wrongSubmissions>0)FeedbackCard(false,"الإجابة السابقة غير صحيحة؛ راجع العلامات وحاول مرة أخرى.")
         HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
@@ -151,13 +164,22 @@ import com.lughzdan.engine.*
          val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }
          CompositionLocalProvider(LocalGameImageLoader provides loader) {VisualSolution(p)}
         }
+        if(LiteraryWords.supports(p)) {
+         Text("الكلمة: ${p.payload.acceptedAnswers.first()}",style=MaterialTheme.typography.headlineMedium,color=MaterialTheme.colorScheme.primary)
+         Text("${LiteraryWords.categories[p.payload.mode]} · معنى تستبقيه",style=MaterialTheme.typography.labelLarge)
+        }
         Text(p.explanation)
-        Text(if(p.fixtureOnly) "المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق." else "المصدر: الحزمة العربية الأصلية · تفاصيل المراجع في المكتبة",style=MaterialTheme.typography.bodySmall)
-        if(p.type!="choice")Text("إجاباتك: "+s.answerHistory.joinToString("، "))
-        Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
-        Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}
+        if(LiteraryWords.supports(p)) {
+         Text(p.payload.sourceLabel,style=MaterialTheme.typography.bodySmall)
+         val uri=LocalUriHandler.current
+         if(p.payload.sourceUrl.isNotBlank())TextButton(onClick={runCatching {uri.openUri(p.payload.sourceUrl)}}){Text("قراءة المصدر") }
+        } else Text(if(p.fixtureOnly) "المصدر: صياغة داخلية للاختبار؛ الاعتماد اللغوي معلق." else "المصدر: الحزمة العربية الأصلية · تفاصيل المراجع في المكتبة",style=MaterialTheme.typography.bodySmall)
+        if(s.answerHistory.isNotEmpty())Text("إجاباتك: "+s.answerHistory.joinToString("، "))
+        if(s.submittedIds.isNotEmpty())Text("إجاباتك: "+s.submittedIds.joinToString("، "){ key->p.payload.options.firstOrNull { it.id==key }?.text ?: key })
+        Button(onClick={val unlocked=puzzles.filter {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp) && (!LiteraryWords.supports(p) || LiteraryWords.supports(it))};val next=unlocked[(unlocked.indexOfFirst { it.puzzleId==p.puzzleId }+1)%unlocked.size];play(next.puzzleId)},enabled=!busy&&puzzles.any {it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}){Text("اللغز التالي")}
         val different=remember(puzzles,s.id,progress.totalXp){puzzles.filter {it.type!=p.type && it.difficulty<=ProgressionRules.unlockedDifficulty(progress.totalXp)}.shuffled(kotlin.random.Random(s.id.hashCode())).firstOrNull()}
         different?.let { next->OutlinedButton(onClick={play(next.puzzleId)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("جرّب نمطًا مختلفًا · ${gameNames[next.type] ?: next.type}")} }
+        if(LiteraryWords.supports(p))TextButton(onClick={nav.navigate("literary"){launchSingleTop=true}}){Text("اختر فئة أخرى من الديوان")}
         OutlinedButton(onClick={play(p.puzzleId)},enabled=!busy){Text("إعادة المحاولة")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}
        }

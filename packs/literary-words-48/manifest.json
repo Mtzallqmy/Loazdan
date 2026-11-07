@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "packId": "4b260af1-d41e-5759-bf8b-cc4867948a36",
+  "version": 1,
+  "minAppVersionCode": 103,
+  "minEngineVersion": 3,
+  "locale": "ar",
+  "publishedAt": "2026-11-06T20:00:00Z",
+  "files": [
+    {
+      "path": "data/literary_words.jsonl",
+      "kind": "puzzles",
+      "sha256": "98ff80d80fda1b394849ca165a51a36919151e5d2a27bef1152796a370fda214",
+      "bytes": 55329,
+      "chunks": [
+        {
+          "sha256": "98ff80d80fda1b394849ca165a51a36919151e5d2a27bef1152796a370fda214",
+          "bytes": 55329
+        }
+      ]
+    },
+    {
+      "path": "rights/literary.txt",
+      "kind": "rights",
+      "sha256": "6f89fa8f7bc42f5fa20ae4d82e5c994b35e042d45cb61a6800a48b0c806f0057",
+      "bytes": 595,
+      "chunks": [
+        {
+          "sha256": "6f89fa8f7bc42f5fa20ae4d82e5c994b35e042d45cb61a6800a48b0c806f0057",
+          "bytes": 595
+        }
+      ]
+    }
+  ],
+  "downloadBytes": 55924,
+  "installedBytes": 55924,
+  "dependencies": [],
+  "sourceRefs": [
+    "296da3ef-15d3-56fa-b231-c3145ee785b6",
+    "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+    "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+    "32845550-c622-50c1-95e5-d50942e11f3d"
+  ],
+  "keyId": "literary2026",
+  "assets": [],
+  "references": [
+    {
+      "referenceId": "296da3ef-15d3-56fa-b231-c3145ee785b6",
+      "sourceId": "296da3ef-15d3-56fa-b231-c3145ee785b6",
+      "sourceName": "صياغة أصلية للُغْزَدان بمساعدة آلية؛ أمثلة تعليمية غير منسوبة إلى شاعر",
+      "author": "إعداد للتطبيق بمساعدة آلية",
+      "locator": "packs/literary-words-48/puzzles.jsonl",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "صياغة أصلية للُغْزَدان بمساعدة آلية؛ أمثلة تعليمية غير منسوبة إلى شاعر",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+      "sourceId": "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+      "sourceName": "الموسوعة الشعرية — المتنبي: على قدر أهل العزم",
+      "author": "أبو الطيب المتنبي",
+      "locator": "https://poetry.dct.gov.ae/diwan/poem/141007",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "الموسوعة الشعرية — المتنبي: على قدر أهل العزم",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+      "sourceId": "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+      "sourceName": "الموسوعة الشعرية — أحمد شوقي: قم للمعلم",
+      "author": "أحمد شوقي",
+      "locator": "https://poetry.dct.gov.ae/poems/19050-قم-للمعلم-وفه-التبجيلا",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "الموسوعة الشعرية — أحمد شوقي: قم للمعلم",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "32845550-c622-50c1-95e5-d50942e11f3d",
+      "sourceId": "32845550-c622-50c1-95e5-d50942e11f3d",
+      "sourceName": "مجمع اللغة العربية بالقاهرة — معجم الأدب: الشعر المرسل والتفعيلة",
+      "author": "مجمع اللغة العربية بالقاهرة",
+      "locator": "https://www.arabicacademy.gov.eg/ar/محرك-البحث/معجم/dic-383/الشعر-المرسل-و-التفعيلة",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "مجمع اللغة العربية بالقاهرة — معجم الأدب: الشعر المرسل والتفعيلة",
+      "noticePath": "rights/literary.txt"
+    }
+  ],
+  "signature": "IfMCduJivkuBnkvCD0gJKR0eONvtUPB_PM57MNTjuOTwILMFCmPtdcs7kOvgksc9X-bP_JPjC3z11p1m5WdHBw"
+}

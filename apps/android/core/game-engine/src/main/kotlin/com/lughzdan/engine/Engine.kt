@@ -24,6 +24,7 @@ import java.text.Normalizer
  val visualPairs: List<MatchPair> = emptyList(), val revealRows: Int = 0, val revealCols: Int = 0, val revealPenalty: Int = 0, val logicRule: LogicRule? = null,
  val items: List<Option> = emptyList(), val correctOrder: List<String> = emptyList(), val variant: String = "",
  val terms: List<Int> = emptyList(), val answer: Int = 0, val rule: String = "",
+ val sourceLabel: String = "", val sourceUrl: String = "",
  val mode: String = "", val assets: List<ImageGuessAsset> = emptyList(), val revealSteps: Int = 0,
 )
 @Serializable data class PuzzleDefinition(

@@ -43,7 +43,7 @@ class LocalContentRepository(private val context:Context,private val db:Lughzdan
   list.values.sortedBy {it.title}
  }
  override suspend fun refresh()=withContext(Dispatchers.IO) {
-  installer.recover();measure()
+  installer.recover();BundledLiteraryPack.install(context,db,installer);measure()
   remote?.let {api->
    val found=mutableListOf<ContentPack>();var cursor:String?=null;val seen=mutableSetOf<String?>()
    do {check(seen.add(cursor));val page=api.packs(cursor,appVersion=appVersion);found+=page.items.map {ContentPack(it.id,it.title,it.version,it.downloadBytes,it.installedBytes)};cursor=page.nextCursor;require(found.size<=10000)}while(cursor!=null)
@@ -128,7 +128,7 @@ class LocalContentRepository(private val context:Context,private val db:Lughzdan
   finally {controls.remove(id)}
  } }
  @Volatile private var settingsWifiOnly=true
- suspend fun initialize() {settingsWifiOnly=settings.settings.first().wifiOnly;installer.root.mkdirs();installer.recover();measure()}
+ suspend fun initialize() {settingsWifiOnly=settings.settings.first().wifiOnly;installer.root.mkdirs();installer.recover();BundledLiteraryPack.install(context,db,installer);measure()}
  companion object {private val activeStates=setOf("QUEUED","DOWNLOADING","VERIFYING","INSTALLING","WAITING_FOR_WIFI")}
 }
 interface ContentRuntimeOwner {val contentRuntime:LocalContentRepository}
