@@ -15,12 +15,15 @@ import android.system.Os
 import android.system.OsConstants
 
 /** One lock shared by download/install/delete/recovery. Database pointer is the commit point. */
-class PackInstaller(private val db:LughzdanDatabase, val root:File, private val verifier:ManifestVerifier,
+class PackInstaller(private val db:LughzdanDatabase, root:File, private val verifier:ManifestVerifier,
  private val appVersion:Int=3, private val checkpoint:(String)->Unit={},
  private val directorySync:(File)->Unit={ file ->
   val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY,0)
   try {Os.fsync(fd)} finally {Os.close(fd)}
  }) {
+ // Android may place the private directory below an OS-managed /data/user/0 link.
+ // Resolve that trusted root once; archive paths remain checked inside this directory.
+ val root:File=root.canonicalFile
  val mutex=Mutex()
  private val json=Json { encodeDefaults=true }
  private val registry=GameRegistry()
