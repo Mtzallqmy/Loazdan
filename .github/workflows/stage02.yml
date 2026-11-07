@@ -1,8 +1,9 @@
 name: Lughzdan verification
 on:
   push:
-    branches: [main, 'fix/**', 'feat/**', 'stage-03-advanced-arabic-games', 'stage-04-offline-content-sync', 'stage-05-06-visual-knowledge']
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 concurrency:
   group: lughzdan-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
