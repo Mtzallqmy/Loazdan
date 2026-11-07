@@ -61,9 +61,9 @@ literary=release/'literary/data/literary_words.jsonl'
 assert list(release.rglob('*.jsonl'))==[literary]
 assert literary.read_bytes()==(root/'packs/atlas-600/puzzles.jsonl').read_bytes()
 words=[json.loads(line) for line in literary.read_text().splitlines()]
-assert len(words)==480 and len({p['puzzleId'] for p in words})==480
+assert len(words)==494 and len({p['puzzleId'] for p in words})==494
 for p in words:
  validator.validate(p);assert p['status']=='published' and not p['fixtureOnly']
 assert sum(p['payload'].get('variant')=='word_bridge' for p in words)==12
-print('480 Atlas and literary challenges validated')
+print('494 Atlas and literary challenges validated')
 print(f'{len(ps)} debug-only solvable puzzles, variants, stable original definitions and SHA-256 validated')

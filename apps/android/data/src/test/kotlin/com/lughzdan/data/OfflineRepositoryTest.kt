@@ -43,6 +43,20 @@ class OfflineRepositoryTest {
   assertEquals(result,restored.atlasRuns.first().first())
   assertNull(restored.nextInRun(id))
  }
+
+ @Test fun correctedRevisionSharesRewardIdentityAndKeepsOriginalSession()=runBlocking {
+  val replacement=p.copy(puzzleId="corrected",revision=3,tags=listOf("supersedes:p"))
+  db.games().insertPuzzles(listOf(LocalPuzzleEntity(replacement.puzzleId,3,"fixture",SessionCodec.json.encodeToString(replacement),1)))
+  val repo=LocalGameRepository(context,db,true)
+  val original=repo.start("p")
+  repo.act(original,PlayerAction.Select("one","a"));repo.act(original,PlayerAction.Submit("win"))
+  val fixed=repo.start("corrected")
+  repo.act(fixed,PlayerAction.Select("two","a"));repo.act(fixed,PlayerAction.Submit("win"))
+  assertEquals(100,repo.progress.first().totalXp)
+  assertEquals(1,repo.progress.first().completed)
+  assertEquals(listOf("corrected"),repo.atlasCatalog.first().map {it.puzzleId})
+  assertEquals("p",repo.observeSession(original).first()!!.puzzle.puzzleId)
+ }
  @Test fun dailyRoundSurvivesRestartAndCannotAwardTwice()=runBlocking {
   var repository=LocalGameRepository(context,db,true)
   val id=repository.startDaily("2026-11-06")

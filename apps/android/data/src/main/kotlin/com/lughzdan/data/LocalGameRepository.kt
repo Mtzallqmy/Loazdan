@@ -27,8 +27,8 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
  private val catalogLimit=MutableStateFlow(200)
  override suspend fun loadMore() {catalogLimit.value=Math.addExact(catalogLimit.value,200)}
  @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
- override val puzzles=catalogLimit.flatMapLatest {dao.observePuzzles(it)}.map { rows->rows.map { definition(it.definition) } }.flowOn(Dispatchers.Default)
- override val atlasCatalog=dao.observePuzzles(1000).map {rows->rows.map {definition(it.definition)}}.flowOn(Dispatchers.Default)
+ override val puzzles=catalogLimit.flatMapLatest {limit->atlasCatalog.map {it.take(limit)}}
+ override val atlasCatalog=dao.observePuzzles(1000).map {rows->AtlasCatalog.active(rows.map {definition(it.definition)})}.flowOn(Dispatchers.Default)
  private val sessionLimit=MutableStateFlow(50)
  override suspend fun loadMoreSessions() {sessionLimit.value=Math.addExact(sessionLimit.value,50)}
  @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -69,7 +69,7 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   val id="daily-$day"
   val existing=dao.session(id)
   if(existing!=null) {require(readRecord(existing)!=null);return@withTransaction id}
-  val candidates=dao.puzzles().map {definition(it.definition)}.filter {it.difficulty==1 && it.type in registry.types}.sortedBy {it.puzzleId}
+  val candidates=AtlasCatalog.active(dao.puzzles().map {definition(it.definition)}).filter {it.difficulty==1 && it.type in registry.types}.sortedBy {it.puzzleId}
   require(candidates.isNotEmpty()) {"No introductory puzzles installed"}
   val index=Math.floorMod(java.time.LocalDate.parse(day).toEpochDay(),candidates.size.toLong()).toInt()
   val p=candidates[index]
@@ -231,8 +231,9 @@ class LocalGameRepository(private val context:Context,private val db:LughzdanDat
   if(!next.practice && next.status in setOf(SessionStatus.WON,SessionStatus.LOST)) {
    val receipt=dao.enqueue(SyncOperationEntity(UUID.randomUUID().toString(),sessionId,"complete_session",SessionCodec.encode(next)))
    if(receipt!=-1L) {
-    val prior=dao.progress(p.puzzleId)
-    dao.saveProgress(PlayerProgressEntity(p.puzzleId,maxOf(prior?.bestScore?:0,next.score),(prior?.completed?:false)||next.status==SessionStatus.WON,(prior?.attempts?:0)+1,p.type,maxOf(prior?.xp?:0,next.score)))
+    val progressId=p.tags.firstOrNull {it.startsWith("supersedes:")}?.substringAfter(':') ?: p.puzzleId
+    val prior=dao.progress(progressId)
+    dao.saveProgress(PlayerProgressEntity(progressId,maxOf(prior?.bestScore?:0,next.score),(prior?.completed?:false)||next.status==SessionStatus.WON,(prior?.attempts?:0)+1,p.type,maxOf(prior?.xp?:0,next.score)))
     if(next.status==SessionStatus.WON) {
      dao.award(AchievementEntity("first_win",System.currentTimeMillis()))
      dao.award(AchievementEntity("first_win_${p.type}",System.currentTimeMillis()))

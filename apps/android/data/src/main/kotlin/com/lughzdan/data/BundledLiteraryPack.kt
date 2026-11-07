@@ -14,10 +14,10 @@ object BundledLiteraryPack {
  suspend fun install(context:Context,db:LughzdanDatabase,installer:PackInstaller)=withContext(Dispatchers.IO) {
   if(!context.assets.list("literary").orEmpty().contains("manifest.json"))return@withContext
   val head=db.content().head(ID)
-  if((head?.activeVersion ?: 0)>=4 || (head?.highWater ?: 0)>4 || db.content().journal(ID,4)?.phase=="DELETED")return@withContext
+  if((head?.activeVersion ?: 0)>=5 || (head?.highWater ?: 0)>5 || db.content().journal(ID,5)?.phase=="DELETED")return@withContext
   val raw=context.assets.open("literary/manifest.json").use {it.readBytes()}
   val manifest=installer.verify(raw)
-  require(manifest.packId==ID && manifest.version==4)
+  require(manifest.packId==ID && manifest.version==5)
   installer.mutex.lock()
   try {
    installer.chunks.mkdirs()
@@ -33,6 +33,6 @@ object BundledLiteraryPack {
     } finally {staging.delete()}
    }
   } finally {installer.mutex.unlock()}
-  installer.install(raw,"أطلس المعرفة — ٤٨٠ تحديًا")
+  installer.install(raw,"أطلس المعرفة — ٤٩٤ تحديًا")
  }
 }

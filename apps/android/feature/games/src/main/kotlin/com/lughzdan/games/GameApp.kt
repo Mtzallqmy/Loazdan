@@ -157,6 +157,7 @@ import com.lughzdan.engine.*
       val record=currentRecord
       if(record==null)Text("جارٍ استعادة الجولة. إن تعذر فتحها، تبقى بياناتها محفوظة في السجل.") else Page {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
+       atlasPuzzles.firstOrNull {"supersedes:${p.puzzleId}" in it.tags}?.let {replacement->OutlinedButton(onClick={play(replacement.puzzleId)},enabled=!busy){Text("افتح النسخة المصححة من هذا اللغز")}}
        var priorSession by remember(s.id){mutableStateOf(s)}
        LaunchedEffect(s) {
         val cue=AnswerFeedback.cue(priorSession,s)

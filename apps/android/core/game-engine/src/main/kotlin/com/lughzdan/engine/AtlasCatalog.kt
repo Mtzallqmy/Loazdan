@@ -13,6 +13,11 @@ object AtlasCatalog {
         AtlasWorld("logic", "مرصد التفكير", "أنماط وعلاقات وحلول خطوة بخطوة", listOf("أنماط", "علاقات", "ترتيب", "استنتاج")),
     )
 
+    fun active(all: List<PuzzleDefinition>): List<PuzzleDefinition> {
+        val replaced=all.flatMap {it.tags}.filter {it.startsWith("supersedes:")}.map {it.substringAfter(':')}.toSet()
+        return all.filter {it.puzzleId !in replaced}
+    }
+
     fun world(p: PuzzleDefinition): String = p.tags.firstOrNull { it.startsWith("atlas:") }?.substringAfter(':') ?: when (p.world) {
         "quran" -> "words"
         "imagination" -> "logic"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packId": "4b260af1-d41e-5759-bf8b-cc4867948a36",
-  "version": 4,
+  "version": 5,
   "minAppVersionCode": 104,
   "minEngineVersion": 3,
   "locale": "ar",
@@ -10,12 +10,12 @@
     {
       "path": "data/literary_words.jsonl",
       "kind": "puzzles",
-      "sha256": "bdd25f2fe0acbbad28da066f3b3e45fd2226a06c3fb88887403039b8e73cdf41",
-      "bytes": 586985,
+      "sha256": "87c4e29ba3bc4f7a41458f6d5466843ac0890b7895b069fdac722f922d2f50ca",
+      "bytes": 601963,
       "chunks": [
         {
-          "sha256": "bdd25f2fe0acbbad28da066f3b3e45fd2226a06c3fb88887403039b8e73cdf41",
-          "bytes": 586985
+          "sha256": "87c4e29ba3bc4f7a41458f6d5466843ac0890b7895b069fdac722f922d2f50ca",
+          "bytes": 601963
         }
       ]
     },
@@ -32,8 +32,8 @@
       ]
     }
   ],
-  "downloadBytes": 587580,
-  "installedBytes": 587580,
+  "downloadBytes": 602558,
+  "installedBytes": 602558,
   "dependencies": [],
   "sourceRefs": [
     "296da3ef-15d3-56fa-b231-c3145ee785b6",
@@ -47,7 +47,10 @@
     "150aeae8-efe4-57b0-8917-35b09f8a90d8",
     "576fafd9-27f3-5379-b93a-fc416945c20d",
     "f71076fb-3abf-5d9e-ab1b-455e75d26f8d",
-    "1b5feb72-5eec-5351-a202-c7473aadf35c"
+    "1b5feb72-5eec-5351-a202-c7473aadf35c",
+    "d045c9e7-c64b-58be-b8dc-7507731ca13d",
+    "c68c8562-bf03-59c1-a3f9-18d2148f7441",
+    "77f85cd7-bdc6-5337-8078-f6c1466b8432"
   ],
   "keyId": "literary2026",
   "assets": [],
@@ -183,7 +186,40 @@
       "licenseCode": "LicenseRef-Lughzdan-Literary",
       "attribution": "مجمع اللغة العربية بالقاهرة — التفعيلة وشعر التفعيلة",
       "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "d045c9e7-c64b-58be-b8dc-7507731ca13d",
+      "sourceId": "d045c9e7-c64b-58be-b8dc-7507731ca13d",
+      "sourceName": "مكتبة قطر الوطنية — ديوان مسلم بن الوليد، صريع الغواني",
+      "author": "مكتبة قطر الوطنية — ديوان مسلم بن الوليد، صريع الغواني",
+      "locator": "https://ediscovery.qnl.qa/ar/islandora/object/QNL%3A00011194",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "مكتبة قطر الوطنية — ديوان مسلم بن الوليد، صريع الغواني",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "c68c8562-bf03-59c1-a3f9-18d2148f7441",
+      "sourceId": "c68c8562-bf03-59c1-a3f9-18d2148f7441",
+      "sourceName": "Quranic Arabic Corpus — الجذر ر ح م",
+      "author": "Quranic Arabic Corpus — الجذر ر ح م",
+      "locator": "https://corpus.quran.com/qurandictionary.jsp?q=rHm",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "Quranic Arabic Corpus — الجذر ر ح م",
+      "noticePath": "rights/literary.txt"
+    },
+    {
+      "referenceId": "77f85cd7-bdc6-5337-8078-f6c1466b8432",
+      "sourceId": "77f85cd7-bdc6-5337-8078-f6c1466b8432",
+      "sourceName": "جامعة الملك سعود — تفسير البغوي، سورة الفيل، الآية 3",
+      "author": "جامعة الملك سعود — تفسير البغوي، سورة الفيل، الآية 3",
+      "locator": "https://quran.ksu.edu.sa/tafseer/baghawy/sura105-aya3.html",
+      "sourceVersion": "2026-11-06",
+      "licenseCode": "LicenseRef-Lughzdan-Literary",
+      "attribution": "جامعة الملك سعود — تفسير البغوي، سورة الفيل، الآية 3",
+      "noticePath": "rights/literary.txt"
     }
   ],
-  "signature": "hqoxO7bGsGlMwNzgaaV9h53EdsaARgTgN9ro0tfSGJhCaNtgEfeahEG5KkkIgamy_GdgSuboWy7pE0uZScHWBA"
+  "signature": "OtmDcygHRrOJy6PgMfiO-5LC1FLDBvUXfS7cCHVAjdC61_RJM-XxY-P8ComWY-3yH1o2V9rHlj_lDnSGj2ALDw"
 }

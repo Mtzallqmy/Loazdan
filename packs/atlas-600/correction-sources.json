@@ -1,0 +1,20 @@
+[
+  {
+    "key": "poet-catalog",
+    "referenceId": "d045c9e7-c64b-58be-b8dc-7507731ca13d",
+    "name": "مكتبة قطر الوطنية — ديوان مسلم بن الوليد، صريع الغواني",
+    "url": "https://ediscovery.qnl.qa/ar/islandora/object/QNL%3A00011194"
+  },
+  {
+    "key": "quran-roots",
+    "referenceId": "c68c8562-bf03-59c1-a3f9-18d2148f7441",
+    "name": "Quranic Arabic Corpus — الجذر ر ح م",
+    "url": "https://corpus.quran.com/qurandictionary.jsp?q=rHm"
+  },
+  {
+    "key": "ababil",
+    "referenceId": "77f85cd7-bdc6-5337-8078-f6c1466b8432",
+    "name": "جامعة الملك سعود — تفسير البغوي، سورة الفيل، الآية 3",
+    "url": "https://quran.ksu.edu.sa/tafseer/baghawy/sura105-aya3.html"
+  }
+]
