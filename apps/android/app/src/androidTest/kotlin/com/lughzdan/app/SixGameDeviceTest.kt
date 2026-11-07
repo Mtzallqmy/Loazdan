@@ -19,7 +19,7 @@ class SixGameDeviceTest {
    compose.onNodeWithText("العودة · تُحفظ حركاتك تلقائيًا").performClick();compose.waitForIdle()
   }
   if(text=="الإعدادات") {click("الرئيسية");compose.onNodeWithTag("nav-profile").performClick();compose.waitForIdle()}
-  compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي","الإعدادات"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
+  compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي","الإعدادات") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
  private fun showCell(matcher:SemanticsMatcher) {
   val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
   val page=compose.onNode(vertical)

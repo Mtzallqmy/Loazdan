@@ -24,7 +24,7 @@ class AtlasDeviceTest {
         }
         try {compose.waitUntil(30_000) { compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }} catch(error:Throwable) {shot("atlas-failure");println("Waiting for: $text");println(compose.onRoot().printToString());runBlocking {compose.activity.repository.initialize()};throw error}
         val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst()
-        if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي"))node.performScrollTo()
+        if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo()
         node.performClick()
         compose.waitForIdle()
     }
@@ -123,6 +123,30 @@ class AtlasDeviceTest {
         val xp = runBlocking { compose.activity.repository.progress.first().totalXp }
         File(compose.activity.filesDir, "atlas-duel.txt").writeText("${run.id}\n$xp\n${SessionCodec.encode(partial)}")
         shot("atlas-duel-handoff")
+    }
+
+    @Test fun scaledAtlasLayoutKeepsSubmissionVisible() {
+        val config=compose.activity.resources.configuration
+        assertTrue("Expected 320–480dp acceptance viewport, got ${config.screenWidthDp}",config.screenWidthDp in 320..480)
+        assertTrue(config.fontScale>=1.29f)
+        val suffix="${config.screenWidthDp}dp"
+        click("الرئيسية")
+        if(config.screenWidthDp>=400) {
+            click("ملفي");click("الإعدادات")
+            compose.onAllNodes(isToggleable()).onFirst().performClick()
+            compose.waitForIdle();click("الرئيسية")
+        }
+        shot("atlas-home-$suffix")
+        click("ابدأ رحلة الاكتشاف");shot("atlas-worlds-$suffix")
+        click("مدينة اللغة");click("المفردات")
+        val run=runBlocking {compose.activity.repository.atlasRuns.first().first {it.kind=="journey" && it.title=="المفردات" && !it.finished}}
+        click("ابدأ المحطة ${run.step+1}")
+        compose.onNodeWithText("تحقق من الإجابة").assertIsDisplayed()
+        shot("atlas-playing-$suffix")
+        solve()
+        compose.onNodeWithText("إجابة صحيحة!",substring=true).performScrollTo().assertIsDisplayed()
+        shot("atlas-result-$suffix")
+        File(compose.activity.getExternalFilesDir(null),"atlas-layout-$suffix.txt").writeText("screenWidthDp=${config.screenWidthDp}\nfontScale=${config.fontScale}\n")
     }
 
     @Test fun duelRestoresOfflineWithoutChangingPlayerExperience() {

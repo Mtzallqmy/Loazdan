@@ -3,6 +3,7 @@
 import json,hashlib,zipfile,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
+assert Path(sys.argv[1]).stat().st_size<=60_000_000, "APK exceeds approved 60 MB budget"
 with zipfile.ZipFile(sys.argv[1]) as apk:
  libs=[n for n in apk.namelist() if n.startswith('lib/') and n.endswith('.so')]
  assert libs and all(n.startswith('lib/arm64-v8a/') for n in libs),libs

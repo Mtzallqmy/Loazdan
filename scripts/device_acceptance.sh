@@ -83,3 +83,18 @@ run_phase duelRestoresOfflineWithoutChangingPlayerExperience AtlasDeviceTest
 adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/atlas-gfxinfo.txt
 adb shell dumpsys meminfo com.lughzdan.app > artifacts/stage03/atlas-meminfo.txt
 adb shell getprop ro.build.fingerprint > artifacts/stage03/device-build.txt
+
+# Additional real UI captures on the modern emulator, with large Arabic text.
+if [[ "$(adb shell getprop ro.build.version.sdk | tr -d '\r')" == "35" ]]; then
+  adb shell settings put system font_scale 1.3
+  adb shell wm density 320
+  adb shell wm size 640x1280
+  adb shell am force-stop com.lughzdan.app
+  run_phase scaledAtlasLayoutKeepsSubmissionVisible AtlasDeviceTest
+  adb shell wm size 960x1600
+  adb shell am force-stop com.lughzdan.app
+  run_phase scaledAtlasLayoutKeepsSubmissionVisible AtlasDeviceTest
+  adb shell wm size reset
+  adb shell wm density reset
+  adb shell settings put system font_scale 1.0
+fi

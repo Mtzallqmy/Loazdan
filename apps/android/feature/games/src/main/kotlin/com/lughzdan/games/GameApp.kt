@@ -14,6 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.animation.fadeIn
@@ -53,7 +55,10 @@ import com.lughzdan.engine.*
   } }) { padding ->
    Column(Modifier.fillMaxSize().padding(padding).imePadding().padding(horizontal=16.dp)) {
     if(!playing) Row(Modifier.fillMaxWidth().padding(vertical=12.dp),horizontalArrangement=Arrangement.SpaceBetween) { Text("لُغْزَدان",style=MaterialTheme.typography.titleLarge);DiscoveryIcon("brand") }
-    else TextButton(onClick={nav.popBackStack()}){Text("العودة · تُحفظ حركاتك تلقائيًا")}
+    else Row(Modifier.fillMaxWidth(),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
+     TextButton(onClick={nav.popBackStack()},modifier=Modifier.weight(1f)){Text("العودة · تُحفظ حركاتك تلقائيًا")}
+     Switch(checked=settings.sound,onCheckedChange=vm::sound,modifier=Modifier.semantics {contentDescription="أصوات اللعب"})
+    }
     error?.let { Text(it,color=MaterialTheme.colorScheme.error);TextButton(onClick=vm::initialize){Text("إعادة المحاولة")} }
     if(!ready) {if(error==null) {CircularProgressIndicator();Text("تهيئة المكتبة المحلية…")}}
     else NavHost(nav,startDestination="home",modifier=Modifier.weight(1f),enterTransition={fadeIn(tween(200))},exitTransition={fadeOut(tween(150))},popEnterTransition={fadeIn(tween(200))},popExitTransition={fadeOut(tween(150))}) {
@@ -155,8 +160,10 @@ import com.lughzdan.engine.*
       val sessionFlow=remember(id){vm.observeSession(id)}
       val currentRecord by sessionFlow.collectAsStateWithLifecycle(initialValue=null)
       val record=currentRecord
-      if(record==null)Text("جارٍ استعادة الجولة. إن تعذر فتحها، تبقى بياناتها محفوظة في السجل.") else Page {
+      if(record==null)Text("جارٍ استعادة الجولة. إن تعذر فتحها، تبقى بياناتها محفوظة في السجل.") else {
        val s=record.session;val p=record.puzzle;val terminal=s.status in setOf(SessionStatus.WON,SessionStatus.LOST)
+       Column(Modifier.fillMaxSize()) {
+       Page(Modifier.weight(1f)) {
        atlasPuzzles.firstOrNull {"supersedes:${p.puzzleId}" in it.tags}?.let {replacement->OutlinedButton(onClick={play(replacement.puzzleId)},enabled=!busy){Text("افتح النسخة المصححة من هذا اللغز")}}
        var priorSession by remember(s.id){mutableStateOf(s)}
        LaunchedEffect(s) {
@@ -165,11 +172,7 @@ import com.lughzdan.engine.*
         if(settings.haptic && cue!=null)view.performHapticFeedback(if(cue==FeedbackCue.RETRY)HapticFeedbackConstants.LONG_PRESS else HapticFeedbackConstants.VIRTUAL_KEY)
         priorSession=s
        }
-       Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween) {
-        Text("أصوات اللعب",style=MaterialTheme.typography.labelLarge)
-        Switch(checked=settings.sound,onCheckedChange=vm::sound)
-       }
-       Text("${if(p.fixtureOnly) "مسودة اختبار" else "محتوى الحزمة"} · الصعوبة ${p.difficulty} · ${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]}",color=MaterialTheme.colorScheme.secondary)
+       Text("${listOf("مبتدئ","سهل","متوسط","متقدم","خبير")[p.difficulty-1]} · ${if(terminal) "النتيجة" else "المحاولات المتبقية: ${3-s.wrongSubmissions}"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.secondary)
 
        if(s.atlasRunId.isNotBlank())atlasRuns.firstOrNull {it.id==s.atlasRunId}?.let {run->Text(if(run.kind=="duel") "جولة ${run.playerNames[(run.step-(if(terminal)1 else 0)).coerceAtLeast(0)%2]}" else run.title,color=MaterialTheme.colorScheme.primary)}
        Text(if(p.payload.variant in setOf("language_detective","who_am_i",WordBridge.VARIANT))AtlasCatalog.name(p) else if(LiteraryWords.supports(p))"ديوان الألغاز · "+if(p.payload.variant==LiteraryWords.COMPLETE)"أكمل الحروف" else "خمن الكلمة" else gameNames[p.type] ?: p.title,style=MaterialTheme.typography.titleMedium)
@@ -178,16 +181,10 @@ import com.lughzdan.engine.*
         Text("حُفظت جولتك. استأنفها عندما تكون مستعدًا.")
         Button(onClick={vm.resume(s.id)},enabled=!busy){Text("استئناف الجولة")}
        } else if(!terminal) {
-        Text("المحاولات المتبقية: ${3-s.wrongSubmissions}")
         val loader:suspend (String)->ByteArray?=remember(s.id) { {imageId->vm.readImage(s.id,imageId)} }
         CompositionLocalProvider(LocalGameImageLoader provides loader) { GameBoard(p,s,busy){vm.action(s.id,it)} }
-        Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&(!LiteraryWords.supports(p)||LiteraryWords.complete(p,s))&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
-
         if(s.wrongSubmissions>0)FeedbackCard(false,"الإجابة السابقة غير صحيحة؛ راجع العلامات وحاول مرة أخرى.")
-        if(LiteraryWords.supports(p)) {
-         p.hints.firstOrNull {it.id=="clue" && it.id !in s.usedHintIds}?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("قرينة إضافية (−${hint.penalty} نقاط)")}}
-         p.hints.firstOrNull {it.id.startsWith("letter-") && it.id !in s.usedHintIds}?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("اكشف حرفًا (−${hint.penalty} نقاط)")}}
-        } else HintProvider.next(p,s)?.hint?.let { hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy){Text("تلميح (−${hint.penalty} نقطة)")} };p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
+        p.hints.filter {it.id in s.usedHintIds}.forEach {hint->Text(s.revealedHints[hint.id] ?: hint.text)}
         TextButton(onClick={vm.action(s.id,PlayerAction.Pause(java.util.UUID.randomUUID().toString()))},enabled=!busy){Text("إيقاف مؤقت وحفظ")}
        } else {
         FeedbackCard(s.status==SessionStatus.WON,if(s.status==SessionStatus.WON)"إجابة صحيحة! +${s.score} نقطة" else "انتهت المحاولات؛ اكتشف الإجابة وتعلّم منها")
@@ -222,6 +219,19 @@ import com.lughzdan.engine.*
         if(vm.vocabularyRepository!=null)OutlinedButton(onClick={vm.saveDiscovery(p)},enabled=discoveries.none {it.snapshot.id=="${p.puzzleId}:${p.revision}"},modifier=Modifier.fillMaxWidth()){Text(if(discoveries.any {it.snapshot.id=="${p.puzzleId}:${p.revision}"})"محفوظ في دفتر اكتشافاتي" else "احفظ هذا الاكتشاف")}
         TextButton(onClick={nav.navigate("history")}){Text("سجل الإجابات")}
        }
+       }
+       if(s.status==SessionStatus.ACTIVE) {
+        Surface(tonalElevation=3.dp,modifier=Modifier.fillMaxWidth()) {
+         Column(Modifier.padding(vertical=8.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+          Button(onClick={vm.submit(s.id)},enabled=(p.type!="choice"||s.selectedId!=null)&&(!LiteraryWords.supports(p)||LiteraryWords.complete(p,s))&&!busy&&!submitting,modifier=Modifier.fillMaxWidth()){Text(if(submitting)"جارٍ الحفظ…" else "تحقق من الإجابة")}
+          if(LiteraryWords.supports(p)) Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
+           p.hints.firstOrNull {it.id=="clue" && it.id !in s.usedHintIds}?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy,modifier=Modifier.weight(1f)){Text("قرينة إضافية (−${hint.penalty})",style=MaterialTheme.typography.labelMedium)}}
+           p.hints.firstOrNull {it.id.startsWith("letter-") && it.id !in s.usedHintIds}?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy,modifier=Modifier.weight(1f)){Text("اكشف حرفًا (−${hint.penalty})",style=MaterialTheme.typography.labelMedium)}}
+          } else HintProvider.next(p,s)?.hint?.let {hint->TextButton(onClick={vm.hint(s.id,hint.id)},enabled=!busy,modifier=Modifier.fillMaxWidth()){Text("تلميح (−${hint.penalty} نقطة)")}}
+         }
+        }
+       }
+       }
       }
      }
      composable("vocabulary") { vm.vocabularyRepository?.let { vocabulary->VocabularyScreen(vocabulary) { nav.navigate("catalog") } } }
@@ -254,4 +264,4 @@ import com.lughzdan.engine.*
   }
  }
 }
-@Composable internal fun Page(content:@Composable ColumnScope.()->Unit) { Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom=24.dp),verticalArrangement=Arrangement.spacedBy(16.dp),content=content) }
+@Composable internal fun Page(modifier:Modifier=Modifier,content:@Composable ColumnScope.()->Unit) { Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom=24.dp),verticalArrangement=Arrangement.spacedBy(16.dp),content=content) }
