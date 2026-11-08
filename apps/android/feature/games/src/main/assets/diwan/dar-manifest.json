@@ -1,0 +1,15 @@
+{
+  "poems": 60,
+  "prose": 20,
+  "readingQuestions": 300,
+  "scenes": {
+    "edge": "p24",
+    "shade": null,
+    "elegy": "p14",
+    "doves": "n02",
+    "baghdad": "n14",
+    "echo": null
+  },
+  "scienceModels": 2,
+  "budgetBytes": 100000000
+}

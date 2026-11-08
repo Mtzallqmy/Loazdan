@@ -47,14 +47,14 @@ import com.lughzdan.engine.*
   val route=nav.currentBackStackEntryAsState().value?.destination?.route
   val playing=route=="session/{id}"
   Scaffold(bottomBar={ if(ready && !playing) NavigationBar {
-   listOf("home" to "الرئيسية","worlds" to "العوالم","catalog" to "مكتبتي","profile" to "ملفي").forEach { (destination,label)->
+   listOf("home" to "الدار","worlds" to "الأطلس","diwan" to "ديواني").forEach { (destination,label)->
     NavigationBarItem(modifier=Modifier.testTag("nav-$destination"),selected=route==destination || (destination=="worlds" && route in setOf("atlas","atlas-run/{id}","duel")),
      onClick={if(destination=="home") nav.popBackStack("home",false) else nav.navigate(destination){launchSingleTop=true;restoreState=true;popUpTo("home"){saveState=true}}},
-     icon={DiscoveryIcon(destination)},label={Text(label,maxLines=1)})
+     icon={DiscoveryIcon(if(destination=="diwan")"catalog" else destination)},label={Text(label,maxLines=1)})
    }
   } }) { padding ->
    Column(Modifier.fillMaxSize().padding(padding).imePadding().padding(horizontal=16.dp)) {
-    if(!playing) Row(Modifier.fillMaxWidth().padding(vertical=12.dp),horizontalArrangement=Arrangement.SpaceBetween) { Text("لُغْزَدان",style=MaterialTheme.typography.titleLarge);DiscoveryIcon("brand") }
+    if(!playing) Row(Modifier.fillMaxWidth().padding(vertical=12.dp),horizontalArrangement=Arrangement.SpaceBetween) { Text("لُغْزَدان",style=MaterialTheme.typography.titleLarge);TextButton(onClick={nav.navigate("catalog")},modifier=Modifier.testTag("nav-catalog")){Text("مكتبتي")};TextButton(onClick={nav.navigate("profile")},modifier=Modifier.testTag("nav-profile")){Text("ملفي")} }
     else Row(Modifier.fillMaxWidth(),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
      TextButton(onClick={nav.popBackStack()},modifier=Modifier.weight(1f)){Text("العودة · تُحفظ حركاتك تلقائيًا")}
      Switch(checked=settings.sound,onCheckedChange=vm::sound,modifier=Modifier.semantics {contentDescription="أصوات اللعب"})

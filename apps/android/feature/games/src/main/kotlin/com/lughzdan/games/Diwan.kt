@@ -36,7 +36,7 @@ private object DiwanCatalog {
         List(json.length()) { index ->
             val r = json.getJSONObject(index)
             val quiz = r.getJSONArray("questions")
-            Reading(r.getString("id"), r.getString("title"), r.getString("author"), r.getString("theme"), r.getString("era"),
+            Reading(r.getString("id"), r.getString("title"), r.getString("author"), r.getString("theme"), listOf(r.getString("era"),r.optString("genre"),r.optString("book")).filter { it.isNotBlank() }.joinToString(" · "),
                 r.getJSONArray("text").strings(), r.getString("note"), r.getString("source"), List(quiz.length()) { n ->
                     val q = quiz.getJSONObject(n)
                     ReadingQuestion(q.getString("prompt"), q.getJSONArray("options").strings(), q.getInt("correct"), q.getString("explanation"))
@@ -185,9 +185,10 @@ private const val DAY = 86_400_000L
     }
 }
 
-@Composable internal fun LocalReadingVoice(text: String) {
+@Composable internal fun LocalReadingVoice(text: String, onSpeech: (Boolean)->Unit = {}) {
     val context=LocalContext.current.applicationContext
     var engine by remember {mutableStateOf<TextToSpeech?>(null)}
+    val speaking by rememberUpdatedState(onSpeech)
     var available by remember {mutableStateOf(false)}
     var message by remember {mutableStateOf("")}
     DisposableEffect(context) {
@@ -202,8 +203,13 @@ private const val DAY = 86_400_000L
                 }
             }
         }
+        tts.setOnUtteranceProgressListener(object: android.speech.tts.UtteranceProgressListener() {
+            override fun onStart(id:String?) {handler.post {if(!closed)speaking(true)}}
+            override fun onDone(id:String?) {handler.post {if(!closed)speaking(false)}}
+            @Deprecated("Legacy TTS callback") override fun onError(id:String?) {handler.post {if(!closed)speaking(false)}}
+        })
         engine=tts
-        onDispose { closed=true;tts.stop();tts.shutdown();engine=null }
+        onDispose { closed=true;speaking(false);tts.stop();tts.shutdown();engine=null }
     }
     OutlinedButton(enabled=available,onClick={
         message=if(engine?.speak(text,TextToSpeech.QUEUE_FLUSH,null,"diwan") == TextToSpeech.ERROR) "تعذّرت القراءة الصوتية." else ""

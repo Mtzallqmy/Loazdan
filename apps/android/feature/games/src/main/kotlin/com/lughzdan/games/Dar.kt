@@ -29,6 +29,7 @@ private val exhibits=listOf(
     Exhibit("baghdad","الورّاق","ورقة بغداد","n14",listOf("الرغبة","النقود"),"اجمع الدافعين اللذين يُهيّئان للمفارقة.","اشتهيت الأزاذ · وليس معي عقد على نقد","دخلت البصرة في فتاء","في مشهد مؤلف يشتهي الراوي وليمة ويتحسّس كيسه الفارغ؛ أين المفارقة؟","بين الرغبة والقدرة","بين مدينتين"),
     Exhibit("echo","المرصد","مسافة الصدى","",listOf("مسار الذهاب","مسار الرجوع"),"احسب بعد جدار من زمن عودة النبضة. نفترض سرعة ثابتة 340 م/ث وجدارًا ساكنًا.","يقطع الصوت المسافة مرتين","يقطع الصوت المسافة مرة","عاد الصدى بعد ثانيتين. ما بعد الجدار؟","340 مترًا","680 مترًا")
 )
+private val manuscript=androidx.compose.ui.text.font.FontFamily(androidx.compose.ui.text.font.Font(R.font.dar_amiri))
 private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
 @Composable private fun darData():Pair<SharedPreferences,Map<String,*>> {
     val ctx=LocalContext.current.applicationContext
@@ -77,6 +78,15 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
     fun next(){save{putInt(key+"step",step+1);remove(key+"feedback")}}
     fun miss(message:String){save{putString(key+"feedback",message);putInt(key+"attempts",(d[key+"attempts"] as? Int?:0)+1)}}
     val page=d[key+"page"] as? String
+    val sound=remember(ctx,id){DarSound(ctx.applicationContext)}
+    var speaking by remember {mutableStateOf(false)}
+    DisposableEffect(sound){onDispose{sound.close()}}
+    val effects=d["fx"]==true
+    val voice=d["voice"]!=false
+    val music=d["ambience"]==true
+    LaunchedEffect(music,speaking){sound.room(music,speaking)}
+    var heard by remember(id){mutableIntStateOf(step)}
+    LaunchedEffect(step){if(step!=heard && effects)sound.play(if(step==5)2 else if(step==1)0 else 1);heard=step}
     Page {
         TextButton(onClick=back){Text("العودة إلى الدار")}
         Text(e.room,style=MaterialTheme.typography.labelLarge)
@@ -92,11 +102,11 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
                     val parts=w.text.first().split('\n')
                     val big=d[key+"large"]==true
                     BoxWithConstraints {
-                        if(maxWidth>=600.dp) Row {parts.forEach{Text(it,Modifier.weight(1f),fontSize=if(big)28.sp else 21.sp,lineHeight=42.sp)}}
-                        else Column {parts.forEach{Text(it,fontSize=if(big)28.sp else 21.sp,lineHeight=42.sp)}}
+                        if(maxWidth>=600.dp) Row {parts.forEach{Text(it,Modifier.weight(1f),fontFamily=manuscript,fontSize=if(big)28.sp else 21.sp,lineHeight=42.sp)}}
+                        else Column {parts.forEach{Text(it,fontFamily=manuscript,fontSize=if(big)28.sp else 21.sp,lineHeight=42.sp)}}
                     }
                     TextButton(onClick={save{putBoolean(key+"large",!big)}}){Text(if(big)"تصغير البيت" else "تكبير البيت")}
-                    LocalReadingVoice(w.text.first())
+                    if(voice) LocalReadingVoice(w.text.first()){speaking=it}
                     val mark="saved:p24:0"
                     val book=ctx.getSharedPreferences("diwan-arab-v1",Context.MODE_PRIVATE)
                     TextButton(onClick={if(!book.contains(mark))book.edit().putLong(mark,System.currentTimeMillis()).apply();save{putString(key+"notice","حُفظ البيت في ديواني")}}){Text(d[key+"notice"] as? String?:"احفظ البيت في ديواني")}
@@ -104,6 +114,12 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
             }
         } else if(e.work.isNotEmpty()){
             WithReadings { readings,_,_->readings.find{it.id==e.work}?.let{Text(it.text.first(),style=MaterialTheme.typography.titleLarge)} }
+        }
+        if(id=="echo"){
+            val seconds=d[key+"seconds"] as? Int?:1
+            Text("زمن رجوع النبضة: $seconds ث · المسافة: ${seconds*170} م")
+            LinearProgressIndicator(progress={seconds/4f},modifier=Modifier.fillMaxWidth())
+            Row { listOf(-1,1).forEach{delta->TextButton(onClick={save{putInt(key+"seconds",(seconds+delta).coerceIn(1,4))}}){Text(if(delta>0)"زد الزمن" else "أنقص الزمن")} } }
         }
         if(step==0){
             Text("اختر قرينتك الأولى")
@@ -154,6 +170,9 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
             OutlinedButton(onClick={save{putInt(key+"step",0);remove(key+"mark");remove(key+"mark2");remove(key+"paired");remove(key+"feedback")}}){Text("تحدّي الإتقان · أعد الحل بطريق آخر")}
         }
         if(feedback.isNotEmpty())Text(feedback,color=MaterialTheme.colorScheme.error)
+        listOf(Triple("fx","المؤثرات",effects),Triple("voice","الإلقاء الآلي",voice),Triple("ambience","خلفية المجلس",music)).forEach{(k,label,on)->
+            FilterChip(on,{save{putBoolean(k,!on)}},{Text(label+if(on)" · مفعّل" else " · متوقف")})
+        }
         if(id=="shade")TextButton(onClick={runCatching{uri.openUri("https://openstax.org/books/precalculus-2e/pages/5-4-right-triangle-trigonometry")}}){Text("مرجع النموذج · OpenStax")}
     }
 }

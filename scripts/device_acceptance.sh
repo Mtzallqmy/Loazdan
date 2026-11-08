@@ -82,6 +82,17 @@ adb shell svc wifi disable
 adb shell svc data disable
 run_phase duelRestoresOfflineWithoutChangingPlayerExperience AtlasDeviceTest
 run_phase signedVisualCluesDecodeAndDrawOffline AtlasDeviceTest
+adb shell dumpsys gfxinfo com.lughzdan.app reset
+adb shell screenrecord --time-limit 120 --bit-rate 2000000 /sdcard/dar-scenes.mp4 >/dev/null 2>&1 &
+dar_rec=$!
+run_phase inspectPoem DarDeviceTest
+adb shell am force-stop com.lughzdan.app
+run_phase restorePoem DarDeviceTest
+run_phase shadowBoard DarDeviceTest
+adb shell 'pidof screenrecord | xargs -r kill -2' || true
+wait "$dar_rec" || true
+adb pull /sdcard/dar-scenes.mp4 artifacts/stage03/ || true
+adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/dar-gfxinfo.txt
 run_phase readPlayAndBookmark DiwanDeviceTest
 adb shell am force-stop com.lughzdan.app
 run_phase recallSavedLineAfterRestart DiwanDeviceTest

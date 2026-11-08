@@ -25,7 +25,7 @@ class AtlasDeviceTest {
         }
         try {compose.waitUntil(30_000) { compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }} catch(error:Throwable) {shot("atlas-failure");println("Waiting for: $text");println(compose.onRoot().printToString());runBlocking {compose.activity.repository.initialize()};throw error}
         val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst()
-        if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي","الإعدادات") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo()
+        if(text !in setOf("الدار","الأطلس","مكتبتي","ملفي","الإعدادات") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo()
         node.assertIsDisplayed().performClick()
         compose.waitForIdle()
     }
@@ -108,7 +108,7 @@ class AtlasDeviceTest {
     }
 
     @Test fun journeyNotebookAndDuelPersistBeforeProcessKill() {
-        click("الرئيسية")
+        click("الدار")
         click("ابدأ رحلة الاكتشاف")
         click("مدينة اللغة")
         click("المفردات")
@@ -130,7 +130,7 @@ class AtlasDeviceTest {
         click("أظهر المعنى")
         click("تذكرتها")
         click("العودة إلى الدفتر")
-        click("الرئيسية")
+        click("الدار")
         click("تحدّي صديق")
         click("ابدأ المواجهة")
         repeat(2) { stage -> click("ابدأ المحطة ${stage + 1}"); solve(); click("متابعة الرحلة أو المواجهة") }
@@ -154,7 +154,7 @@ class AtlasDeviceTest {
     }
 
     @Test fun signedVisualCluesDecodeAndDrawOffline() {
-        click("الرئيسية")
+        click("الدار")
         val puzzles=runBlocking {compose.activity.repository.atlasCatalog.first().filter {it.type=="four_pictures" && it.tags.any {tag->tag.startsWith("supersedes:")}}}
         assertEquals(4,puzzles.size)
         val run=AtlasRun("visual-device-${System.nanoTime()}","journey","رحلة القرائن البصرية",puzzles.map {it.puzzleId})
@@ -189,11 +189,11 @@ class AtlasDeviceTest {
         assertTrue("Expected 320–480dp acceptance viewport, got ${config.screenWidthDp}",config.screenWidthDp in 320..480)
         assertTrue(config.fontScale>=1.29f)
         val suffix="${config.screenWidthDp}dp"
-        click("الرئيسية")
+        click("الدار")
         if(config.screenWidthDp>=400) {
             click("ملفي");click("الإعدادات")
             compose.onAllNodes(isToggleable()).onFirst().performClick()
-            compose.waitForIdle();click("الرئيسية")
+            compose.waitForIdle();click("الدار")
         }
         shot("atlas-home-$suffix")
         click("ابدأ رحلة الاكتشاف");shot("atlas-worlds-$suffix")
@@ -209,7 +209,7 @@ class AtlasDeviceTest {
     }
 
     @Test fun duelRestoresOfflineWithoutChangingPlayerExperience() {
-        click("الرئيسية")
+        click("الدار")
         click("ابدأ رحلة الاكتشاف")
         val saved = File(compose.activity.filesDir, "atlas-duel.txt").readLines()
         val run = currentRun()
