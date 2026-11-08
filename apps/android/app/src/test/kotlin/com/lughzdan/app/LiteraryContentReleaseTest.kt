@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.lughzdan.data.*
 import com.lughzdan.content.ManifestVerifier
 import com.lughzdan.db.LughzdanDatabase
+import com.lughzdan.db.PlayerProgressEntity
 import com.lughzdan.engine.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -57,6 +58,8 @@ class LiteraryContentReleaseTest {
    install();assertEquals(600,restored.atlasCatalog.first().size)
    val visuals=all.filter {it.type=="four_pictures" && it.tags.any {tag->tag.startsWith("supersedes:")}}
    assertEquals(4,visuals.size)
+   // Asset verification exercises every difficulty; keep the production unlock rule intact.
+   db.games().saveProgress(PlayerProgressEntity("visual-test-unlock",0,true,0,xp=900))
    for(visual in visuals) {
     val visualId=restored.start(visual.puzzleId)
     visual.payload.images.forEach {image->

@@ -3,6 +3,7 @@ package com.lughzdan.app
 import android.graphics.Bitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.lughzdan.engine.*
@@ -41,6 +42,29 @@ class AtlasDeviceTest {
         }
         return result!!
     }
+    private fun clickTile(description: String) {
+        val page = compose.onNode(SemanticsMatcher("vertical game page") {
+            it.config.contains(SemanticsProperties.VerticalScrollAxisRange)
+        })
+        val tile = compose.onNodeWithContentDescription(description)
+        repeat(4) {
+            val viewport = page.fetchSemanticsNode().boundsInRoot
+            val target = tile.fetchSemanticsNode()
+            val top = target.positionInRoot.y
+            val bottom = top + target.size.height
+            val delta = when {
+                top < viewport.top -> top - viewport.top
+                bottom > viewport.bottom -> bottom - viewport.bottom
+                else -> 0f
+            }
+            if (kotlin.math.abs(delta) > 1f) {
+                page.performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy) { it(0f, delta) }
+                compose.waitForIdle()
+            }
+        }
+        tile.performScrollTo().assertIsDisplayed().performClick()
+        compose.waitForIdle()
+    }
     private fun solve() {
         val run = currentRun()
         val record = runBlocking { compose.activity.repository.observeSession(run.activeSessionId!!).first()!! }
@@ -70,7 +94,7 @@ class AtlasDeviceTest {
                 p.payload.acceptedAnswers.first().forEach { token ->
                     val index = p.payload.tiles.indices.first { it !in used && p.payload.tiles[it] == token.toString() }
                     used.add(index)
-                    compose.onNodeWithContentDescription("حرف $index $token").performScrollTo().performClick()
+                    clickTile("حرف $index $token")
                 }
             }
             "sequence" -> compose.onNodeWithText("العدد التالي (أرقام عربية أو لاتينية)").performScrollTo().performTextReplacement(p.payload.answer.toString())
