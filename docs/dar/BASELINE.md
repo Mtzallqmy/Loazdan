@@ -1,0 +1,1 @@
+قاعدة الدار 23f39cc66285ea33740b930a0eac1a58bae0968f تطابق v3.0.0-beta.1 وفرع feat/diwan-al-arab. main عند ea5c8d6 سلف لها، بفارق التزامين لصالح الديوان. نجح scripts/check_diwan.py وscripts/check_content.py قبل التعديل. لا توجد تغييرات من main يلزم نقلها.

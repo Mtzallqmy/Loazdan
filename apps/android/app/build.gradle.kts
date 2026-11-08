@@ -1,6 +1,6 @@
 plugins { alias(libs.plugins.android.application); alias(libs.plugins.kotlin.android); alias(libs.plugins.compose); alias(libs.plugins.ksp); alias(libs.plugins.hilt) }
 android { namespace = "com.lughzdan.app"; compileSdk = 36
- defaultConfig { minSdk = 26; applicationId = "com.lughzdan.app"; targetSdk = 36; manifestPlaceholders["appLabel"] = "لُغْزَدان"; versionCode = 105; versionName = "3.0.0-beta.1"; buildConfigField("String", "CONTENT_API_URL", "\"" + providers.gradleProperty("contentApiUrl").orElse("https://br-purple-frost-baw74zwb-catalog.compute.c-8.eu-central-1.aws.neon.tech/").get().also { require(it.isEmpty() || it.matches(Regex("https://[A-Za-z0-9.-]+(?::[0-9]+)?/[A-Za-z0-9/_-]*"))) } + "\"") }
+ defaultConfig { minSdk = 26; applicationId = "com.lughzdan.app"; targetSdk = 36; manifestPlaceholders["appLabel"] = "لُغْزَدان"; versionCode = 106; versionName = "3.1.0-beta.1"; buildConfigField("String", "CONTENT_API_URL", "\"" + providers.gradleProperty("contentApiUrl").orElse("https://br-purple-frost-baw74zwb-catalog.compute.c-8.eu-central-1.aws.neon.tech/").get().also { require(it.isEmpty() || it.matches(Regex("https://[A-Za-z0-9.-]+(?::[0-9]+)?/[A-Za-z0-9/_-]*"))) } + "\"") }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  buildFeatures { compose = true; buildConfig = true }
  signingConfigs {

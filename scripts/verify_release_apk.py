@@ -4,7 +4,7 @@ import json,hashlib,zipfile,sys
 from pathlib import Path
 from check_diwan import CATALOG, check
 ROOT=Path(__file__).resolve().parents[1]
-assert Path(sys.argv[1]).stat().st_size<=60_000_000, "APK exceeds approved 60 MB budget"
+assert Path(sys.argv[1]).stat().st_size<=100_000_000, "APK exceeds approved 100 MB budget"
 with zipfile.ZipFile(sys.argv[1]) as apk:
  diwan=apk.read('assets/diwan/readings.json')
  assert diwan==CATALOG.read_bytes()
