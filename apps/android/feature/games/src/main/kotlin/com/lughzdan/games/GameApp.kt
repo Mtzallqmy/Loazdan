@@ -65,6 +65,7 @@ import com.lughzdan.engine.*
      composable("home") {
       val sessions by vm.sessions.collectAsStateWithLifecycle()
       Page {
+      DarDoors { nav.navigate("dar/$it") }
       Text("فضولك بداية الرحلة",style=MaterialTheme.typography.headlineLarge)
       Text("دقائق من اللعب، ومعنى جديد تكتشفه كل يوم.",color=MaterialTheme.colorScheme.onSurfaceVariant)
       Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
@@ -118,7 +119,8 @@ import com.lughzdan.engine.*
      }
      composable("notebook") {NotebookScreen(discoveries,onReview={nav.navigate("review")},onLibrary={nav.navigate("vocabulary")})}
      composable("review") {vm.vocabularyRepository?.let {DiscoveryReviewScreen(discoveries,it){nav.navigate("notebook"){launchSingleTop=true}}}}
-     composable("diwan") { DiwanLibrary { nav.navigate("diwan/read/$it") } }
+     composable("dar/{id}") { entry -> DarScene(entry.arguments?.getString("id").orEmpty(),{nav.navigate("diwan/read/$it")},{nav.popBackStack()}) }
+     composable("diwan") { DiwanLibrary { if(it.startsWith("page-")) nav.navigate("dar/"+it.removePrefix("page-")) else nav.navigate("diwan/read/$it") } }
      composable("diwan/read/{work}") { entry ->
       DiwanReader(entry.arguments?.getString("work").orEmpty(), onBack={nav.popBackStack()}, onRead={nav.navigate("diwan/read/$it")})
      }

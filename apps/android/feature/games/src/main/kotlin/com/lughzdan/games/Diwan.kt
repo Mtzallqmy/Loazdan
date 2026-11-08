@@ -22,8 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
-private data class ReadingQuestion(val prompt: String, val options: List<String>, val correct: Int, val explanation: String)
-private data class Reading(
+internal data class ReadingQuestion(val prompt: String, val options: List<String>, val correct: Int, val explanation: String)
+internal data class Reading(
     val id: String, val title: String, val author: String, val theme: String, val era: String,
     val text: List<String>, val note: String, val source: String, val questions: List<ReadingQuestion>,
     val companion: String, val companionNote: String, val companionSource: String
@@ -44,7 +44,7 @@ private object DiwanCatalog {
         }
     }.also { cached = it }
 }
-@Composable private fun WithReadings(content: @Composable (List<Reading>, SharedPreferences, Map<String, *>) -> Unit) {
+@Composable internal fun WithReadings(content: @Composable (List<Reading>, SharedPreferences, Map<String, *>) -> Unit) {
     val context = LocalContext.current.applicationContext
     val prefs = remember(context) { context.getSharedPreferences("diwan-arab-v1", Context.MODE_PRIVATE) }
     var values by remember(prefs) { mutableStateOf(prefs.all.toMap()) }
@@ -85,6 +85,7 @@ private const val DAY = 86_400_000L
         matches && (work.title + " " + work.author + " " + work.era + " " + work.text.joinToString(" ")).searchKey().contains(query.trim().searchKey())
     } }
     LazyColumn(verticalArrangement=Arrangement.spacedBy(10.dp),contentPadding=PaddingValues(bottom=20.dp)) {
+        item { DarPages { onRead("page-"+it) } }
         item { Text("ديوان العرب", style=MaterialTheme.typography.headlineMedium) }
         item { OutlinedTextField(query,{query=it},label={Text("ابحث بشاعر أو بكلمات من النص")},singleLine=true,modifier=Modifier.fillMaxWidth()) }
         item { Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
@@ -184,7 +185,7 @@ private const val DAY = 86_400_000L
     }
 }
 
-@Composable private fun LocalReadingVoice(text: String) {
+@Composable internal fun LocalReadingVoice(text: String) {
     val context=LocalContext.current.applicationContext
     var engine by remember {mutableStateOf<TextToSpeech?>(null)}
     var available by remember {mutableStateOf(false)}
