@@ -72,13 +72,13 @@ private const val DAY = 86_400_000L
 @Composable internal fun DiwanLibrary(onRead: (String) -> Unit) = WithReadings { works, _, values ->
     var filter by rememberSaveable { mutableStateOf("الكل") }
     var query by rememberSaveable { mutableStateOf("") }
-    val filters = remember(works) { listOf("الكل","ديواني","موعد المراجعة") + works.map { it.theme }.distinct() }
+    val filters = remember(works) { listOf("الكل","محفوظاتي","موعد المراجعة") + works.map { it.theme }.distinct() }
     val now = System.currentTimeMillis()
     val visible = remember(works, filter, query, values) { works.filter { work ->
         val dates = work.text.indices.mapNotNull { values[mark(work.id,it)] as? Long }
         val matches = when (filter) {
             "الكل" -> true
-            "ديواني" -> dates.isNotEmpty()
+            "محفوظاتي" -> dates.isNotEmpty()
             "موعد المراجعة" -> dates.any { it <= now }
             else -> work.theme == filter
         }
@@ -92,7 +92,7 @@ private const val DAY = 86_400_000L
             filters.forEach { name -> FilterChip(filter==name,{filter=name},{Text(name)}) }
         } }
         if (visible.isEmpty()) item { Text(when(filter) {
-            "ديواني" -> "افتح نصًا واحفظ منه بيتًا أو مقطعًا ليظهر هنا."
+            "محفوظاتي" -> "افتح نصًا واحفظ منه بيتًا أو مقطعًا ليظهر هنا."
             "موعد المراجعة" -> "لا توجد مختارات مستحقة الآن."
             else -> "لم نعثر على نص يطابق البحث."
         }) }

@@ -62,6 +62,15 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
         TextButton(onClick={open(e.id)}){Text("صفحة الأثر · "+e.title)}
     }
 }
+@Composable internal fun DarSavedPage(id:String,back:()->Unit){
+    val (_,data)=darData()
+    val exhibit=exhibits.find{it.id==id}?:return
+    Page {
+        TextButton(onClick=back){Text("العودة إلى ديواني")}
+        Text(exhibit.title,style=MaterialTheme.typography.headlineMedium)
+        Text(data["$id:page"] as? String ?: "لم تُكتشف الصفحة بعد.")
+    }
+}
 @Composable internal fun DarScene(id:String,read:(String)->Unit,back:()->Unit) {
     val e=exhibits.firstOrNull{it.id==id}?:return
     val (prefs,d)=darData()
@@ -120,6 +129,18 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
             Text("زمن رجوع النبضة: $seconds ث · المسافة: ${seconds*170} م")
             LinearProgressIndicator(progress={seconds/4f},modifier=Modifier.fillMaxWidth())
             Row { listOf(-1,1).forEach{delta->TextButton(onClick={save{putInt(key+"seconds",(seconds+delta).coerceIn(1,4))}}){Text(if(delta>0)"زد الزمن" else "أنقص الزمن")} } }
+        }
+        if(step==1 && clue.isNotBlank()){
+            val left=e.clues.first()==clue
+            val detail=when(id){
+                "edge" -> if(left)"الضمير يعود إلى السيف. تأمّل الشيء الذي يمكن شحذه." else "اقرأ ما بعد الكلمة: بين الجد واللعب."
+                "shade" -> if(left)"ثبّت ارتفاع الشاخص أولًا: 10 سم." else "تتبّع طرف الظل عند تغيّر زاوية الضوء."
+                "elegy" -> if(left)"تسأل الخنساء العين عن سبب الدمع." else "يرسم مالك أمنيةً مكانية: ليلة في وادي الغضى."
+                "doves" -> if(left)"كل حمامة معلّقة في الخيط نفسه." else "تبدأ المطوّقة أمرها بصيغة الجمع."
+                "baghdad" -> if(left)"يفتتح الراوي باعترافه باشتهاء الطعام." else "ينفي الراوي أن يكون في يده نقد."
+                else -> if(left)"احسب الرحلة إلى الجدار أولًا." else "ارسم طريق العودة بدءًا من الجدار."
+            }
+            Text(detail,style=MaterialTheme.typography.titleMedium)
         }
         if(step==0){
             Text("اختر قرينتك الأولى")
