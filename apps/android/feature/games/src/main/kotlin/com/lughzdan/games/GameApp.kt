@@ -146,7 +146,6 @@ import com.lughzdan.engine.*
       LazyColumn(modifier=Modifier.testTag("catalog-list"),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
        item {Text("مكتبة الاكتشاف",style=MaterialTheme.typography.headlineMedium)}
        item {Row {TextButton(onClick={nav.navigate("library")}){Text("الحزم والتنزيلات")};if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}}}
-       item {OutlinedButton(onClick={nav.navigate("diwan")},modifier=Modifier.fillMaxWidth()){Text("ديوان العرب · النصوص المحفوظة")}}
        if(puzzles.any(LiteraryWords::supports))item {OutlinedButton(onClick={nav.navigate("literary")},modifier=Modifier.fillMaxWidth()){Text("ديوان الألغاز · الحروف والمعاني")}}
        item {OutlinedTextField(value=query,onValueChange={query=it},label={Text("ابحث عن موضوع أو نوع لعبة")},singleLine=true,modifier=Modifier.fillMaxWidth())}
        if(visible.isEmpty()) item {Text("لا توجد نتائج مطابقة ضمن الألغاز المحمّلة. جرّب موضوعًا آخر أو اعرض المزيد.")}
