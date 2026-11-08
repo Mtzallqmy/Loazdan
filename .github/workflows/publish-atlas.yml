@@ -1,0 +1,44 @@
+name: Publish signed Atlas 2.0.0
+on:
+  push:
+    branches: ['release/atlas-2.0.0']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: publish-atlas-2.0.0
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SOURCE_COMMIT: 3eba753420210e776ae88792101ea4d95858595c
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'build-tools;36.0.0'
+      - name: Check original CI results and download both tested packages
+        run: |
+          set -euo pipefail
+          record=docs/atlas/RELEASE.json
+          run=$(jq -r .verificationRun "$record")
+          tested=$(jq -r .testedCommit "$record")
+          test "$(gh api "repos/$GH_REPO/actions/runs/$run" --jq '.head_sha')" = "$tested"
+          git diff --exit-code "$tested" "$SOURCE_COMMIT" -- . ':(exclude)README.md' ':(exclude)docs/**'
+          git diff --exit-code "$SOURCE_COMMIT" HEAD -- . ':(exclude).release/atlas-2.0.0/**' ':(exclude).github/workflows/publish-atlas.yml'
+          gh api "repos/$GH_REPO/actions/runs/$run/jobs?per_page=100" > "$RUNNER_TEMP/jobs.json"
+          for job in android backend contracts dependency-review independent-preview 'offline-device (26)' 'offline-device (28)' 'offline-device (35)'; do
+            jq -e --arg name "$job" 'any(.jobs[]; .name == $name and .conclusion == "success")' "$RUNNER_TEMP/jobs.json" >/dev/null
+          done
+          gh run download "$run" -n unsigned-release-arm64 -D "$RUNNER_TEMP/atlas-original"
+          gh run download "$run" -n independent-preview-arm64 -D "$RUNNER_TEMP/atlas-diwan"
+      - name: Restore both signatures, verify and publish
+        run: python3 .release/atlas-2.0.0/publish.py
