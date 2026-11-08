@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "testedCommit": "de43bc49f1c49ef15c4c272bbac575b93a17e62f",
+  "verificationRun": 42438524064,
+  "activeChallenges": 600,
+  "signedAtlasRows": 512,
+  "atlasPackVersion": 7,
+  "jvm": {
+    "passed": 145,
+    "skipped": 2,
+    "failed": 0
+  },
+  "deviceTests": {
+    "API26": 10,
+    "API28": 10,
+    "API35": 12
+  },
+  "artifacts": [
+    {
+      "package": "com.lughzdan.app.preview.diwan",
+      "versionCode": 104,
+      "versionName": "2.0.0-preview",
+      "minSdk": 26,
+      "debuggable": false,
+      "bytes": 14349755,
+      "sha256": "ba3879ebc3504b8f1c33638aafb470dbaf713698752d34fabfd7c07813c154f0",
+      "filename": "Lughzdan-2.0.0-Diwan-Atlas-ARM64.apk",
+      "certificateSha256": "691afc3cf716a60a1d3ab61c8e2b0eac5e93b53dfab188a004bd04cbba4d19be"
+    },
+    {
+      "package": "com.lughzdan.app",
+      "versionCode": 104,
+      "versionName": "2.0.0",
+      "minSdk": 26,
+      "debuggable": false,
+      "bytes": 14353851,
+      "sha256": "f8b93a9ad34585c5a6679884382ab99f7810cd162ab489467f0d20416a6bc9f4",
+      "filename": "Lughzdan-2.0.0-Atlas-ARM64.apk",
+      "certificateSha256": "3dce653ad682a411d929cf5067153bff1b75d5d1944eb3a2e84d3785de76dd7c"
+    }
+  ]
+}

@@ -46,3 +46,14 @@ The owner keystore, its password, and content-signing private key are not presen
 - Preview 102 validation is pending CI. No new content pack or phone performance result is claimed.
 
 Preview 102 uses `com.lughzdan.app.preview.feedback` and the label «لُغْزَدان — ألوان وأصوات». The prior ephemeral test certificate was not retained; this separate package avoids uninstalling preview 101 or losing its data. Neither preview changes the production package or transfers data between installations.
+
+
+## Atlas 2.0.0 delivery — 2026-11-08
+
+The earlier pending notes above are historical. The delivery authority is now docs/atlas/DELIVERY.md and docs/atlas/RELEASE.json, verified against de43bc49f1c49ef15c4c272bbac575b93a17e62f.
+
+Build, Lint, release-content verification, contracts/backend and all API26/28/35 device gates passed: 145 JVM successes, two skipped cases and 32 successful device phases. Real captures cover 320/480dp at fontScale1.3 and both themes. Geometry reads in instrumentation execute on the UI thread, and progress visibility waits for restored content to settle.
+
+The retained original owner certificate was recovered outside the repository and matched1.0.0. Both production and Diwan APKs are signed and verified for V2/V3 with their respective existing certificates, versionCode104, minSdk26, ARM64 and debuggable=false. Production remains com.lughzdan.app; Diwan remains com.lughzdan.app.preview.diwan. Neither APK transfers data between those installations.
+
+The remote owner-signing job still fails because its GitHub secret is not configured; local owner signing has passed. No whole-workflow success, physical-phone upgrade test, physical-device performance target, account sync or independent scholarly content review is claimed.
