@@ -65,7 +65,13 @@ class SixGameDeviceTest {
 
  private fun showProgress() {
   compose.waitUntil(30_000){compose.onAllNodesWithTag("home-progress").fetchSemanticsNodes().isNotEmpty()}
-  compose.onNodeWithTag("home-progress").performScrollTo().assertIsDisplayed()
+  // Restored history can insert a card above this row after the initial layout.
+  // Scroll to the current position until the asynchronously restored page settles.
+  compose.waitUntil(30_000) {
+   val progress=compose.onNodeWithTag("home-progress")
+   progress.performScrollTo()
+   try {progress.assertIsDisplayed();true} catch(_:AssertionError) {false}
+  }
  }
  private fun screenshot(name:String){val bitmap=InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot();File(compose.activity.getExternalFilesDir(null),"$name.png").outputStream().use {bitmap.compress(Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle()}
  private fun captureResources() {
