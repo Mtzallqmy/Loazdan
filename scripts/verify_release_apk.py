@@ -2,9 +2,13 @@
 """Validate that a signed APK contains the exact checked-in release content."""
 import json,hashlib,zipfile,sys
 from pathlib import Path
+from check_diwan import CATALOG, check
 ROOT=Path(__file__).resolve().parents[1]
 assert Path(sys.argv[1]).stat().st_size<=60_000_000, "APK exceeds approved 60 MB budget"
 with zipfile.ZipFile(sys.argv[1]) as apk:
+ diwan=apk.read('assets/diwan/readings.json')
+ assert diwan==CATALOG.read_bytes()
+ check(diwan)
  libs=[n for n in apk.namelist() if n.startswith('lib/') and n.endswith('.so')]
  assert libs and all(n.startswith('lib/arm64-v8a/') for n in libs),libs
  b=json.loads(apk.read('assets/bundled-manifest.json'))

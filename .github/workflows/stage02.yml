@@ -72,7 +72,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r tools/requirements.txt
-      - run: python tools/validate.py && python scripts/check_content.py && python scripts/check_secrets.py && python scripts/validate_opening_pack.py
+      - run: python tools/validate.py && python scripts/check_content.py && python scripts/check_diwan.py && python scripts/check_secrets.py && python scripts/validate_opening_pack.py
       - run: pip install -r packages/media/requirements.txt
       - run: python -m unittest discover -s packages/media/tests -v
       - run: python -m unittest discover -s packages/knowledge/tests -v
@@ -155,10 +155,10 @@ jobs:
           grep -F 'Signer #1 certificate SHA-256 digest: 3dce653ad682a411d929cf5067153bff1b75d5d1944eb3a2e84d3785de76dd7c' "$RUNNER_TEMP/certificate.txt"
           python scripts/verify_release_apk.py "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" > "$RUNNER_TEMP/apk-badging.txt"
-          grep -E "package: name='com.lughzdan.app'.*versionCode='104'" "$RUNNER_TEMP/apk-badging.txt"
+          grep -E "package: name='com.lughzdan.app'.*versionCode='105'" "$RUNNER_TEMP/apk-badging.txt"
           grep -F "sdkVersion:'26'" "$RUNNER_TEMP/apk-badging.txt"
           mkdir -p candidate
-          cp "$APK" candidate/Lughzdan-2.0.0-rc1-ARM64-owner-signed.apk
+          cp "$APK" candidate/Lughzdan-3.0.0-beta.1-ARM64-owner-signed.apk
           (cd candidate && sha256sum *.apk > SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
@@ -190,10 +190,10 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
           python scripts/verify_release_apk.py "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" > "$RUNNER_TEMP/preview-badging.txt"
-          grep -E "package: name='com.lughzdan.app.preview.diwan'.*versionCode='104'" "$RUNNER_TEMP/preview-badging.txt"
+          grep -E "package: name='com.lughzdan.app.preview.diwan'.*versionCode='105'" "$RUNNER_TEMP/preview-badging.txt"
           grep -F "sdkVersion:'26'" "$RUNNER_TEMP/preview-badging.txt"
           mkdir -p preview
-          cp "$APK" preview/Lughzdan-2.0.0-Preview-ARM64.apk
+          cp "$APK" preview/Lughzdan-3.0.0-beta.1-Preview-ARM64.apk
           cp "$ANDROID_HOME/build-tools/36.0.0/lib/apksigner.jar" preview/apksigner.jar
           (cd preview && sha256sum *.apk > SHA256SUMS)
       - uses: actions/upload-artifact@v4

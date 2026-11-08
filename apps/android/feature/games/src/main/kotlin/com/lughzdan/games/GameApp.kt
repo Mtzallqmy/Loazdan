@@ -75,6 +75,12 @@ import com.lughzdan.engine.*
         Button(onClick={nav.navigate("atlas")},modifier=Modifier.fillMaxWidth()){Text("ابدأ رحلة الاكتشاف")}
        }
       }
+      OutlinedCard(onClick={nav.navigate("diwan")},modifier=Modifier.fillMaxWidth().testTag("open-diwan")) {
+       Column(Modifier.padding(20.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+        Text("ديوان العرب", style=MaterialTheme.typography.titleLarge)
+        Text("عيون الشعر والنثر · اقرأ واختبر ذائقتك واحفظ مختاراتك")
+       }
+      }
       if(puzzles.any(LiteraryWords::supports)) OutlinedCard(onClick={nav.navigate("literary")},modifier=Modifier.fillMaxWidth()) {
        Column(Modifier.padding(20.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
         Text("جديد · ديوان الألغاز",style=MaterialTheme.typography.titleLarge,color=MaterialTheme.colorScheme.primary)
@@ -112,6 +118,10 @@ import com.lughzdan.engine.*
      }
      composable("notebook") {NotebookScreen(discoveries,onReview={nav.navigate("review")},onLibrary={nav.navigate("vocabulary")})}
      composable("review") {vm.vocabularyRepository?.let {DiscoveryReviewScreen(discoveries,it){nav.navigate("notebook"){launchSingleTop=true}}}}
+     composable("diwan") { DiwanLibrary { nav.navigate("diwan/read/$it") } }
+     composable("diwan/read/{work}") { entry ->
+      DiwanReader(entry.arguments?.getString("work").orEmpty(), onBack={nav.popBackStack()}, onRead={nav.navigate("diwan/read/$it")})
+     }
      composable("literary") {
       val recent by vm.sessions.collectAsStateWithLifecycle()
       LiteraryWordsScreen(atlasPuzzles,recent,progress.totalXp,busy,onPlay={play(it)},onResume={nav.navigate("session/$it")})
@@ -136,6 +146,7 @@ import com.lughzdan.engine.*
       LazyColumn(modifier=Modifier.testTag("catalog-list"),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=24.dp)) {
        item {Text("مكتبة الاكتشاف",style=MaterialTheme.typography.headlineMedium)}
        item {Row {TextButton(onClick={nav.navigate("library")}){Text("الحزم والتنزيلات")};if(vm.vocabularyRepository!=null)TextButton(onClick={nav.navigate("vocabulary")}){Text("مفرداتي")}}}
+       item {OutlinedButton(onClick={nav.navigate("diwan")},modifier=Modifier.fillMaxWidth()){Text("ديوان العرب · النصوص المحفوظة")}}
        if(puzzles.any(LiteraryWords::supports))item {OutlinedButton(onClick={nav.navigate("literary")},modifier=Modifier.fillMaxWidth()){Text("ديوان الألغاز · الحروف والمعاني")}}
        item {OutlinedTextField(value=query,onValueChange={query=it},label={Text("ابحث عن موضوع أو نوع لعبة")},singleLine=true,modifier=Modifier.fillMaxWidth())}
        if(visible.isEmpty()) item {Text("لا توجد نتائج مطابقة ضمن الألغاز المحمّلة. جرّب موضوعًا آخر أو اعرض المزيد.")}
