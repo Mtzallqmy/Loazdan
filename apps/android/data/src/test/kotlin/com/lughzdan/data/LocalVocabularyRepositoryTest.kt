@@ -20,7 +20,7 @@ class LocalVocabularyRepositoryTest {
  private lateinit var db:LughzdanDatabase
  private val filename="personal-words-test.db"
  @Before fun setup() {context=ApplicationProvider.getApplicationContext();context.deleteDatabase(filename);open()}
- private fun open() {db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build()}
+ private fun open() {db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4,LughzdanDatabase.MIGRATION_4_5).allowMainThreadQueries().build()}
  @After fun close() {db.close();context.deleteDatabase(filename)}
  @Test fun immutableOriginalSnapshotAndPersonalStateSurvivePackRemovalAndReopen()=runBlocking {
   var repository=LocalVocabularyRepository(db)

@@ -15,14 +15,18 @@ import android.system.Os
 import android.system.OsConstants
 
 /** One lock shared by download/install/delete/recovery. Database pointer is the commit point. */
-class PackInstaller(private val db:LughzdanDatabase, val root:File, private val verifier:ManifestVerifier,
+class PackInstaller(private val db:LughzdanDatabase, root:File, private val verifier:ManifestVerifier,
  private val appVersion:Int=3, private val checkpoint:(String)->Unit={},
  private val directorySync:(File)->Unit={ file ->
   val fd=Os.open(file.absolutePath,OsConstants.O_RDONLY,0)
   try {Os.fsync(fd)} finally {Os.close(fd)}
  }) {
+ // Android may place the private directory below an OS-managed /data/user/0 link.
+ // Resolve that trusted root once; archive paths remain checked inside this directory.
+ val root:File=root.canonicalFile
  val mutex=Mutex()
  private val json=Json { encodeDefaults=true }
+ private val registry=GameRegistry()
  private val dao=db.content()
  val chunks=File(root,"chunks")
  private fun directory(id:String,version:Int)=File(root,"versions/$id/$version")
@@ -95,7 +99,7 @@ class PackInstaller(private val db:LughzdanDatabase, val root:File, private val 
      require(line.isNotBlank() && line.length<=262144)
      val p=json.decodeFromString<PuzzleDefinition>(line)
      require(p.status=="published" && !p.fixtureOnly && p.sourceRefs.all {ref->ref in m.sourceRefs}) {"Only referenced published puzzles can be installed"}
-     require(GameRegistry().plugin(p.type).validatePuzzle(p).valid)
+     require(registry.plugin(p.type).validatePuzzle(p).valid)
      p.payload.images.forEach { image ->
       val asset=m.assets.singleOrNull {it.path==image.assetPath}
        ?: error("Visual image must reference a signed asset")

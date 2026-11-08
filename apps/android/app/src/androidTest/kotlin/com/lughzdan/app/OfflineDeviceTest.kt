@@ -21,7 +21,7 @@ class OfflineDeviceTest {
   compose.onNodeWithText("لغز 1 · الصعوبة 1").performScrollTo().performClick()
   waitFor("بعيد");compose.onNodeWithText("بعيد").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
-  compose.onNodeWithText("تحقق من الإجابة").performScrollTo().performClick()
+  compose.onNodeWithText("تحقق من الإجابة").assertIsDisplayed().performClick()
   waitFor("إجابة صحيحة! +100 نقطة")
  }
  @Test fun phaseTwoRestoreOffline() {
@@ -31,7 +31,7 @@ class OfflineDeviceTest {
   compose.onNodeWithText("اللغز التالي").performScrollTo().performClick()
   waitFor("مكتبة");compose.onNodeWithText("مكتبة").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
-  compose.onNodeWithText("تحقق من الإجابة").performScrollTo().performClick()
+  compose.onNodeWithText("تحقق من الإجابة").assertIsDisplayed().performClick()
   waitFor("إجابة صحيحة! +100 نقطة")
  }
 }

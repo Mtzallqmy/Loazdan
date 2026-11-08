@@ -37,6 +37,18 @@ class PackInstallerTest {
   java.nio.channels.FileChannel.open(directory.toPath(),java.nio.file.StandardOpenOption.READ).use {it.force(true)}
  })
  private val mediaBytes=Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j1ioAAAAASUVORK5CYII=")
+ @Test fun trustedApplicationRootCanHaveOperatingSystemSymlinkAncestors()=runBlocking {
+  val actual=root
+  val alias=File(actual.parentFile,"android-user-link-${System.nanoTime()}")
+  java.nio.file.Files.createSymbolicLink(alias.toPath(),actual.toPath())
+  try {
+   root=File(alias,"packs").apply {mkdirs()}
+   val packInstaller=installer()
+   assertEquals(root.canonicalFile,packInstaller.root)
+   packInstaller.install(signed(1),"signed pack")
+   assertEquals(1,db.content().head(pack)!!.activeVersion)
+  } finally {root=actual;alias.delete()}
+ }
  @Before fun setup(){val context=ApplicationProvider.getApplicationContext<Context>();db=Room.inMemoryDatabaseBuilder(context,LughzdanDatabase::class.java).allowMainThreadQueries().build();root=File(context.cacheDir,"pack-test-${System.nanoTime()}").apply{mkdirs()}}
  @After fun cleanup(){db.close();root.deleteRecursively()}
  private fun hash(bytes:ByteArray)=MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)}

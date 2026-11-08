@@ -30,7 +30,7 @@ class GameplayUiTest {
   compose.waitUntil(10_000) { compose.onAllNodesWithText("بعيد").fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("بعيد").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
-  compose.onNodeWithText("تحقق من الإجابة").performScrollTo().performClick()
+  compose.onNodeWithText("تحقق من الإجابة").assertIsDisplayed().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("إجابة صحيحة! +100 نقطة").fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("إجابة صحيحة! +100 نقطة").assertExists()
  }

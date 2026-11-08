@@ -1,0 +1,1189 @@
+{
+  "sourceSha256": "1656063b8e512363484372af1324a7ef7b4635edd684555e8ee5b397bb528d77",
+  "reviewType": "engineering_and_editorial_triage_not_scholarly_approval",
+  "items": [
+    {
+      "number": 1,
+      "puzzleId": "3103018d-f8df-542c-9a43-bdde33fc10ec",
+      "title": "تقاطعات لغوية: القلم والعلم",
+      "findings": [
+        "إجابة العمود «لع» مصطنعة؛ استبدالها بكلمة ذات معنى ومراجعة الشرح."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "استبدال إجابة مصطنعة بكلمة ليل دون تغيير إحداثيات التقاطع."
+      ]
+    },
+    {
+      "number": 2,
+      "puzzleId": "0df012e6-f83d-5b5a-a24a-10390193e558",
+      "title": "تقاطعات الصدق والحق",
+      "findings": [
+        "العنوان والشرح يذكران الحق مع أن الشبكة تستخدم «قف»."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 3,
+      "puzzleId": "0a421f29-ab4f-5247-9962-de04848c244e",
+      "title": "تقاطعات الحكمة والأدب",
+      "findings": [
+        "الشرح لا يطابق إجابتي الشبكة «حكم» و«كتب»."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 4,
+      "puzzleId": "ba6a0074-d82a-5bfb-8c49-2fc3f5f42e56",
+      "title": "البحث عن أدوات الكتابة",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 5,
+      "puzzleId": "2609f5aa-de9e-5fee-9e64-868999789b47",
+      "title": "البحث عن الفضائل الأخلاقية",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 6,
+      "puzzleId": "809742a1-6639-5763-b3f6-9181a55d43d2",
+      "title": "البحث عن عناصر الطبيعة",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 7,
+      "puzzleId": "8d15591e-cbde-52f4-9173-ff928d10eedb",
+      "title": "تركيب كلمة: كتاب",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "عنوان محايد وقرينة أصلية بدل الإجابة المكشوفة."
+      ]
+    },
+    {
+      "number": 8,
+      "puzzleId": "a847c802-a9a9-5f02-a033-928dede82530",
+      "title": "تركيب كلمة: سحابة",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "عنوان محايد وقرينة أصلية بدل الإجابة المكشوفة."
+      ]
+    },
+    {
+      "number": 9,
+      "puzzleId": "f1d2226a-9efe-5270-8e11-f93a7f5766ac",
+      "title": "تركيب كلمة: استبشار",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "عنوان محايد وقرينة أصلية بدل الإجابة المكشوفة."
+      ]
+    },
+    {
+      "number": 10,
+      "puzzleId": "0d30bd88-0e21-5206-bd4a-ca6d4448cb96",
+      "title": "المرادفات اللغوية الدقيقة",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 11,
+      "puzzleId": "d9edb94b-d7f7-5844-8ca6-488c057ab5ff",
+      "title": "أضداد الكلمات في العربية",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 12,
+      "puzzleId": "9179f67f-2097-5d35-89e9-fadf50309a97",
+      "title": "فروق أسماء الزمان",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 13,
+      "puzzleId": "66f15cc3-4f5e-55b3-bcd6-21022224f71c",
+      "title": "ترتيب المثل: خير الكلام",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 14,
+      "puzzleId": "117fc25b-9667-5c19-a49c-6aecd5be8f5f",
+      "title": "ترتيب الحكمة: الصبر مفتاح الفرج",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 15,
+      "puzzleId": "575692f4-fc17-5f8a-a350-84a3c3cde84d",
+      "title": "ترتيب جملة بلاغية للجاحظ",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 16,
+      "puzzleId": "bdbe81cc-2f33-53ca-8ee5-bd721da0c5af",
+      "title": "سؤال المفرد والجمع: كتاب",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 17,
+      "puzzleId": "77cb7d7c-3259-507a-80e3-58148eaffbb6",
+      "title": "سؤال المصدر: صدق",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 18,
+      "puzzleId": "153547da-6a12-56da-9f79-618f97004f01",
+      "title": "معنى مفردة: العسجد",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 19,
+      "puzzleId": "fa070cca-6be7-5468-bebe-3632809389d5",
+      "title": "معنى مفردة: اليم",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 20,
+      "puzzleId": "816a0b34-5278-5a0c-96ec-a00b7889cae8",
+      "title": "اسم صوت الماء الجاري",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 21,
+      "puzzleId": "69ff46f3-e17b-51f9-be87-5511c9ba441a",
+      "title": "أربع صور: دائرة",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة.",
+        "القرائن تعيد الشكل نفسه؛ يلزم أربع قرائن متنوعة وفكرة مشتركة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 22,
+      "puzzleId": "58c2a652-2506-5e9e-86ab-006d5888b8f2",
+      "title": "أربع صور: مثلث",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة.",
+        "القرائن تعيد الشكل نفسه؛ يلزم أربع قرائن متنوعة وفكرة مشتركة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 23,
+      "puzzleId": "dc07d7b7-41f0-5142-bf8c-391f95b664de",
+      "title": "أربع صور: مربع",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة.",
+        "القرائن تعيد الشكل نفسه؛ يلزم أربع قرائن متنوعة وفكرة مشتركة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 24,
+      "puzzleId": "817f4e5b-88eb-58d6-bead-db05e8d62b22",
+      "title": "أربع صور: هلال",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة.",
+        "القرائن تعيد الشكل نفسه؛ يلزم أربع قرائن متنوعة وفكرة مشتركة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 25,
+      "puzzleId": "b429591a-9083-5057-817d-6050c583b09e",
+      "title": "خمن الصورة: شمس",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 26,
+      "puzzleId": "7ecd367f-15d9-559a-852b-bc17468f3a79",
+      "title": "خمن الصورة: قمر",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 27,
+      "puzzleId": "11a6c71a-d5cc-5aa0-a851-e9c05d275af9",
+      "title": "خمن الصورة: شجرة",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 28,
+      "puzzleId": "155775c0-c218-5a0f-aa94-71b303958f81",
+      "title": "خمن الصورة: كتاب",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 29,
+      "puzzleId": "c639d9d4-9439-516b-bb1c-0b9c1dd99f97",
+      "title": "تطابق الظل: شكل 1",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 30,
+      "puzzleId": "96a9c5a4-7d48-544e-af89-062ce24feaf3",
+      "title": "تطابق الظل: شكل 2",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 31,
+      "puzzleId": "342b3213-c432-50b2-afe5-92b94050fbde",
+      "title": "تطابق الظل: شكل 3",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 32,
+      "puzzleId": "90f64a97-3934-508c-ba9e-a42b10366e6a",
+      "title": "لغز الرموز البصرية: النمط 1",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 33,
+      "puzzleId": "333f8b19-debf-59dc-94fd-c5a4bc420b73",
+      "title": "لغز الرموز البصرية: النمط 2",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 34,
+      "puzzleId": "a59103ae-f6ae-586b-b37e-0e1b11aed7bd",
+      "title": "لغز الرموز البصرية: النمط 3",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 35,
+      "puzzleId": "4e1f122b-9d85-555f-b1c2-b13e79bc06cb",
+      "title": "اكتشف العلاقة البصرية: زوج 1",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 36,
+      "puzzleId": "0fc51e2f-06b3-537f-9a1d-c80fc953e750",
+      "title": "اكتشف العلاقة البصرية: زوج 2",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 37,
+      "puzzleId": "46ade38a-b49f-55ed-8622-091d33b4129d",
+      "title": "اكتشف العلاقة البصرية: زوج 3",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 38,
+      "puzzleId": "05cef061-6ad0-56bd-9c36-9c2fd4ea8020",
+      "title": "المتتالية البصرية الحسابية: نمط 1",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 39,
+      "puzzleId": "c03dda86-552f-59de-abe6-34aa369fab4f",
+      "title": "المتتالية البصرية الحسابية: نمط 2",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 40,
+      "puzzleId": "8bddc631-0044-5e38-af69-05bbb2fd832a",
+      "title": "المتتالية البصرية الحسابية: نمط 3",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 41,
+      "puzzleId": "dead6ae0-5832-5f34-8392-2bd6ec42fde3",
+      "title": "ترتيب بيت المتنبي: الخيل والليل",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 42,
+      "puzzleId": "f8160c8d-4cba-5779-b232-e0f09a07bf04",
+      "title": "ترتيب بيت الشافعي: دع الأيام",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 43,
+      "puzzleId": "dca415cd-a535-5ecf-a520-613ec3bd4381",
+      "title": "ترتيب معلقة امرئ القيس: قفا نبك",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 44,
+      "puzzleId": "5792e7a0-596c-5e1a-86c3-a265d9eb762c",
+      "title": "ترتيب بيت عنترة في الفخر",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 45,
+      "puzzleId": "c06c2439-0784-5728-98ad-b0579b125038",
+      "title": "من قائل: الخيل والليل والبيداء تعرفني؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 46,
+      "puzzleId": "6e35077a-d419-5196-a9fd-e2c12a3c16f6",
+      "title": "أكمل عجز بيت شوقي: قم للمعلم وفه التبجيلا",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 47,
+      "puzzleId": "cf89e8bb-236b-5018-a0cb-1efe2088948b",
+      "title": "من صاحب لقب 'أمير الشعراء' في العصر الحديث؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 48,
+      "puzzleId": "aef32474-b327-5429-b532-fa5c97cffdb0",
+      "title": "ما البحر الشعري لبيت: 'على قدر أهل العزم تأتي العزائم'؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 49,
+      "puzzleId": "0744dc40-1e66-5492-822a-93a3ffb57788",
+      "title": "من قائل: 'أراك عصي الدمع شيمتك الصبر'؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 50,
+      "puzzleId": "5a481c8a-43d7-5b24-9c77-12963941c157",
+      "title": "مطابقة معاني الألفاظ في شعر المتنبي",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 51,
+      "puzzleId": "f1077cd3-f9c4-5505-8d03-b29298c84d9f",
+      "title": "نسبة الدواوين لأصحابها",
+      "findings": [
+        "الحماسة مختارات جمعها أبو تمام؛ عبارة «الشاعر الذي أبدعه» تحتاج تحريرًا.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 52,
+      "puzzleId": "3a1bd081-2c88-5a6d-8bbe-6adb1672d51c",
+      "title": "مطابقة ألقاب الشعراء",
+      "findings": [
+        "تصحيح كتابة اسم امرئ القيس؛ توثيق الألقاب من مرجع محدد.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 53,
+      "puzzleId": "a36a96f0-d6f6-5639-ba0b-bbd6193acf47",
+      "title": "مطابقة مفاتيح بحور الشعر",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 54,
+      "puzzleId": "ce22e722-9fc9-5437-9b88-7a0269010543",
+      "title": "من الشاعر الملقب بـ 'شاعر النيل'؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 55,
+      "puzzleId": "7ab65eab-520e-5a7d-a351-907ff0b804ed",
+      "title": "واضع علم العروض الخليلي",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 56,
+      "puzzleId": "6c8a0c67-aebf-5bf0-89ca-9b9549e2586c",
+      "title": "أكمل قافية البيت: 'إذا الشعب يوماً أراد الحياة ... فلا بد أن يستجيب ____'",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 57,
+      "puzzleId": "8ee99070-b607-57cf-89ea-57d1026b31a3",
+      "title": "ما اسم الشاعر العباسي الملقب بـ 'صريع الغواني'؟",
+      "findings": [
+        "البديل «الوليد» وحده لا يحدد الشاعر؛ يلزم حذفه.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "إزالة البديل الملتبس."
+      ]
+    },
+    {
+      "number": 58,
+      "puzzleId": "d94e46d7-d89e-59e6-a7f9-0d0743c57915",
+      "title": "تركيب مصطلح عروضي: قافية",
+      "findings": [
+        "تعريف القافية يحتاج ضبطًا عروضيًا؛ لا يساوي الحرف الأخير فقط.",
+        "العنوان يكشف إجابة مقبولة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "عنوان محايد وقرينة أصلية بدل الإجابة المكشوفة."
+      ]
+    },
+    {
+      "number": 59,
+      "puzzleId": "ba3633b0-f4b7-5f58-96b4-2626eed89809",
+      "title": "تركيب كلمة: معلقة",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "عنوان محايد وقرينة أصلية بدل الإجابة المكشوفة."
+      ]
+    },
+    {
+      "number": 60,
+      "puzzleId": "4e804a82-a9fd-5191-ad3d-d877e7f39a08",
+      "title": "تركيب كلمة: قصيدة",
+      "findings": [
+        "العنوان يكشف إجابة مقبولة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "عنوان محايد وقرينة أصلية بدل الإجابة المكشوفة."
+      ]
+    },
+    {
+      "number": 61,
+      "puzzleId": "8b91a42d-5bcf-5030-b1d2-2a523ebfabcf",
+      "title": "تحديد نوع التشبيه: 'العلم كالنور في الهداية'",
+      "findings": [
+        "الشرح يجمع وجود الأداة مع وصف التشبيه بالمؤكد؛ يحتاج تصحيحًا موثقًا.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 62,
+      "puzzleId": "95893fca-e69d-5429-a2a7-a367f2a34349",
+      "title": "التشبيه البليغ: حذفت منه الأداة ووجه الشبه",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 63,
+      "puzzleId": "0268dfd1-4a41-5edb-85de-c22c7a5eff89",
+      "title": "الاستعارة المكنية في البلاغة العربية",
+      "findings": [
+        "صيغة السؤال تخلط الصورة البيانية بالمحسن البديعي؛ الشرح لا يحلل المثال نفسه.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 64,
+      "puzzleId": "a999d03d-a6de-5dcc-ba01-943b16e5619a",
+      "title": "الجناس التام في البلاغة",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 65,
+      "puzzleId": "4befd5b2-406e-50f9-af03-7e7467162897",
+      "title": "الفرق بين الطباق والمقابلة",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 66,
+      "puzzleId": "7f4dc3f9-83c5-5b53-b1df-bbc3c0f4aa8b",
+      "title": "مطابقة الأمثلة بالفنون البلاغية",
+      "findings": [
+        "مثال «يقيننا بالله يقيننا» يحتاج تدقيق صحة الجناس والحركات.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 67,
+      "puzzleId": "e90405d4-6480-568a-b27b-394b21d40d81",
+      "title": "أركان علم البلاغة الثلاثة",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 68,
+      "puzzleId": "a624eb6b-8a1e-5fb9-981a-551d12e83297",
+      "title": "أنواع الكناية الثلاثة",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 69,
+      "puzzleId": "686a7554-3df3-5400-aeb8-05b40c9a6d1e",
+      "title": "علاقات المجاز المرسل",
+      "findings": [
+        "«شربت ماء زمزم» لا يوضح علاقة الكلية المقصودة؛ استبدال المثال بعد مراجعة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 70,
+      "puzzleId": "d6756636-c09e-5cbe-81e1-2558de4d0521",
+      "title": "فنون البديع المعنوي واللفظي",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 71,
+      "puzzleId": "d30386a3-8e1f-5f5d-aa66-245c56ffbacb",
+      "title": "ما اسم فن الجمع بين الشيء وضده في الكلام؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 72,
+      "puzzleId": "b5e83038-bba6-5615-83b2-dbdc5ca22381",
+      "title": "ما اسم توافق فواصل الجمل في الحرف الأخير نثراً؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 73,
+      "puzzleId": "4bf9eece-b4c9-597c-8bc3-f3fa186101c7",
+      "title": "ما الفن البلاغي القائم على تشبيه حُذفت أداته ووجه شبهه؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 74,
+      "puzzleId": "1588fb27-d2f2-56d7-9812-d6164c52a36a",
+      "title": "من صاحب كتاب 'دلائل الإعجاز' وإمام نظرية النظم؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 75,
+      "puzzleId": "c8f59a66-768c-5075-a16f-ccd407855701",
+      "title": "ترتيب أركان التشبيه التام الأربعة",
+      "findings": [
+        "لا ترتيب وحيد مطلق لأركان التشبيه؛ اربطه بجملة محددة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 76,
+      "puzzleId": "a9c58e58-bab7-5c4a-a726-886dbbf10c1a",
+      "title": "ترتيب حكمة مسجوعة: قس بن ساعدة",
+      "findings": [
+        "نسبة النص وصيغته تحتاج مصدرًا وصفحة، لا إحالة عامة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 77,
+      "puzzleId": "cf9e455a-7ec5-5241-be72-f7b42beafd03",
+      "title": "ترتيب جمل المقابلة البلاغية",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 78,
+      "puzzleId": "bdbd6694-66fc-533e-86d4-e59b4d33372d",
+      "title": "تقاطعات بديعية: سجع ومجاز",
+      "findings": [
+        "الشرح يذكر المجاز بينما الشبكة تستخدم «جد».",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 79,
+      "puzzleId": "371bd3a4-8669-562d-86fe-f1202951752e",
+      "title": "تقاطعات المعاني: خبر وأمر",
+      "findings": [
+        "الشرح يذكر الأمر بينما الشبكة تستخدم «بر».",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 80,
+      "puzzleId": "00a4fe96-76da-5e4c-9f05-2eab30db2b25",
+      "title": "تقاطعات البيان: بيان وعلم",
+      "findings": [
+        "لفظ «الجراحة» في دليل اليد يحتاج تصحيحًا إلى الجارحة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 81,
+      "puzzleId": "d537d5c5-c249-5a8a-8868-710586ff26eb",
+      "title": "معاني غريب القرآن: سورة الفلق",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 82,
+      "puzzleId": "01017b23-9d48-5a89-8258-d84bf63ab2b0",
+      "title": "معاني غريب القرآن: سورة الإخلاص والناس",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 83,
+      "puzzleId": "d9cc2524-86b1-5d72-a085-186562b74134",
+      "title": "فروق الألفاظ القرآنية: الغيث والمطر",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 84,
+      "puzzleId": "89e1e2be-1cfa-5883-9685-6c5d1753e627",
+      "title": "ألفاظ السحاب في التعبير القرآني",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 85,
+      "puzzleId": "dd5e2fdc-33d1-527e-a122-2c0bd5693f37",
+      "title": "ألفاظ اليوم الآخر والقيامة",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 86,
+      "puzzleId": "2b8d2e9e-7a96-5943-a23d-2a71388867ef",
+      "title": "معنى مفردة: {الصَّمَدُ}",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 87,
+      "puzzleId": "460c9573-547b-5b81-a304-9ae70039ca60",
+      "title": "الفرق بين 'السَّنَة' و'العَام' في السياق القرآني",
+      "findings": [
+        "تعميم السنة للشدة والعام للرخاء يحتاج تقييدًا بسياق موثق.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 88,
+      "puzzleId": "462c2a54-ff04-5607-b59a-7823b0609a77",
+      "title": "معنى قوله تعالى: {فِي جِيدِهَا حَبْلٌ مِنْ مَسَدٍ}",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 89,
+      "puzzleId": "5e661709-43bb-586d-ae48-fd2dc5bda4ef",
+      "title": "معنى مفردة: {حَصْحَصَ الحَقُّ}",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 90,
+      "puzzleId": "251b84c4-6855-5428-8f1d-0d7f45b63121",
+      "title": "معنى قوله تعالى: {وَاللَّيْلِ إِذَا عَسْعَسَ}",
+      "findings": [
+        "لفظ «الراجح» يحتاج تحديد المفسر والإحالة مع بيان اختلاف التفسير.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 91,
+      "puzzleId": "abdbbe4d-9277-5e63-a6cb-e250f7301d0d",
+      "title": "الجذر الثلاثي لكلمة {الرَّحْمَٰن}",
+      "findings": [
+        "المطلوب جذر ثلاثي لكن البديل «الرحمة» ليس جذرًا.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "قبول الجذر وحده."
+      ]
+    },
+    {
+      "number": 92,
+      "puzzleId": "25c2adcc-e824-53af-92c7-71911c29ded7",
+      "title": "معنى مفردة {الْكَوْثَر}",
+      "findings": [
+        "المعنى اللغوي والمعنى التفسيري ممزوجان في البدائل؛ يلزم تحرير مرجعي.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 93,
+      "puzzleId": "12958a8f-7192-5872-957d-04c500ea1123",
+      "title": "ما اسم الشجرة الملعونة في القرآن؟",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 94,
+      "puzzleId": "4d48c196-0656-53ef-a2c2-ffa2516b25e7",
+      "title": "ما مفرد كلمة {أَبَابِيل} في قوله تعالى: {طَيْرًا أَبَابِيلَ}؟",
+      "findings": [
+        "العنوان يسأل عن المفرد والمتن يسأل عن المعنى.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "مطابقة العنوان للمطلوب."
+      ]
+    },
+    {
+      "number": 95,
+      "puzzleId": "4b034af7-e36f-5c6e-9102-d0574707c763",
+      "title": "ترتيب كلمات آية البسملة المباركة",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 96,
+      "puzzleId": "ddeec398-c664-5dda-a90e-615d19f59dc7",
+      "title": "ترتيب مطلع سورة الإخلاص",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 97,
+      "puzzleId": "4ac49bcb-4722-5cd7-9fb1-279daad96649",
+      "title": "ترتيب الآية الكريمة: {وَقُلْ رَبِّ زِدْنِي عِلْمًا}",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 98,
+      "puzzleId": "450c125b-b1bd-5984-8fbf-a9b23bd16e62",
+      "title": "البحث عن أسماء الكتب السماوية في القرآن",
+      "findings": [
+        "«قران» و«تورة» رسمان غير مناسبين؛ تصحيح الكلمات وإعادة بناء الشبكة.",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "تصحيح رسم الكلمات وإعادة بناء مسارات الشبكة."
+      ]
+    },
+    {
+      "number": 99,
+      "puzzleId": "04e4f619-ab0f-56bd-90d0-34176b1ec43b",
+      "title": "البحث عن أوقات الصلاة في التعبير القرآني",
+      "findings": [
+        "«عشا» ناقصة الهمزة؛ يلزم توسيع الشبكة وكتابة «عشاء».",
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "تصحيح رسم الكلمات وإعادة بناء مسارات الشبكة."
+      ]
+    },
+    {
+      "number": 100,
+      "puzzleId": "65bc824c-80fc-5673-9c8e-ab01afbc90a7",
+      "title": "البحث عن مفردات البر والإحسان",
+      "findings": [
+        "المراجعة المرجعية والنسبة/النص غير معتمدتين في هذا التدقيق."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 101,
+      "puzzleId": "50d8d09a-c12d-54ef-88af-09fc4d9836b1",
+      "title": "المتتالية الرياضية: نمط 1",
+      "findings": [
+        "معايرة الصعوبة بحسب العمليات؛ الوسم الحالي لا يطابق التعقيد بانتظام."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 102,
+      "puzzleId": "ff558530-fe31-5d9d-a9a2-936c39c6d7c0",
+      "title": "المتتالية الرياضية: نمط 2",
+      "findings": [
+        "معايرة الصعوبة بحسب العمليات؛ الوسم الحالي لا يطابق التعقيد بانتظام."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 103,
+      "puzzleId": "7b3020b1-a228-5a00-ae11-b24c2dfbe742",
+      "title": "المتتالية الرياضية: نمط 3",
+      "findings": [
+        "معايرة الصعوبة بحسب العمليات؛ الوسم الحالي لا يطابق التعقيد بانتظام."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 104,
+      "puzzleId": "e638749b-ba8e-5f88-a891-42fb4460c6d9",
+      "title": "المتتالية الرياضية: نمط 4",
+      "findings": [
+        "معايرة الصعوبة بحسب العمليات؛ الوسم الحالي لا يطابق التعقيد بانتظام."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 105,
+      "puzzleId": "e43b9ec6-a7ff-5d1c-8550-3057a1fb78ed",
+      "title": "المتتالية الرياضية: نمط 5",
+      "findings": [
+        "معايرة الصعوبة بحسب العمليات؛ الوسم الحالي لا يطابق التعقيد بانتظام."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 106,
+      "puzzleId": "04df3493-73ed-571b-b59e-b2df7788137a",
+      "title": "المتتالية الرياضية: نمط 6",
+      "findings": [
+        "معايرة الصعوبة بحسب العمليات؛ الوسم الحالي لا يطابق التعقيد بانتظام."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 107,
+      "puzzleId": "34d3496e-b8e6-5662-bd34-e90139fdd243",
+      "title": "الاستنتاج المنطقي: مقارنة الأطوال",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 108,
+      "puzzleId": "5fc23c6d-8029-58ca-8fb7-1e829d00e9a9",
+      "title": "القياس المنطقي: شمول الفئات",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 109,
+      "puzzleId": "83d263f6-38f5-5fb8-a37a-6de9668a53c6",
+      "title": "الاستلزام ونفي النتيجة",
+      "findings": [
+        "مشتت «أمطرت قتيلاً» خطأ طباعي؛ إصلاحه مع تقييد الاستنتاج بالمقدمات."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "تصحيح المشتت الطباعي."
+      ]
+    },
+    {
+      "number": 110,
+      "puzzleId": "f873b931-50da-5dae-8c30-c10ba58785f3",
+      "title": "المغالطة المنطقية: الاحتكام إلى الشعبية",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 111,
+      "puzzleId": "89e68326-eda6-55f9-ace7-e729ac8e8aeb",
+      "title": "لغز رياضي: القلمان والثلاثة",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 112,
+      "puzzleId": "4627abec-b827-56d9-b4b4-e757e144d66a",
+      "title": "لغز منطقي: أخت خالك",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 113,
+      "puzzleId": "8c0fad13-70b4-5cad-9455-146bed75b45c",
+      "title": "حساب زوايا المثلث الهندسي",
+      "findings": [
+        "تقييد السؤال بمثلث في الهندسة المستوية."
+      ],
+      "status": "needs_review",
+      "candidateChanges": [
+        "تحديد الهندسة المستوية."
+      ]
+    },
+    {
+      "number": 114,
+      "puzzleId": "e4d33847-ec62-5abb-a986-af662f53143a",
+      "title": "العدد الأولي الفردي الأصغر",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 115,
+      "puzzleId": "625bd148-88aa-5518-bc5d-9ea7297a7034",
+      "title": "التناظر المنطقي: الجزء والكل",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 116,
+      "puzzleId": "060863de-b885-573f-ab94-12da0c752cfc",
+      "title": "التناظر المنطقي: السبب والنتيجة",
+      "findings": [
+        "السبب والنتيجة هنا علاقات شائعة لا لزوم منطقي؛ تقييد الصياغة."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 117,
+      "puzzleId": "061dd29d-9902-598a-9d25-9273a16efafe",
+      "title": "التناظر المنطقي: الصانع ومادته",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 118,
+      "puzzleId": "975acf3a-a2fc-5772-8801-5477d863dd5d",
+      "title": "الخطوات المنهجية لحل المشكلات",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    },
+    {
+      "number": 119,
+      "puzzleId": "4f7aab9b-7dc8-585d-be5f-84dde0047c84",
+      "title": "دورة الماء في الطبيعة",
+      "findings": [
+        "دورة الماء ليست خطًا وحيدًا؛ تحديد أن الترتيب لمسار مبسط يبدأ بالتبخر."
+      ],
+      "status": "needs_review",
+      "candidateChanges": []
+    },
+    {
+      "number": 120,
+      "puzzleId": "a8a0b3c7-48d3-553b-9cb3-4b563f97e1c0",
+      "title": "أركان القياس المنطقي",
+      "findings": [],
+      "status": "no_issue_detected_in_triage",
+      "candidateChanges": []
+    }
+  ]
+}

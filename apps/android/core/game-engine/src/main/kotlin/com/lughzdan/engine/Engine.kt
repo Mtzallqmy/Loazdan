@@ -24,13 +24,14 @@ import java.text.Normalizer
  val visualPairs: List<MatchPair> = emptyList(), val revealRows: Int = 0, val revealCols: Int = 0, val revealPenalty: Int = 0, val logicRule: LogicRule? = null,
  val items: List<Option> = emptyList(), val correctOrder: List<String> = emptyList(), val variant: String = "",
  val terms: List<Int> = emptyList(), val answer: Int = 0, val rule: String = "",
+ val sourceLabel: String = "", val sourceUrl: String = "",
  val mode: String = "", val assets: List<ImageGuessAsset> = emptyList(), val revealSteps: Int = 0,
 )
 @Serializable data class PuzzleDefinition(
     val schemaVersion: Int, val puzzleId: String, val revision: Int, val gameId: String,
     val type: String, val world: String, val difficulty: Int, val rulesVersion: Int,
     val normalization: String, val title: String, val status: String, val fixtureOnly: Boolean,
-    val sourceRefs: List<String>, val explanation: String, val hints: List<Hint>, val payload: ChoicePayload,
+    val sourceRefs: List<String>, val explanation: String, val hints: List<Hint>, val payload: ChoicePayload, val tags: List<String> = emptyList(),
 )
 @Serializable enum class SessionStatus { ACTIVE, PAUSED, WON, LOST }
 @Serializable data class GameSession(
@@ -46,6 +47,10 @@ import java.text.Normalizer
     val revealedHints: Map<String, String> = emptyMap(),
     val answerInput: String = "", val revealedRegions: Set<Int> = emptySet(), val selectedImageId: String? = null,
     val imageOrder: List<String> = emptyList(), val imageMatches: List<MatchPair> = emptyList(),
+    val displaySeed: Int? = null,
+    val checkedCells: Map<String, String> = emptyMap(),
+    val atlasRunId: String = "",
+    val practice: Boolean = false,
 )
 sealed interface PlayerAction {
     val id: String
@@ -95,7 +100,7 @@ class ChoicePlugin : GamePlugin {
     })
     override fun createSession(puzzle: PuzzleDefinition, sessionId: String): GameSession {
         require(validatePuzzle(puzzle).valid)
-        return GameSession(sessionId, puzzle.puzzleId, puzzle.revision)
+        return GameSession(sessionId, puzzle.puzzleId, puzzle.revision, displaySeed = sessionId.hashCode())
     }
     override fun evaluate(puzzle: PuzzleDefinition, session: GameSession, action: PlayerAction): GameSession {
         require(session.puzzleId == puzzle.puzzleId && session.revision == puzzle.revision && session.stateVersion in 1..2)

@@ -1,0 +1,26 @@
+[
+  {
+    "key": "original",
+    "referenceId": "296da3ef-15d3-56fa-b231-c3145ee785b6",
+    "name": "صياغة أصلية للُغْزَدان بمساعدة آلية؛ أمثلة تعليمية غير منسوبة إلى شاعر",
+    "url": ""
+  },
+  {
+    "key": "mutanabbi",
+    "referenceId": "d5a32f19-dc04-5ad9-a937-d95418f174a8",
+    "name": "الموسوعة الشعرية — المتنبي: على قدر أهل العزم",
+    "url": "https://poetry.dct.gov.ae/diwan/poem/141007"
+  },
+  {
+    "key": "shawqi",
+    "referenceId": "d1ffd43d-0aa8-5b2f-86d3-48af4d681eb2",
+    "name": "الموسوعة الشعرية — أحمد شوقي: قم للمعلم",
+    "url": "https://poetry.dct.gov.ae/poems/19050-قم-للمعلم-وفه-التبجيلا"
+  },
+  {
+    "key": "academy",
+    "referenceId": "32845550-c622-50c1-95e5-d50942e11f3d",
+    "name": "مجمع اللغة العربية بالقاهرة — معجم الأدب: الشعر المرسل والتفعيلة",
+    "url": "https://www.arabicacademy.gov.eg/ar/محرك-البحث/معجم/dic-383/الشعر-المرسل-و-التفعيلة"
+  }
+]

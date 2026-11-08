@@ -13,6 +13,9 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 class GameViewModel(val repository:ProgressRepository,val settingsStore:SettingsStore,val contentRepository:ContentRepository?=null,val vocabularyRepository:VocabularyRepository?=null):ViewModel() {
  val localGuestId=settingsStore.localGuestId.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),"")
+ val atlasPuzzles=repository.atlasCatalog.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val atlasRuns=repository.atlasRuns.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
+ val discoveries=(vocabularyRepository?.entries ?: flowOf(emptyList())).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val puzzles=repository.puzzles.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val sessions=repository.sessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val unavailableSessions=repository.unavailableSessions.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
@@ -29,21 +32,77 @@ class GameViewModel(val repository:ProgressRepository,val settingsStore:Settings
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _busy=MutableStateFlow(false);val busy=_busy.asStateFlow()
  private val mutex=Mutex()
+ private val runStartPending=AtomicBoolean(false)
  private val submissionPending=AtomicBoolean(false)
+ private val _submitting=MutableStateFlow(false);val submitting=_submitting.asStateFlow()
  init { viewModelScope.launch {settingsStore.ensureGuestId()}; initialize() }
- fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
+ fun initialize() { viewModelScope.launch { try { repository.initialize();_ready.value=true;_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(error:Exception) {android.util.Log.e("Lughzdan","Local content initialization failed",error);_error.value="تعذّر فتح المحتوى المحلي. أعد المحاولة." } } }
  suspend fun readImage(sessionId:String,imageId:String)=repository.readImage(sessionId,imageId)
+ fun observeRun(id:String)=repository.observeRun(id)
+ fun observeSession(id:String)=repository.observeSession(id)
+ fun moreSessions() {viewModelScope.launch {repository.loadMoreSessions()}}
+ fun startDaily(onStarted:(String)->Unit) { viewModelScope.launch {
+  if(!mutex.tryLock())return@launch
+  _busy.value=true
+  try {val day=java.time.LocalDate.now(java.time.ZoneId.of("Asia/Aden")).toString();onStarted(repository.startDaily(day))}
+  catch(cancelled:CancellationException){throw cancelled}
+  catch(_:Exception){_error.value="تعذّر فتح تحدي اليوم. تحقق من وجود حزمة مثبتة."}
+  finally {_busy.value=false;mutex.unlock()}
+ } }
  fun morePuzzles() {viewModelScope.launch {repository.loadMore()}}
- fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);sessions.first { records->records.any { it.session.id==started } };onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
+ fun start(id:String,onStarted:(String)->Unit) { viewModelScope.launch { if(!mutex.tryLock())return@launch;_busy.value=true;try { val started=repository.start(id);onStarted(started) } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="تعذّر بدء الجولة." } finally { _busy.value=false;mutex.unlock() } } }
+
+ fun createAtlasRun(run:AtlasRun,onCreated:(String)->Unit) {
+  if(!runStartPending.compareAndSet(false,true))return
+  viewModelScope.launch { mutex.withLock {
+   _busy.value=true
+   try {onCreated(repository.createRun(run))}
+   catch(cancelled:CancellationException){throw cancelled}
+   catch(_:Exception){_error.value="تعذّر بدء الرحلة. تحقق من تثبيت الحزمة ومستوى الخبرة."}
+   finally {_busy.value=false;runStartPending.set(false)}
+  } }
+ }
+ fun continueAtlasRun(id:String,onSession:(String)->Unit) {
+  viewModelScope.launch { mutex.withLock {
+   _busy.value=true
+   try {repository.nextInRun(id)?.let(onSession)}
+   catch(cancelled:CancellationException){throw cancelled}
+   catch(_:Exception){_error.value="تعذّر فتح المحطة. تقدمك محفوظ ويمكنك المحاولة مجددًا."}
+   finally {_busy.value=false}
+  } }
+ }
+ fun saveDiscovery(p:PuzzleDefinition) {
+  val vocabulary=vocabularyRepository ?: return
+  viewModelScope.launch {
+   try {
+    val answer=p.payload.options.firstOrNull {it.id==p.payload.correctId}?.text
+      ?: p.payload.acceptedAnswers.firstOrNull() ?: when(p.type) {
+       "sequence"->p.payload.terms.joinToString("، ")+"، ؟"
+       "crossword"->p.payload.entries.joinToString("، "){it.tokens.joinToString("")}
+       "wordsearch"->p.payload.words.joinToString("، "){it.label}
+       "matching"->p.payload.left.joinToString("، "){it.text}
+       "order"->p.payload.prompt+" "+p.payload.items.joinToString("، "){it.text}
+       else->p.payload.prompt.ifBlank {p.title}
+      }
+    val meaning=if(p.type=="sequence")"الإجابة: ${p.payload.answer}. ${p.explanation}" else p.explanation
+    vocabulary.save(VocabularySnapshot("${p.puzzleId}:${p.revision}",answer,meaning,
+      p.payload.sourceLabel.ifBlank {"حزمة لُغْزَدان"},p.payload.sourceUrl.ifBlank {p.puzzleId},
+      category=AtlasCatalog.world(p),linkedGameIds=listOf(p.puzzleId),contentStatus=p.status,fixtureOnly=p.fixtureOnly))
+   } catch(cancelled:CancellationException){throw cancelled}
+   catch(_:Exception){_error.value="تعذّر حفظ الاكتشاف. أعد المحاولة."}
+  }
+ }
  fun action(id:String,action:PlayerAction) { dispatch(id,action) }
- private fun dispatch(id:String,action:PlayerAction)=viewModelScope.launch { mutex.withLock { _busy.value=true;try { val committed=repository.act(id,action);sessions.first { records->records.any { it.session==committed } };_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="لم تُحفظ الحركة. حاول مجددًا." } finally { _busy.value=false } } }
+ private fun dispatch(id:String,action:PlayerAction)=viewModelScope.launch { mutex.withLock { try { repository.act(id,action);_error.value=null } catch(cancelled:CancellationException) { throw cancelled } catch(_:Exception) { _error.value="لم تُحفظ الحركة. حاول مجددًا." } finally { } } }
  fun resume(id:String)=action(id,PlayerAction.Resume(UUID.randomUUID().toString()))
  fun select(id:String,option:String)=action(id,PlayerAction.Select(UUID.randomUUID().toString(),option))
  fun submit(id:String) {
   if(!submissionPending.compareAndSet(false,true)) return
-  dispatch(id,PlayerAction.Submit(UUID.randomUUID().toString())).invokeOnCompletion { submissionPending.set(false) }
+  _submitting.value=true
+  dispatch(id,PlayerAction.Submit(UUID.randomUUID().toString())).invokeOnCompletion { submissionPending.set(false);_submitting.value=false }
  }
  fun hint(id:String,hint:String)=action(id,PlayerAction.UseHint(UUID.randomUUID().toString(),hint))
  fun dark(value:Boolean) { viewModelScope.launch { settingsStore.dark(value) } }
+ fun haptic(value:Boolean) {viewModelScope.launch {settingsStore.haptic(value)}}
  fun sound(value:Boolean) { viewModelScope.launch { settingsStore.sound(value) } }
 }

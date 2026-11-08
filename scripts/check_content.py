@@ -56,5 +56,14 @@ for variant in ['intruder','context','difference']:
  malformed=copy.deepcopy(pair_sample);malformed['payload']['variant']=variant
  assert not validator.is_valid(malformed)
 old=subprocess.check_output(['git','show','HEAD:apps/android/app/src/debug/assets/data/vocabulary.jsonl'],cwd=root);assert data.splitlines()[:4]==old.splitlines()[:4]
-release=root/'apps/android/app/src/release/assets';assert not list(release.rglob('*.jsonl'))
+release=root/'apps/android/app/src/release/assets'
+literary=release/'literary/data/literary_words.jsonl'
+assert list(release.rglob('*.jsonl'))==[literary]
+assert literary.read_bytes()==(root/'packs/atlas-600/puzzles.jsonl').read_bytes()
+words=[json.loads(line) for line in literary.read_text().splitlines()]
+assert len(words)==512 and len({p['puzzleId'] for p in words})==512
+for p in words:
+ validator.validate(p);assert p['status']=='published' and not p['fixtureOnly']
+assert sum(p['payload'].get('variant')=='word_bridge' for p in words)==12
+print('512 Atlas and literary challenges validated')
 print(f'{len(ps)} debug-only solvable puzzles, variants, stable original definitions and SHA-256 validated')

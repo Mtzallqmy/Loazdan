@@ -35,7 +35,7 @@ abstract class BoardPlugin(final override val type:String):GamePlugin {
   addAll(errors(puzzle))
  })
  override fun createSession(puzzle:PuzzleDefinition,sessionId:String):GameSession {
-  require(validatePuzzle(puzzle).valid);return GameSession(sessionId,puzzle.puzzleId,puzzle.revision,stateVersion=2,tileOrder=puzzle.payload.tiles.indices.toList(),orderedIds=puzzle.payload.items.map {it.id})
+  require(validatePuzzle(puzzle).valid);return GameSession(sessionId,puzzle.puzzleId,puzzle.revision,stateVersion=2,displaySeed=sessionId.hashCode(),tileOrder=puzzle.payload.tiles.indices.shuffled(Random(sessionId.hashCode())),orderedIds=SessionPresentation.unsolved(puzzle.payload.items.map {it.id},puzzle.payload.correctOrder,sessionId.hashCode()))
  }
  protected fun verdict(p:PuzzleDefinition,s:GameSession,correct:Boolean)=if(correct) s.copy(status=SessionStatus.WON,score=ScoringEngine.score(p,s.wrongSubmissions,s.usedHintIds)) else s.copy(wrongSubmissions=s.wrongSubmissions+1,status=if(s.wrongSubmissions>=2) SessionStatus.LOST else SessionStatus.ACTIVE)
  override fun evaluate(puzzle:PuzzleDefinition,session:GameSession,action:PlayerAction):GameSession {
@@ -79,7 +79,7 @@ class CrosswordPlugin:BoardPlugin("crossword") {
  override fun errors(p:PuzzleDefinition)=crosswordErrors(p.payload){normalized(p,it)}+if(p.payload.entries.any {it.sourceRef !in p.sourceRefs}) listOf("unknown_entry_source") else emptyList()
  override fun reduce(p:PuzzleDefinition,s:GameSession,a:PlayerAction):GameSession {
   val solution=p.payload.entries.flatMap {entryCells(it).zip(it.tokens)}.toMap()
-  return when(a){is PlayerAction.InputCell->{val c=Cell(a.row,a.col);if(c !in solution||(a.token.isNotEmpty()&&!validToken(a.token))) s else s.copy(cells=if(a.token.isEmpty()) s.cells-key(c) else s.cells+(key(c) to a.token))};is PlayerAction.Submit->if(solution.keys.any {s.cells[key(it)].isNullOrEmpty()}) s else verdict(p,s,solution.all {(c,t)->normalized(p,s.cells[key(c)] ?: "")==normalized(p,t)});else->s}
+  return when(a){is PlayerAction.InputCell->{val c=Cell(a.row,a.col);if(c !in solution||(a.token.isNotEmpty()&&!validToken(a.token))) s else s.copy(cells=if(a.token.isEmpty()) s.cells-key(c) else s.cells+(key(c) to a.token))};is PlayerAction.Submit->if(solution.keys.any {s.cells[key(it)].isNullOrEmpty()}) s else verdict(p,s.copy(checkedCells=s.cells),solution.all {(c,t)->normalized(p,s.cells[key(c)] ?: "")==normalized(p,t)});else->s}
  }
 }
 internal fun straight(path:List<Cell>):Boolean {

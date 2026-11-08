@@ -36,7 +36,7 @@ class MigrationTest {
   old.execSQL("INSERT INTO sync_operations VALUES ('op','s','complete_session','payload')")
   old.version=2
   old.close()
-  val db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build()
+  val db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4,LughzdanDatabase.MIGRATION_4_5).allowMainThreadQueries().build()
   try {
    assertEquals("pinned-state",db.games().session("s")!!.state)
    assertEquals(2,db.games().session("s")!!.revision)
@@ -76,7 +76,7 @@ class MigrationTest {
   old.execSQL("INSERT INTO sync_accounts VALUES ('account','device',2,'cursor',1)")
   old.execSQL("INSERT INTO sync_delivery VALUES ('account','op','device',1,'original-payload','PENDING',2,42,NULL)")
   old.version=3;old.close()
-  val db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build()
+  val db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_3_4,LughzdanDatabase.MIGRATION_4_5).allowMainThreadQueries().build()
   try {
    assertEquals("original-state",db.games().session("s")!!.state)
    assertEquals("original-definition",db.games().puzzle("p",2)!!.definition)
@@ -88,6 +88,31 @@ class MigrationTest {
    assertEquals("original-payload",db.content().pending("account",100).single().payload)
    db.vocabulary().save(VocabularyEntity("word","كِتاب","meaning","source","page:1","كتب","category","[]","draft",true))
    assertEquals("كِتاب",db.vocabulary().entry("word")!!.word)
+  } finally {db.close();context.deleteDatabase(filename)}
+ }
+
+ @Test fun versionFourPreservesDiscoveryNotebookWhenAddingAtlasRuns()=runBlocking {
+  val context=ApplicationProvider.getApplicationContext<Context>()
+  val filename="migration-v4-v5.db"
+  context.deleteDatabase(filename)
+  val old=context.openOrCreateDatabase(filename,Context.MODE_PRIVATE,null)
+  val entities=JSONObject(javaClass.getResource("/room-v2.json")!!.readText()).getJSONObject("database").getJSONArray("entities")
+  for(i in 0 until entities.length()) {
+   val entity=entities.getJSONObject(i)
+   old.execSQL(entity.getString("createSql").replace("\${TABLE_NAME}",entity.getString("tableName")))
+   val indices=entity.optJSONArray("indices") ?: org.json.JSONArray()
+   for(j in 0 until indices.length())old.execSQL(indices.getJSONObject(j).getString("createSql").replace("\${TABLE_NAME}",entity.getString("tableName")))
+  }
+  ContentSchema.statements.forEach(old::execSQL)
+  old.execSQL(VocabularySchema.CREATE)
+  old.execSQL("INSERT INTO personal_vocabulary VALUES ('word','قلم','meaning','source','locator','','category','[]','published',0,1,3,123)")
+  old.version=4;old.close()
+  val db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_4_5).allowMainThreadQueries().build()
+  try {
+   val word=db.vocabulary().entry("word")!!
+   assertEquals("قلم",word.word);assertTrue(word.favorite);assertEquals(3,word.reviewCount)
+   db.atlas().save(AtlasRunEntity("run","state",1))
+   assertEquals("state",db.atlas().get("run")!!.state)
   } finally {db.close();context.deleteDatabase(filename)}
  }
 

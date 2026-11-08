@@ -4,6 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.lughzdan.db.*
 import com.lughzdan.engine.*
+import com.lughzdan.domain.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.first
 import org.junit.*
@@ -22,8 +23,66 @@ class OfflineRepositoryTest {
   db.games().install(InstalledContentPackEntity("fixture",7,"fixture-digest",1,true))
   db.games().insertPuzzles(listOf(LocalPuzzleEntity("p",1,"fixture",SessionCodec.json.encodeToString(p),0)))
  } }
- private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4).allowMainThreadQueries().build() }
+ private fun open() { db=Room.databaseBuilder(context,LughzdanDatabase::class.java,filename).addMigrations(LughzdanDatabase.MIGRATION_1_2,LughzdanDatabase.MIGRATION_2_3,LughzdanDatabase.MIGRATION_3_4,LughzdanDatabase.MIGRATION_4_5).allowMainThreadQueries().build() }
  @After fun close() { db.close();context.deleteDatabase(filename) }
+
+ @Test fun atlasRunAndPracticeScoresCommitExactlyOnceAcrossRestart()=runBlocking {
+  val repo=LocalGameRepository(context,db,true)
+  val id=repo.createRun(AtlasRun("duel","duel","Test duel",listOf("p"),playerNames=listOf("أ","ب")))
+  val stage=repo.nextInRun(id)!!
+  assertEquals(stage,repo.nextInRun(id))
+  repo.act(stage,PlayerAction.Select("select","a"))
+  repo.act(stage,PlayerAction.Submit("submit"))
+  repo.act(stage,PlayerAction.Submit("repeat"))
+  assertEquals(0,repo.progress.first().totalXp)
+  val result=repo.atlasRuns.first().first()
+  assertTrue(result.finished);assertEquals(listOf(100,0),result.scores)
+  assertNull(repo.nextInRun(id))
+  db.close();open()
+  val restored=LocalGameRepository(context,db,true)
+  assertEquals(result,restored.atlasRuns.first().first())
+  assertNull(restored.nextInRun(id))
+ }
+
+ @Test fun correctedRevisionSharesRewardIdentityAndKeepsOriginalSession()=runBlocking {
+  val replacement=p.copy(puzzleId="corrected",revision=3,tags=listOf("supersedes:p"))
+  db.games().insertPuzzles(listOf(LocalPuzzleEntity(replacement.puzzleId,3,"fixture",SessionCodec.json.encodeToString(replacement),1)))
+  val repo=LocalGameRepository(context,db,true)
+  val original=repo.start("p")
+  repo.act(original,PlayerAction.Select("one","a"));repo.act(original,PlayerAction.Submit("win"))
+  val fixed=repo.start("corrected")
+  repo.act(fixed,PlayerAction.Select("two","a"));repo.act(fixed,PlayerAction.Submit("win"))
+  assertEquals(100,repo.progress.first().totalXp)
+  assertEquals(1,repo.progress.first().completed)
+  assertEquals(listOf("corrected"),repo.atlasCatalog.first().map {it.puzzleId})
+  assertEquals("p",repo.observeSession(original).first()!!.puzzle.puzzleId)
+ }
+ @Test fun dailyRoundSurvivesRestartAndCannotAwardTwice()=runBlocking {
+  var repository=LocalGameRepository(context,db,true)
+  val id=repository.startDaily("2026-11-06")
+  repository.act(id,PlayerAction.Select("daily-select","a"))
+  repository.act(id,PlayerAction.Submit("daily-submit"))
+  db.close();open();repository=LocalGameRepository(context,db,true)
+  assertEquals(id,repository.startDaily("2026-11-06"))
+  repository.act(id,PlayerAction.Submit("another-submit"))
+  assertEquals(1,db.games().operationCount())
+  assertEquals(100,repository.progress.first().totalXp)
+  assertEquals(SessionStatus.WON,repository.observeSession(id).first()!!.session.status)
+  assertNotEquals(id,repository.startDaily("2026-11-07"))
+ }
+ @Test fun thousandRoundHistoryIsPagedAndOldRoundCanBeOpenedDirectly()=runBlocking {
+  repeat(1000) {i->
+   val state=GameRegistry().plugin("choice").createSession(p,"history-$i").copy(packId="fixture",packVersion=7)
+   db.games().save(GameSessionEntity(state.id,"p",1,SessionCodec.encode(state),i.toLong()))
+  }
+  val repository=LocalGameRepository(context,db,true)
+  assertEquals(50,repository.sessions.first().size)
+  assertEquals("history-999",repository.sessions.first().first().session.id)
+  assertEquals("history-0",repository.observeSession("history-0").first()!!.session.id)
+  repository.loadMoreSessions()
+  assertEquals(100,repository.sessions.first().size)
+  assertEquals(1000,db.games().storedSessions().size)
+ }
  @Test fun solveCloseReopenOfflineAndDeduplicate()=runBlocking {
   var repository=LocalGameRepository(context,db,true)
   val id=repository.start("p")

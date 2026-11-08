@@ -4,6 +4,8 @@ class TextAnswerPlugin : GamePlugin {
     override val type = "text_answer"
 
     override fun validatePuzzle(puzzle: PuzzleDefinition) = ValidationResult(buildList {
+        addAll(LiteraryWords.errors(puzzle))
+        addAll(WordBridge.errors(puzzle))
         if (puzzle.type != type || puzzle.schemaVersion != 1 || puzzle.rulesVersion != 1) add("unsupported_version")
         if (puzzle.revision < 1 || puzzle.difficulty !in 1..5) add("invalid_revision_or_difficulty")
         if (puzzle.payload.prompt.isBlank() || puzzle.payload.prompt.length > 2000) add("invalid_prompt")
@@ -17,7 +19,9 @@ class TextAnswerPlugin : GamePlugin {
 
     override fun createSession(puzzle: PuzzleDefinition, sessionId: String): GameSession {
         require(validatePuzzle(puzzle).valid)
-        return GameSession(sessionId, puzzle.puzzleId, puzzle.revision, stateVersion = 2)
+        val s=GameSession(sessionId, puzzle.puzzleId, puzzle.revision, stateVersion = 2,displaySeed=sessionId.hashCode())
+        if(WordBridge.supports(puzzle))return s.copy(answerHistory=listOf(WordBridge.start(puzzle)))
+        return if(LiteraryWords.supports(puzzle))s.copy(answerInput=LiteraryWords.input(puzzle,s,"")) else s
     }
 
     override fun evaluate(puzzle: PuzzleDefinition, session: GameSession, action: PlayerAction): GameSession {
@@ -33,11 +37,13 @@ class TextAnswerPlugin : GamePlugin {
                 else session.copy(
                     usedHintIds = session.usedHintIds + h.id,
                     revealedHints = session.revealedHints + (h.id to HintProvider.reveal(puzzle, session, h))
-                )
+                ).let {if(LiteraryWords.supports(puzzle))it.copy(answerInput=LiteraryWords.input(puzzle,it,it.answerInput)) else it}
             }
-            is PlayerAction.InputAnswer -> if (answerTextValid(action.answer)) session.copy(answerInput = action.answer) else session
-            is PlayerAction.Submit -> {
-                if (session.answerInput.isBlank()) session
+            is PlayerAction.Undo -> if(WordBridge.supports(puzzle) && session.answerHistory.size>1)
+                session.copy(answerHistory=session.answerHistory.dropLast(1),answerInput="") else session
+            is PlayerAction.InputAnswer -> if (answerTextValid(action.answer)) session.copy(answerInput = if(LiteraryWords.supports(puzzle))LiteraryWords.input(puzzle,session,action.answer) else action.answer) else session
+            is PlayerAction.Submit -> if(WordBridge.supports(puzzle)) WordBridge.submit(puzzle,session) else {
+                if (session.answerInput.isBlank() || (LiteraryWords.supports(puzzle) && !LiteraryWords.complete(puzzle,session))) session
                 else {
                     val candidate = normalized(puzzle, session.answerInput)
                     val correct = puzzle.payload.acceptedAnswers.any { normalized(puzzle, it) == candidate }

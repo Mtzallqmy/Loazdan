@@ -14,16 +14,24 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SixGameDeviceTest {
  @get:Rule val compose=createAndroidComposeRule<MainActivity>()
- private fun click(text:String) {compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","الألعاب","المكتبة","الإعدادات"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
+ private fun click(text:String) {
+  if(text=="الرئيسية" && compose.onAllNodesWithText("العودة · تُحفظ حركاتك تلقائيًا").fetchSemanticsNodes().isNotEmpty()) {
+   compose.onNodeWithText("العودة · تُحفظ حركاتك تلقائيًا").performClick();compose.waitForIdle()
+  }
+  if(text=="الإعدادات") {click("الرئيسية");compose.onNodeWithTag("nav-profile").performClick();compose.waitForIdle()}
+  compose.waitUntil(30_000){compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty()};val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst();if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي","الإعدادات") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo();node.assertIsDisplayed().performClick();compose.waitForIdle()}
  private fun showCell(matcher:SemanticsMatcher) {
   val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
   val page=compose.onNode(vertical)
   repeat(4) {
-   val viewport=page.fetchSemanticsNode().boundsInRoot
+   val pageNode=page.fetchSemanticsNode()
    val target=compose.onNode(matcher).fetchSemanticsNode()
-   val top=target.positionInRoot.y
-   val bottom=top+target.size.height
-   val delta=when {top<viewport.top -> top-viewport.top;bottom>viewport.bottom -> bottom-viewport.bottom;else -> 0f}
+   val delta=compose.runOnIdle {
+    val viewport=pageNode.boundsInRoot
+    val top=target.positionInRoot.y
+    val bottom=top+target.size.height
+    when {top<viewport.top -> top-viewport.top;bottom>viewport.bottom -> bottom-viewport.bottom;else -> 0f}
+   }
    if(kotlin.math.abs(delta)>1f) {
     page.performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){it(0f,delta)}
     compose.waitForIdle()
@@ -46,7 +54,25 @@ class SixGameDeviceTest {
   }
  }
  private fun fixture(type:String)=fixtures().first {it.getString("type")==type}
- private fun open(type:String) {val all=fixtures();val p=fixture(type);click("ابدأ تحدي المفردات");click("لغز ${all.indexOfFirst {it.getString("puzzleId")==p.getString("puzzleId")}+1} · الصعوبة ${p.getInt("difficulty")}")}
+ private fun open(type:String) {
+  click("الرئيسية")
+  val all=fixtures();val p=fixture(type)
+  click("ابدأ تحدي المفردات")
+  val label="لغز ${all.indexOfFirst {it.getString("puzzleId")==p.getString("puzzleId")}+1} · الصعوبة ${p.getInt("difficulty")}"
+  compose.onNodeWithTag("catalog-list").performScrollToNode(hasText(label))
+  click(label)
+ }
+
+ private fun showProgress() {
+  compose.waitUntil(30_000){compose.onAllNodesWithTag("home-progress").fetchSemanticsNodes().isNotEmpty()}
+  // Restored history can insert a card above this row after the initial layout.
+  // Scroll to the current position until the asynchronously restored page settles.
+  compose.waitUntil(30_000) {
+   val progress=compose.onNodeWithTag("home-progress")
+   progress.performScrollTo()
+   try {progress.assertIsDisplayed();true} catch(_:AssertionError) {false}
+  }
+ }
  private fun screenshot(name:String){val bitmap=InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot();File(compose.activity.getExternalFilesDir(null),"$name.png").outputStream().use {bitmap.compress(Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle()}
  private fun captureResources() {
   val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
@@ -78,15 +104,21 @@ class SixGameDeviceTest {
   click("الرئيسية");open("anagram");val p=fixture("anagram");val hint=p.getJSONArray("hints").getJSONObject(0);click("تلميح (−${hint.getInt("penalty")} نقطة)")
   val payload=p.getJSONObject("payload");val tiles=payload.getJSONArray("tiles");val remaining=payload.getJSONArray("acceptedAnswers").getString(0).toMutableList();val fixed=payload.optJSONArray("fixedSlots");val used=mutableSetOf<Int>()
   if(fixed!=null)for(i in fixed.length()-1 downTo 0){val f=fixed.getJSONObject(i);remaining.removeAt(f.getInt("index"));used+=(0 until tiles.length()).first {it !in used&&tiles.getString(it)==f.getString("token")}}
-  remaining.forEach {token->val index=(0 until tiles.length()).first {it !in used&&tiles.getString(it)==token.toString()};used+=index;cell("حرف $index ${tiles.getString(index)}")};click("تحقق من الإجابة");won();screenshot("stage03-builder-light");click("الرئيسية");compose.waitUntil(30_000){compose.onAllNodesWithText("4 ألغاز مكتملة",substring=true).fetchSemanticsNodes().isNotEmpty()};val progress=compose.onNodeWithText("ألغاز مكتملة",substring=true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString {it.text};File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").writeText(progress)
+  remaining.forEach {token->val index=(0 until tiles.length()).first {it !in used&&tiles.getString(it)==token.toString()};used+=index;cell("حرف $index ${tiles.getString(index)}")};click("تحقق من الإجابة");won();screenshot("stage03-builder-light");click("الرئيسية");showProgress();compose.waitUntil(30_000){compose.onAllNodesWithText("4 ألغاز مكتملة",substring=true).fetchSemanticsNodes().isNotEmpty()};val progress=compose.onNodeWithText("ألغاز مكتملة",substring=true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString {it.text};File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").writeText(progress)
  }
- @Test fun phaseFiveVerifyBuilderResult(){val previous=File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").readText();compose.waitUntil(30_000){compose.onAllNodesWithText(previous).fetchSemanticsNodes().isNotEmpty()};click("متابعة آخر نشاط");won();val p=fixture("anagram");val score=50+50*p.getInt("difficulty")-p.getJSONArray("hints").getJSONObject(0).getInt("penalty");compose.onNodeWithText("إجابة صحيحة! +$score نقطة").assertExists();click("الرئيسية");compose.onNodeWithText(previous).assertExists()}
+ @Test fun phaseFiveVerifyBuilderResult(){val previous=File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").readText();showProgress();compose.waitUntil(30_000){compose.onAllNodesWithText(previous).fetchSemanticsNodes().isNotEmpty()};click("متابعة آخر نشاط");won();val p=fixture("anagram");val score=50+50*p.getInt("difficulty")-p.getJSONArray("hints").getJSONObject(0).getInt("penalty");compose.onNodeWithText("إجابة صحيحة! +$score نقطة").assertExists();click("الرئيسية");showProgress();compose.onNodeWithText(previous).assertExists()}
  @Test fun phaseSixOtherBoards(){
   val previous=File(compose.activity.getExternalFilesDir(null),"stage03-progress.txt").readText()
+  showProgress()
   compose.waitUntil(30_000){compose.onAllNodesWithText(previous).fetchSemanticsNodes().isNotEmpty()}
 
   open("wordsearch");val words=fixture("wordsearch").getJSONObject("payload").getJSONArray("words");for(i in 0 until words.length()){val path=words.getJSONObject(i).getJSONArray("path");val first=path.getJSONObject(0);val last=path.getJSONObject(path.length()-1);cell("بحث ${first.getInt("row")} ${first.getInt("col")}");cell("بحث ${last.getInt("row")} ${last.getInt("col")}");click("تحقق من الإجابة")};won()
   click("الرئيسية");open("matching");val m=fixture("matching").getJSONObject("payload");val pairs=m.getJSONArray("pairs");fun text(side:String,id:String):String {val list=m.getJSONArray(side);return (0 until list.length()).map {list.getJSONObject(it)}.first {it.getString("id")==id}.getString("text")};for(i in 0 until pairs.length()){val pair=pairs.getJSONObject(i);click(text("left",pair.getString("leftId")));click(text("right",pair.getString("rightId")))};click("تحقق من الإجابة");won()
-  click("الرئيسية");open("order");val o=fixture("order").getJSONObject("payload");val items=o.getJSONArray("items");val current=(0 until items.length()).map {items.getJSONObject(it).getString("id")}.toMutableList();val correct=o.getJSONArray("correctOrder");for(i in 0 until correct.length()){val id=correct.getString(i);while(current.indexOf(id)>i){val index=current.indexOf(id);val label=(0 until items.length()).map {items.getJSONObject(it)}.first {it.getString("id")==id}.getString("text");cell("لأعلى $label");current.removeAt(index);current.add(index-1,id)}};click("تحقق من الإجابة");won();screenshot("stage03-order-light");click("الإعدادات");compose.onAllNodes(isToggleable()).onFirst().performClick();screenshot("stage03-settings-dark");captureResources()
+  click("الرئيسية");open("order");val o=fixture("order").getJSONObject("payload");val items=o.getJSONArray("items");val current=(0 until items.length()).map {items.getJSONObject(it)}.sortedBy {item->
+   val label=item.getString("text")
+   showCell(hasContentDescription("لأعلى $label"))
+   val nodes=compose.onAllNodes(hasText(label,substring=true)).fetchSemanticsNodes()
+   nodes.flatMap {it.config.getOrElse(SemanticsProperties.Text){emptyList()}}.mapNotNull {Regex("^(\\d+)\\. "+Regex.escape(label)+"$").find(it.text)?.groupValues?.get(1)?.toInt()}.single()
+  }.map {it.getString("id")}.toMutableList();val correct=o.getJSONArray("correctOrder");for(i in 0 until correct.length()){val id=correct.getString(i);while(current.indexOf(id)>i){val index=current.indexOf(id);val label=(0 until items.length()).map {items.getJSONObject(it)}.first {it.getString("id")==id}.getString("text");cell("لأعلى $label");current.removeAt(index);current.add(index-1,id)}};click("تحقق من الإجابة");won();screenshot("stage03-order-light");click("الإعدادات");compose.onAllNodes(isToggleable()).onFirst().performClick();screenshot("stage03-settings-dark");captureResources()
  }
 }

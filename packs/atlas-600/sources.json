@@ -1,0 +1,50 @@
+[
+  {
+    "key": "original",
+    "referenceId": "30cd78e9-d168-55b2-98dd-c723586d887c",
+    "name": "صياغة تعليمية أصلية للُغْزَدان بمساعدة آلية",
+    "url": ""
+  },
+  {
+    "key": "rhetoric",
+    "referenceId": "2a244336-2ece-504e-bb82-a2655235a178",
+    "name": "جواهر البلاغة — أحمد الهاشمي، أبواب البيان والمعاني والبديع",
+    "url": "https://www.hindawi.org/books/85925824/"
+  },
+  {
+    "key": "yemen",
+    "referenceId": "451118a1-265e-5870-9947-ce03cf067d6f",
+    "name": "اليونسكو — مواقع اليمن المسجلة في التراث العالمي",
+    "url": "https://whc.unesco.org/en/statesparties/ye/"
+  },
+  {
+    "key": "water",
+    "referenceId": "1edbee69-975e-5c70-b3b8-56e44ff8fcd7",
+    "name": "NASA — دورة الماء",
+    "url": "https://science.nasa.gov/kids/earth/what-is-the-water-cycle/"
+  },
+  {
+    "key": "space",
+    "referenceId": "150aeae8-efe4-57b0-8917-35b09f8a90d8",
+    "name": "NASA Space Place — معجم مصطلحات الفضاء",
+    "url": "https://spaceplace.nasa.gov/glossary/en/"
+  },
+  {
+    "key": "biology",
+    "referenceId": "576fafd9-27f3-5379-b93a-fc416945c20d",
+    "name": "OpenStax — Concepts of Biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/1-introduction"
+  },
+  {
+    "key": "physics",
+    "referenceId": "f71076fb-3abf-5d9e-ab1b-455e75d26f8d",
+    "name": "OpenStax — College Physics 2e",
+    "url": "https://openstax.org/books/college-physics-2e/pages/1-introduction-to-science-and-the-realm-of-physics-physical-quantities-and-units"
+  },
+  {
+    "key": "prosody",
+    "referenceId": "1b5feb72-5eec-5351-a202-c7473aadf35c",
+    "name": "مجمع اللغة العربية بالقاهرة — التفعيلة وشعر التفعيلة",
+    "url": "https://www.arabicacademy.gov.eg/ar/محرك-البحث/معجم/dic-383/الشعر-المرسل-و-التفعيلة"
+  }
+]

@@ -5920,7 +5920,9 @@
               "poetry",
               "rhetoric",
               "quran",
-              "logic"
+              "logic",
+              "heritage",
+              "science"
             ]
           },
           "difficulty": {
@@ -6015,6 +6017,14 @@
           },
           "payload": {
             "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "maxLength": 150
+            }
           }
         },
         "required": [
@@ -6121,6 +6131,14 @@
                       },
                       "minItems": 2,
                       "maxItems": 60
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6211,6 +6229,14 @@
                       },
                       "minItems": 1,
                       "maxItems": 30
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6293,6 +6319,14 @@
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 2000
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6365,6 +6399,14 @@
                       "type": "integer",
                       "minimum": 1,
                       "maximum": 10
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6424,6 +6466,19 @@
                     "correctId": {
                       "type": "string",
                       "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "variant": {
+                      "enum": [
+                        "language_detective"
+                      ]
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
                       "maxLength": 2000
                     }
                   },
@@ -6570,6 +6625,14 @@
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 2000
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "oneOf": [
@@ -6709,6 +6772,14 @@
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 2000
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6747,6 +6818,80 @@
                       },
                       "minItems": 1,
                       "maxItems": 20
+                    },
+                    "variant": {
+                      "enum": [
+                        "literary_complete",
+                        "literary_riddle",
+                        "word_bridge",
+                        "who_am_i"
+                      ]
+                    },
+                    "mode": {
+                      "enum": [
+                        "language",
+                        "literature",
+                        "rhetoric",
+                        "classical",
+                        "modern",
+                        "riddles",
+                        "heritage",
+                        "science",
+                        "logic"
+                      ]
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
+                    },
+                    "fixedSlots": {
+                      "type": "array",
+                      "maxItems": 11,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "index",
+                          "token"
+                        ],
+                        "properties": {
+                          "index": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 11
+                          },
+                          "token": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1
+                          }
+                        }
+                      }
+                    },
+                    "items": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 64,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "text"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -6790,6 +6935,14 @@
                       "type": "string",
                       "minLength": 1,
                       "maxLength": 2000
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -6823,6 +6976,14 @@
                     "assets": {
                       "minItems": 4,
                       "maxItems": 4
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   }
                 }
@@ -6977,6 +7138,14 @@
                       },
                       "minItems": 1,
                       "maxItems": 10
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -7097,6 +7266,14 @@
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 100
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -7199,6 +7376,14 @@
                     "correctImageId": {
                       "type": "string",
                       "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
                       "maxLength": 2000
                     }
                   },
@@ -7315,6 +7500,14 @@
                       "minItems": 2,
                       "maxItems": 12,
                       "uniqueItems": true
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -7435,6 +7628,14 @@
                       },
                       "minItems": 2,
                       "maxItems": 12
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
@@ -7578,6 +7779,14 @@
                         "optionValues",
                         "step"
                       ]
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "sourceUrl": {
+                      "type": "string",
+                      "maxLength": 2000
                     }
                   },
                   "required": [
