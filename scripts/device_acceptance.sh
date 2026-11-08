@@ -82,6 +82,9 @@ adb shell svc wifi disable
 adb shell svc data disable
 run_phase duelRestoresOfflineWithoutChangingPlayerExperience AtlasDeviceTest
 run_phase signedVisualCluesDecodeAndDrawOffline AtlasDeviceTest
+run_phase readPlayAndBookmark DiwanDeviceTest
+adb shell am force-stop com.lughzdan.app
+run_phase recallSavedLineAfterRestart DiwanDeviceTest
 adb shell dumpsys gfxinfo com.lughzdan.app > artifacts/stage03/atlas-gfxinfo.txt
 adb shell dumpsys meminfo com.lughzdan.app > artifacts/stage03/atlas-meminfo.txt
 adb shell getprop ro.build.fingerprint > artifacts/stage03/device-build.txt

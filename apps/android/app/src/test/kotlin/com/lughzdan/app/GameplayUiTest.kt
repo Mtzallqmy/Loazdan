@@ -26,7 +26,8 @@ class GameplayUiTest {
   compose.setContent { GameApp(vm) }
   compose.waitUntil(20_000) { compose.onAllNodesWithText("ابدأ تحدي المفردات").fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("ابدأ تحدي المفردات").performScrollTo().performClick()
-  compose.onNodeWithText("لغز 1 · الصعوبة 1").performScrollTo().performClick()
+  compose.onNodeWithTag("catalog-list").performScrollToNode(hasText("لغز 1 · الصعوبة 1"))
+  compose.onNodeWithText("لغز 1 · الصعوبة 1").performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("بعيد").fetchSemanticsNodes().isNotEmpty() }
   compose.onNodeWithText("بعيد").performScrollTo().performClick()
   compose.waitUntil(10_000) { compose.onAllNodesWithText("تحقق من الإجابة").filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }
