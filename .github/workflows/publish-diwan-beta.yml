@@ -1,0 +1,66 @@
+name: Publish verified Diwan beta and test upgrades
+on:
+  push:
+    branches: [release/diwan-beta1]
+permissions:
+  actions: read
+  contents: read
+env:
+  GH_REPO: ${{ github.repository }}
+  GH_TOKEN: ${{ github.token }}
+  SOURCE: 23f39cc66285ea33740b930a0eac1a58bae0968f
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'build-tools;36.0.0'
+      - run: |
+          set -euo pipefail
+          run=42504318396
+          test "$(gh api repos/$GH_REPO/actions/runs/$run --jq .head_sha)" = "$SOURCE"
+          gh api "repos/$GH_REPO/actions/runs/$run/jobs?per_page=100" > "$RUNNER_TEMP/jobs.json"
+          for job in android contracts backend independent-preview 'offline-device (26)' 'offline-device (28)' 'offline-device (35)'; do
+            jq -e --arg name "$job" 'any(.jobs[]; .name==$name and .conclusion=="success")' "$RUNNER_TEMP/jobs.json" >/dev/null
+          done
+          gh run download "$run" -n unsigned-release-arm64 -D inputs/0
+          gh run download "$run" -n independent-preview-arm64 -D inputs/1
+          python .release/diwan/restore.py
+          cd dist
+          tag=v3.0.0-beta.1
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" *.apk SHA256SUMS --target "$SOURCE" --prerelease --latest=false --title 'لُغزدان 3.0.0 التجريبية الأولى – ديوان العرب' --notes '60 مختارًا شعريًا و20 مقطعًا نثريًا و300 سؤال. ثبّت الملف الذي يحمل Diwan لتحديث نسخة الديوان، والملف الآخر لتحديث لُغزدان الأصلي. Android 8.0+ ARM64.'
+          fi
+          test "$(gh api repos/$GH_REPO/commits/$tag --jq .sha)" = "$SOURCE"
+          gh api repos/$GH_REPO/releases/tags/$tag > "$RUNNER_TEMP/release.json"
+          for f in *.apk SHA256SUMS; do
+            sum=$(sha256sum "$f" | cut -d' ' -f1)
+            jq -e --arg f "$f" --arg s "sha256:$sum" 'any(.assets[]; .name==$f and .digest==$s)' "$RUNNER_TEMP/release.json"
+          done
+  upgrade:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          gh release download v2.0.0 -p '*.apk' -D old
+          gh release download v3.0.0-beta.1 -p '*.apk' -D new
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: python -u .release/diwan/upgrade.py

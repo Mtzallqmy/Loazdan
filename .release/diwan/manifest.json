@@ -1,0 +1,18 @@
+[
+  {
+    "input": "0/app-release-unsigned.apk",
+    "name": "Lughzdan-3.0.0-beta.1-ARM64.apk",
+    "digest": "6196a2a958cf976630747f857a89f3acdde75444f9a752b79183f01c16c6e508",
+    "certificate": "3dce653ad682a411d929cf5067153bff1b75d5d1944eb3a2e84d3785de76dd7c",
+    "package": "com.lughzdan.app",
+    "bytes": 14415363
+  },
+  {
+    "input": "1/Lughzdan-3.0.0-beta.1-Preview-ARM64.apk",
+    "name": "Lughzdan-3.0.0-beta.1-Diwan-ARM64.apk",
+    "digest": "119c7bb651ab8d70465629ce6710fca2432ba1b7ac1c591b64e6e23b50354ff5",
+    "certificate": "691afc3cf716a60a1d3ab61c8e2b0eac5e93b53dfab188a004bd04cbba4d19be",
+    "package": "com.lughzdan.app.preview.diwan",
+    "bytes": 14411267
+  }
+]
