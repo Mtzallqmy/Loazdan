@@ -25,8 +25,8 @@ class AtlasDeviceTest {
         }
         try {compose.waitUntil(30_000) { compose.onAllNodesWithText(text).filter(isEnabled()).fetchSemanticsNodes().isNotEmpty() }} catch(error:Throwable) {shot("atlas-failure");println("Waiting for: $text");println(compose.onRoot().printToString());runBlocking {compose.activity.repository.initialize()};throw error}
         val node=compose.onAllNodesWithText(text).filter(isEnabled()).onFirst()
-        if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo()
-        node.performClick()
+        if(text !in setOf("الرئيسية","العوالم","مكتبتي","ملفي","الإعدادات") && text!="تحقق من الإجابة" && !text.startsWith("تلميح") && !text.startsWith("اكشف حرفًا") && !text.startsWith("قرينة إضافية"))node.performScrollTo()
+        node.assertIsDisplayed().performClick()
         compose.waitForIdle()
     }
     private fun shot(name: String) {
@@ -48,14 +48,18 @@ class AtlasDeviceTest {
         })
         val tile = compose.onNodeWithContentDescription(description)
         repeat(4) {
-            val viewport = page.fetchSemanticsNode().boundsInRoot
+            val pageNode = page.fetchSemanticsNode()
             val target = tile.fetchSemanticsNode()
-            val top = target.positionInRoot.y
-            val bottom = top + target.size.height
-            val delta = when {
-                top < viewport.top -> top - viewport.top
-                bottom > viewport.bottom -> bottom - viewport.bottom
-                else -> 0f
+            // Coordinate reads may update graphics layers; read them on the UI thread.
+            val delta = compose.runOnIdle {
+                val viewport = pageNode.boundsInRoot
+                val top = target.positionInRoot.y
+                val bottom = top + target.size.height
+                when {
+                    top < viewport.top -> top - viewport.top
+                    bottom > viewport.bottom -> bottom - viewport.bottom
+                    else -> 0f
+                }
             }
             if (kotlin.math.abs(delta) > 1f) {
                 page.performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy) { it(0f, delta) }

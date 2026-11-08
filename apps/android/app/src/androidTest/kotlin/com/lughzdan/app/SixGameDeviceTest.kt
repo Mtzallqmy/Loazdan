@@ -24,11 +24,14 @@ class SixGameDeviceTest {
   val vertical=SemanticsMatcher("vertical page") {it.config.contains(SemanticsProperties.VerticalScrollAxisRange)}
   val page=compose.onNode(vertical)
   repeat(4) {
-   val viewport=page.fetchSemanticsNode().boundsInRoot
+   val pageNode=page.fetchSemanticsNode()
    val target=compose.onNode(matcher).fetchSemanticsNode()
-   val top=target.positionInRoot.y
-   val bottom=top+target.size.height
-   val delta=when {top<viewport.top -> top-viewport.top;bottom>viewport.bottom -> bottom-viewport.bottom;else -> 0f}
+   val delta=compose.runOnIdle {
+    val viewport=pageNode.boundsInRoot
+    val top=target.positionInRoot.y
+    val bottom=top+target.size.height
+    when {top<viewport.top -> top-viewport.top;bottom>viewport.bottom -> bottom-viewport.bottom;else -> 0f}
+   }
    if(kotlin.math.abs(delta)>1f) {
     page.performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){it(0f,delta)}
     compose.waitForIdle()
