@@ -29,7 +29,7 @@ class DiwanDeviceTest {
     }
     @Test fun recallSavedLineAfterRestart() {
         openLibrary()
-        click("ديواني")
+        click("محفوظاتي")
         compose.onNodeWithTag("reading-p24").performClick()
         click("تسميع")
         click("اعرض النص للتحقق")

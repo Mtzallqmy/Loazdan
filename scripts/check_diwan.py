@@ -11,9 +11,14 @@ CATALOG = Path(__file__).resolve().parents[1] / "apps/android/feature/games/src/
 def check(data):
     works = json.loads(data)
     ids = {work["id"] for work in works}
-    assert len(works) == len(ids) == 80
-    assert Counter(work["id"][0] for work in works) == {"p": 60, "n": 20}
-    assert sum(len(work["questions"]) for work in works) == 300
+    manifest = json.loads(CATALOG.with_name("dar-manifest.json").read_text())
+    retained = json.loads(CATALOG.with_name("dar-retention.json").read_text())
+    import hashlib
+    assert all(retained.get(w["id"], hashlib.sha256("\n".join(w["text"]).encode()).hexdigest()) == hashlib.sha256("\n".join(w["text"]).encode()).hexdigest() for w in works)
+    assert retained.keys() <= ids
+    assert len(works) == len(ids) == manifest["poems"] + manifest["prose"]
+    assert Counter(work["id"][0] for work in works) == {"p": manifest["poems"], "n": manifest["prose"]}
+    assert sum(len(work["questions"]) for work in works) == manifest["readingQuestions"]
     for work in works:
         ident = work["id"]
         assert all(work[key].strip() for key in ("author", "title", "theme", "era", "note")), ident

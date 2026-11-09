@@ -22,8 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
-private data class ReadingQuestion(val prompt: String, val options: List<String>, val correct: Int, val explanation: String)
-private data class Reading(
+internal data class ReadingQuestion(val prompt: String, val options: List<String>, val correct: Int, val explanation: String)
+internal data class Reading(
     val id: String, val title: String, val author: String, val theme: String, val era: String,
     val text: List<String>, val note: String, val source: String, val questions: List<ReadingQuestion>,
     val companion: String, val companionNote: String, val companionSource: String
@@ -36,7 +36,7 @@ private object DiwanCatalog {
         List(json.length()) { index ->
             val r = json.getJSONObject(index)
             val quiz = r.getJSONArray("questions")
-            Reading(r.getString("id"), r.getString("title"), r.getString("author"), r.getString("theme"), r.getString("era"),
+            Reading(r.getString("id"), r.getString("title"), r.getString("author"), r.getString("theme"), listOf(r.getString("era"),r.optString("genre"),r.optString("book")).filter { it.isNotBlank() }.joinToString(" · "),
                 r.getJSONArray("text").strings(), r.getString("note"), r.getString("source"), List(quiz.length()) { n ->
                     val q = quiz.getJSONObject(n)
                     ReadingQuestion(q.getString("prompt"), q.getJSONArray("options").strings(), q.getInt("correct"), q.getString("explanation"))
@@ -44,7 +44,7 @@ private object DiwanCatalog {
         }
     }.also { cached = it }
 }
-@Composable private fun WithReadings(content: @Composable (List<Reading>, SharedPreferences, Map<String, *>) -> Unit) {
+@Composable internal fun WithReadings(content: @Composable (List<Reading>, SharedPreferences, Map<String, *>) -> Unit) {
     val context = LocalContext.current.applicationContext
     val prefs = remember(context) { context.getSharedPreferences("diwan-arab-v1", Context.MODE_PRIVATE) }
     var values by remember(prefs) { mutableStateOf(prefs.all.toMap()) }
@@ -72,26 +72,27 @@ private const val DAY = 86_400_000L
 @Composable internal fun DiwanLibrary(onRead: (String) -> Unit) = WithReadings { works, _, values ->
     var filter by rememberSaveable { mutableStateOf("الكل") }
     var query by rememberSaveable { mutableStateOf("") }
-    val filters = remember(works) { listOf("الكل","ديواني","موعد المراجعة") + works.map { it.theme }.distinct() }
+    val filters = remember(works) { listOf("الكل","محفوظاتي","موعد المراجعة") + works.map { it.theme }.distinct() }
     val now = System.currentTimeMillis()
     val visible = remember(works, filter, query, values) { works.filter { work ->
         val dates = work.text.indices.mapNotNull { values[mark(work.id,it)] as? Long }
         val matches = when (filter) {
             "الكل" -> true
-            "ديواني" -> dates.isNotEmpty()
+            "محفوظاتي" -> dates.isNotEmpty()
             "موعد المراجعة" -> dates.any { it <= now }
             else -> work.theme == filter
         }
         matches && (work.title + " " + work.author + " " + work.era + " " + work.text.joinToString(" ")).searchKey().contains(query.trim().searchKey())
     } }
     LazyColumn(verticalArrangement=Arrangement.spacedBy(10.dp),contentPadding=PaddingValues(bottom=20.dp)) {
+        item { DarPages { onRead("page-"+it) } }
         item { Text("ديوان العرب", style=MaterialTheme.typography.headlineMedium) }
         item { OutlinedTextField(query,{query=it},label={Text("ابحث بشاعر أو بكلمات من النص")},singleLine=true,modifier=Modifier.fillMaxWidth()) }
         item { Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
             filters.forEach { name -> FilterChip(filter==name,{filter=name},{Text(name)}) }
         } }
         if (visible.isEmpty()) item { Text(when(filter) {
-            "ديواني" -> "افتح نصًا واحفظ منه بيتًا أو مقطعًا ليظهر هنا."
+            "محفوظاتي" -> "افتح نصًا واحفظ منه بيتًا أو مقطعًا ليظهر هنا."
             "موعد المراجعة" -> "لا توجد مختارات مستحقة الآن."
             else -> "لم نعثر على نص يطابق البحث."
         }) }
@@ -184,9 +185,10 @@ private const val DAY = 86_400_000L
     }
 }
 
-@Composable private fun LocalReadingVoice(text: String) {
+@Composable internal fun LocalReadingVoice(text: String, onSpeech: (Boolean)->Unit = {}) {
     val context=LocalContext.current.applicationContext
     var engine by remember {mutableStateOf<TextToSpeech?>(null)}
+    val speaking by rememberUpdatedState(onSpeech)
     var available by remember {mutableStateOf(false)}
     var message by remember {mutableStateOf("")}
     DisposableEffect(context) {
@@ -201,8 +203,13 @@ private const val DAY = 86_400_000L
                 }
             }
         }
+        tts.setOnUtteranceProgressListener(object: android.speech.tts.UtteranceProgressListener() {
+            override fun onStart(id:String?) {handler.post {if(!closed)speaking(true)}}
+            override fun onDone(id:String?) {handler.post {if(!closed)speaking(false)}}
+            @Deprecated("Legacy TTS callback") override fun onError(id:String?) {handler.post {if(!closed)speaking(false)}}
+        })
         engine=tts
-        onDispose { closed=true;tts.stop();tts.shutdown();engine=null }
+        onDispose { closed=true;speaking(false);tts.stop();tts.shutdown();engine=null }
     }
     OutlinedButton(enabled=available,onClick={
         message=if(engine?.speak(text,TextToSpeech.QUEUE_FLUSH,null,"diwan") == TextToSpeech.ERROR) "تعذّرت القراءة الصوتية." else ""
