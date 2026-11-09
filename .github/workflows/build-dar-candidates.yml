@@ -1,0 +1,33 @@
+name: Build both Dar release candidates
+on:
+  push:
+    branches: [build/dar-candidates]
+permissions:
+  contents: read
+jobs:
+  candidates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dab90d670833f743f8f18993ba18598ce1f0bad3
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - run: gradle :app:assemblePreview :app:assembleRelease
+        working-directory: apps/android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dar-preview-arm64
+          path: apps/android/app/build/outputs/apk/preview/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dar-release-arm64
+          path: apps/android/app/build/outputs/apk/release/*.apk
