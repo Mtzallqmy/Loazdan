@@ -46,6 +46,7 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
     val (_,data)=darData()
     val recent=exhibits.find{it.id==data["last"]}
     Text("دار الأثر",style=MaterialTheme.typography.headlineLarge)
+    Text("برمجة وتطوير معتز العلقمي – تعز – اليمن",style=MaterialTheme.typography.labelMedium)
     if(recent!=null) FilledTonalButton(onClick={open(recent.id)},modifier=Modifier.fillMaxWidth()){
         Text("تابع رحلتك · ${recent.title} · ${data[recent.id+":clue"]?:"صفحة الدليل"}")
     }
@@ -101,6 +102,7 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
         Text(e.room,style=MaterialTheme.typography.labelLarge)
         Text(e.title,style=MaterialTheme.typography.headlineMedium)
         Text(e.goal)
+        if(id!="shade") DarCluePlate(id,clue.isNotBlank(),e.clues.joinToString("، "),d[key+"seconds"] as? Int?:1)
         if(e.id=="shade"){
             Text("مشهد تخييلي · سطح أفقي وأشعة متوازية ثابتة السمت.")
             ShadowBoard(angle)
@@ -157,8 +159,16 @@ private fun fmt(v:Double)=String.format(Locale.ROOT,"%.1f",v)
                     else miss(if(blade)"الهاء تعود إلى السيف؛ افحص طرفه القاطع." else "انظر إلى «بين الجد واللعب»؛ موضع تمييز.")
                 }){Text(option)} }
             }else{
-                Text(if(id=="shade") "تنبّأ: ماذا يحدث لطول الظل عند رفع الضوء؟" else "أي شاهد يدعم تفسيرك؟")
-                listOf(e.other,e.proof).forEach { s->OutlinedButton(onClick={if(s==e.proof)next() else miss("راجع قرينتك · "+e.goal)}){Text(s)} }
+                val left=clue==e.clues.first()
+                val inquiry=when(id){
+                    "shade" -> Triple("تنبّأ: ماذا يحدث لطول الظل عند رفع الضوء؟",e.proof,e.other)
+                    "elegy" -> if(left) Triple("لمن تسيل الدموع في رثاء الخنساء؟","لصخر","لرفاق القافلة") else Triple("أي صيغة تدلّ على أمنية مالك؟","ليت شعري","أم بالعين")
+                    "baghdad" -> if(left) Triple("ما أول ما يبوح به الراوي؟","اشتهاء الطعام","امتلاك المال") else Triple("بأي شيء نفى قدرته على الشراء؟","غياب النقد","غياب البائع")
+                    "doves" -> if(left) Triple("ما الذي يربط مصير الحمامات؟","شبكة واحدة","أقفاص منفصلة") else Triple("إلى من توجّه المطوقة أمرها؟","إلى الجماعة","إلى الصياد")
+                    else -> if(left) Triple("هل يكفي زمن الذهاب لحساب زمن الصدى؟","تلزم رحلة عودة","نعم يكفي") else Triple("إذا بقي زمن الرجوع وحده، فماذا تضيف؟","زمن الذهاب","زمن الصمت بعد الصدى")
+                }
+                Text(inquiry.first)
+                listOf(inquiry.third,inquiry.second).forEach { s->OutlinedButton(onClick={if(s==inquiry.second)next() else miss("راجع قرينتك · "+e.goal)}){Text(s)} }
             }
         }else if(step==2){
             if(id=="shade"){

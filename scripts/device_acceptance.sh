@@ -92,6 +92,7 @@ run_phase inspectPoem DarDeviceTest
 adb shell am force-stop com.lughzdan.app
 run_phase restorePoem DarDeviceTest
 run_phase shadowBoard DarDeviceTest
+run_phase fourMoreDiscoveryPages DarDeviceTest
 adb shell 'pidof screenrecord | xargs -r kill -2' || true
 wait "$dar_rec" || true
 adb pull /sdcard/dar-scenes.mp4 artifacts/stage03/ || true

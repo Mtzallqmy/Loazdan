@@ -38,6 +38,19 @@ class DarDeviceTest {
         tap("احفظ البيت في ديواني")
         Assert.assertTrue(ui.activity.getSharedPreferences("diwan-arab-v1",0).contains("saved:p24:0"))
     }
+    @Test fun fourMoreDiscoveryPages(){
+        val plans=listOf(
+            listOf("elegy","أمنية مالك","ليت شعري","بوادي الغضى","أمنية مالك"),
+            listOf("baghdad","النقود","غياب النقد","اشتهيت الأزاذ · وليس معي عقد على نقد","بين الرغبة والقدرة"),
+            listOf("doves","خيط الشبكة","شبكة واحدة","تعاون جميعا","ينسّق الركاب دفعة واحدة"),
+            listOf("echo","مسار الرجوع","زمن الذهاب","يقطع الصوت المسافة مرتين","340 مترًا")
+        )
+        for(plan in plans){
+            enter(plan.first());plan.drop(1).forEach(::tap)
+            Assert.assertNotNull(preferences.getString(plan.first()+":page",null))
+            tap("العودة إلى الدار")
+        }
+    }
     @Test fun shadowBoard(){
         runBlocking {SettingsStore(ui.activity).dark(true)}
         enter("shade");tap("افحص الشاخص");tap("يقصر الظل");tap("ضع العلامة الأولى");tap("رفع الضوء")
